@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Navegador Simulado</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    #tabs { display: flex; background: #333; color: white; }
+    .tab {
+      padding: 8px 12px;
+      cursor: pointer;
+      background: #444;
+      border-right: 1px solid #222;
+    }
+    .tab.active {
+      background: #222;
+    }
+    #controls {
+      display: flex;
+      padding: 8px;
+      background: #f0f0f0;
+    }
+    #controls input {
+      flex: 1;
+      padding: 6px;
+      font-size: 16px;
+    }
+    #controls button {
+      margin-left: 4px;
+      padding: 6px 10px;
+    }
+    #browser-frame {
+      width: 100%;
+      height: calc(100vh - 80px);
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="tabs"></div>
+
+  <div id="controls">
+    <input type="text" id="url-bar" placeholder="Digite a URL...">
+    <button onclick="go()">Ir</button>
+    <button onclick="novaAba()">+ Aba</button>
+  </div>
+
+  <iframe id="browser-frame"></iframe>
+
+  <script>
+    let abas = [];
+    let abaAtiva = -1;
+
+    function novaAba(url = "https://example.com") {
+      abas.push(url);
+      abaAtiva = abas.length - 1;
+      atualizarAbas();
+      carregarPagina(url);
+    }
+
+    function atualizarAbas() {
+      const container = document.getElementById("tabs");
+      container.innerHTML = "";
+      abas.forEach((url, i) => {
+        const tab = document.createElement("div");
+        tab.className = "tab" + (i === abaAtiva ? " active" : "");
+        tab.innerText = url.replace(/^https?:\/\//, "").slice(0, 20) + (url.length > 20 ? "..." : "");
+        tab.onclick = () => {
+          abaAtiva = i;
+          document.getElementById("url-bar").value = abas[i];
+          carregarPagina(abas[i]);
+          atualizarAbas();
+        };
+        container.appendChild(tab);
+      });
+    }
+
+    function go() {
+      const urlInput = document.getElementById("url-bar").value;
+      const url = urlInput.startsWith("http") ? urlInput : "https://" + urlInput;
+      if (abaAtiva >= 0) {
+        abas[abaAtiva] = url;
+        carregarPagina(url);
+        atualizarAbas();
+      }
+    }
+
+    function carregarPagina(url) {
+      document.getElementById("browser-frame").src = url;
+      document.getElementById("url-bar").value = url;
+    }
+
+    // Inicializa com uma aba padrão
+    novaAba("https://example.com");
+  </script>
+
+</body>
+</html>
