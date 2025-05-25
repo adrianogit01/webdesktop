@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e1e1e">
+<div id="welcome" style="position:absolute;bottom:50px;left:10px;background:white;color:#000;padding:10px;border-radius:8px;z-index:-110">
+  <h3>Bem-vindo ao Web Desktop</h3>
+  <p>Este é um ambiente simulado de desktop no navegador, feito em HTML, CSS e JS. Explore aplicativos como calculadora, player de mídia e navegador web!</p>
+</div>
+
 
     <script>
       if ('serviceWorker' in navigator) {
@@ -196,7 +201,10 @@
 	<a href="#" onclick="openWindow('offline_apps/youtube-wrapper.html', 'Youtube')">📺 Youtube</a>
 	<a href="#" onclick="openWindow('offline_apps/terminal.html', 'Terminal')">👨🏽‍💻 Terminal</a>
         <button onclick="iniciarTouchpad()">🖱️Ativar Touchpad</button>
-  	<script src="offline_apps/touchpad.js"></script>
+  	<script src="offline_apps/touchpad.js"></script><br>
+        <strong>📢 Público:</strong>  
+    <a href="#" onclick="openWindow('public/privacidade.html', 'Privacidade')">🔏 Privacidade</a>
+    <a href="#" onclick="openWindow('public/sobre.html', 'Sobre')">📖 Sobre</a>
     </div>
 
     <script>
