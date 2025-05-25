@@ -90,6 +90,7 @@
   gap: 10px;
 }
 
+
 .shortcut {
   width: 60px;
   text-align: center;
@@ -102,7 +103,25 @@
   height: 48px;
 }
 
+    #ad-google {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 300px;
+      max-width: 90%;
+      z-index: 9999;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+
     </style>
+ <!-- Script do Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          crossorigin="anonymous"></script>
+<!-- Exemplo  -->
+<meta name="google-site-verification" content="abc123XYZ">
 </head>
 <body>
 <div id="desktop" class="desktop">
@@ -120,6 +139,18 @@
   <div class="shortcut" onclick="openWindow('offline_apps/player.html', 'Player')">
     <span>🎞️ Player</span>
   </div>
+ <!-- Anúncio -->
+    <div id="ad-google">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-1234567890123456"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
 </div>
 
     <div class="taskbar">
