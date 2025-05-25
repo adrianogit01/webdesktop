@@ -147,28 +147,6 @@ a, a:visited, button {
 
 
 
-/* Spark Layout */
-body, html {
-	overflow: hidden;
-}
-html.mobile,
-html.mobile body {
-	overflow: auto;
-}
-#main {
-    position: absolute;
-    overflow-y: scroll;
-	-webkit-overflow-scrolling: touch; /* supported on iOS5-b2+ but not used here (.mobile fallback) */
-	top:89px;
-	left:0; 
-	bottom:0; 
-	right:0;
-}
-.mobile #main {
-	position: static;
-	overflow: hidden;
-}
-
 header {
 	background: #eee;
 	border-top: 6px solid #000;
