@@ -208,7 +208,7 @@
     </div>
 
     <script>
-        function toggleMenu() {
+         function toggleMenu() {
             let menu = document.getElementById('startMenu');
             menu.classList.toggle('show');
         }
@@ -216,8 +216,13 @@
         function openWindow(url, title) {
             let win = document.createElement('div');
             win.classList.add('window');
-            win.style.top = Math.random() * 50 + '%';
+	    win.style.top = Math.random() * 50 + '%';
             win.style.left = Math.random() * 50 + '%';
+            win.style.zIndex = ++zIndexAtual;
+
+            win.addEventListener("mousedown", () => trazerParaFrente(win));
+	    win.addEventListener("touchstart", () => trazerParaFrente(win));
+        
 
             let titlebar = document.createElement('div');
             titlebar.classList.add('titlebar');
@@ -248,6 +253,19 @@
 	    initResizer(win);
             win.style.display = 'block';
         }
+
+
+	let zIndexAtual = 10;
+
+	function trazerParaFrente(window) {
+           zIndexAtual++;
+	   window.style.zIndex = zIndexAtual; 
+
+	   document.querySelectorAll('.window').forEach(j => j.classList.remove('ativa'));
+           window.classList.add('ativa');         
+ 
+        }
+
 
         function closeWindow(btn) {
             btn.closest('.window').remove();
