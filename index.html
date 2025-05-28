@@ -1,111 +1,195 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e1e1e">
-<div id="welcome" style="position:absolute;bottom:50px;left:10px;background:white;color:#000;padding:10px;border-radius:8px;z-index:-110">
-  <h3>Bem-vindo ao Web Desktop</h3>
-  <p>Este é um ambiente simulado de desktop no navegador, feito em HTML, CSS e JS. Explore aplicativos como calculadora, player de mídia e navegador web!</p>
-</div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e1e1e">
+  <div id="welcome"
+    style="position:absolute;bottom:50px;left:10px;background:white;color:#000;padding:10px;border-radius:8px;z-index:-110">
+    <h3>Bem-vindo ao Web Desktop</h3>
+    <p>Este é um ambiente simulado de desktop no navegador, feito em HTML, CSS e JS. Explore aplicativos como
+      calculadora, player de mídia e navegador web!</p>
+  </div>
 
 
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('DOMContentLoaded', function() {
-          navigator.serviceWorker.register('service-worker.js')
-            .then(function(registration) {
-              console.log('Service Worker registrado com sucesso:', registration.scope);
-            })
-            .catch(function(error) {
-              console.log('Falha ao registrar o Service Worker:', error);
-            });
-        });
-      }
-    </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('DOMContentLoaded', function () {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(function (registration) {
+            console.log('Service Worker registrado com sucesso:', registration.scope);
+          })
+          .catch(function (error) {
+            console.log('Falha ao registrar o Service Worker:', error);
+          });
+      });
+    }
+  </script>
 
-    <title>Web Desktop</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { min-height: 200vh; /* força o dobro da altura da tela */; font-family: Arial, sans-serif; background: #1e1e1e; color: white; overflow: hidden; }
-        .taskbar { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; padding: 0 10px; z-index: 100; }
-        .menu.show { display: block; }
-        .menu a { display: block; padding: 10px; color: white; text-decoration: none; }
-        .menu a:hover { background: rgba(255, 255, 255, 0.2); }
-        .window { position: absolute; width: 400px; height: 550px; background: rgba(0, 0, 0, 0.8); border: 1px solid white; display: none; resize: both; overflow: hidden; z-index: 10; border-radius: 8px;}
-        .titlebar { background: #333; padding: 5px; cursor: move; color: white; display: flex; justify-content: space-between; align-items: center; touch-action: none; }
-        .titlebar .window-buttons button { background: none; border: none; color: white; font-size: 18px; padding: 5px; margin-left: 5px; cursor: pointer; }
-        .titlebar .window-buttons { display: flex; gap: 5px; }
-        iframe { width: 100%; height: calc(100% - 30px); border: none; }
-        
-        .window .resizer {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    bottom: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.1);
-    cursor: nwse-resize;
-    z-index: 5;
-    touch-action: none;
-    border-top-left-radius: 5px;
-}
+  <title>Web Desktop</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-.menu {
-    position: absolute;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    bottom: 50px;
-    left: 10px;
-    width: 300px;
-    max-height: 70vh; /* Limita a altura do menu */
-    background: rgba(0, 0, 0, 0.6);
-    padding: 10px;
-    display: none;
-    border-radius: 8px;
-    z-index: 100;
-    overflow-y: auto; /* Adiciona a barra de rolagem quando necessário */
-}
+    body {
+      min-height: 200vh;
+      /* força o dobro da altura da tela */
+      ;
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      color: white;
+      overflow: hidden;
+    }
 
-.taskbar-window-btn {
-    margin-left: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-.taskbar-window-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      z-index: 100;
+    }
 
-.desktop {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 50px; /* Altura da taskbar */
-  padding: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
+    .menu.show {
+      display: block;
+    }
+
+    .menu a {
+      display: block;
+      padding: 10px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .menu a:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .window {
+      position: absolute;
+      width: 400px;
+      height: 550px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid white;
+      display: none;
+      resize: both;
+      overflow: hidden;
+      z-index: 10;
+      border-radius: 8px;
+    }
+
+    .titlebar {
+      background: #333;
+      padding: 5px;
+      cursor: move;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      touch-action: none;
+    }
+
+    .titlebar .window-buttons button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      padding: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .titlebar .window-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100% - 30px);
+      border: none;
+    }
+
+    .window .resizer {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      bottom: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.1);
+      cursor: nwse-resize;
+      z-index: 5;
+      touch-action: none;
+      border-top-left-radius: 5px;
+    }
+
+    .menu {
+      position: absolute;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      bottom: 50px;
+      left: 10px;
+      width: 300px;
+      max-height: 70vh;
+      /* Limita a altura do menu */
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      display: none;
+      border-radius: 8px;
+      z-index: 100;
+      overflow-y: auto;
+      /* Adiciona a barra de rolagem quando necessário */
+    }
+
+    .taskbar-window-btn {
+      margin-left: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .taskbar-window-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .desktop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 50px;
+      /* Altura da taskbar */
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
 
-.shortcut {
-  width: 60px;
-  text-align: center;
-  cursor: pointer;
-  color: white;
-}
+    .shortcut {
+      width: 60px;
+      text-align: center;
+      cursor: pointer;
+      color: white;
+    }
 
-.shortcut img {
-  width: 48px;
-  height: 48px;
-}
+    .shortcut img {
+      width: 48px;
+      height: 48px;
+    }
 
     #ad-google {
       position: fixed;
@@ -116,63 +200,59 @@
       z-index: 9999;
       background: white;
       border-radius: 6px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
       overflow: hidden;
     }
-
-    </style>
- <!-- Script do Google AdSense -->
+  </style>
+  <!-- Script do Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4818539305804157"
-     crossorigin="anonymous"></script>
-<!-- Exemplo  -->
-<meta name="google-site-verification" content="abc123XYZ">
+    crossorigin="anonymous"></script>
+  <!-- Exemplo  -->
+  <meta name="google-site-verification" content="abc123XYZ">
 </head>
+
 <body>
-<div id="desktop" class="desktop">
-  <div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google')">
-    <img src="images/google.png" alt="Google">
-    <span>Google</span>
-  </div>
-  <div class="shortcut" onclick="openWindow('offline_apps/word.html', 'Word')">
-    <img src="images/word.png" alt="Word">
-    <span>Word</span>
-  </div>
-  <div class="shortcut" onclick="openWindow('offline_apps/filemanager.html', 'Files')">
-    <span>🗂️ Files</span>
-  </div>
-  <div class="shortcut" onclick="openWindow('offline_apps/player.html', 'Player')">
-    <span>🎞️ Player</span>
-  </div>
- <!-- Anúncio -->
+  <div id="desktop" class="desktop">
+    <div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google')">
+      <img src="images/google.png" alt="Google">
+      <span>Google</span>
+    </div>
+    <div class="shortcut" onclick="openWindow('offline_apps/word.html', 'Word')">
+      <img src="images/word.png" alt="Word">
+      <span>Word</span>
+    </div>
+    <div class="shortcut" onclick="openWindow('offline_apps/filemanager.html', 'Files')">
+      <span>🗂️ Files</span>
+    </div>
+    <div class="shortcut" onclick="openWindow('offline_apps/player.html', 'Player')">
+      <span>🎞️ Player</span>
+    </div>
+    <!-- Anúncio -->
     <div id="ad-google">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-1234567890123456"
-           data-ad-slot="9876543210"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1234567890123456" data-ad-slot="9876543210"
+        data-ad-format="auto" data-full-width-responsive="true"></ins>
       <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
     </div>
-</div>
+  </div>
 
-    <div class="taskbar">
-        <button onclick="toggleMenu()">🪟</button>
-    </div>
+  <div class="taskbar">
+    <button onclick="toggleMenu()">🪟</button>
+  </div>
 
-    <div class="menu" id="startMenu">
-        <strong>📱 Apps Nativos:</strong>
-        <a href="whatsapp://send?text=Olá" target="_blank">📲 WhatsApp</a>
-        <a href="twitter://">🐦 Twitter</a>
-        <a href="facetime://">📞 FaceTime</a>
-        <a href="mailto:">✉️ Mail</a>
-        <a href="maps://">🗺️ Apple Maps</a>
-        <a href="music://">🎵 Apple Music</a>
-        <a href="sms://">💬 Mensagens</a>
+  <div class="menu" id="startMenu">
+    <strong>📱 Apps Nativos:</strong>
+    <a href="whatsapp://send?text=Olá" target="_blank">📲 WhatsApp</a>
+    <a href="twitter://">🐦 Twitter</a>
+    <a href="facetime://">📞 FaceTime</a>
+    <a href="mailto:">✉️ Mail</a>
+    <a href="maps://">🗺️ Apple Maps</a>
+    <a href="music://">🎵 Apple Music</a>
+    <a href="sms://">💬 Mensagens</a>
 
-        <strong>🌐 Web Apps (PWAs):</strong>
-        <!--<a href="#" onclick="openWindow('https://docs.google.com', 'Google Docs')">📄 Google Docs</a>
+    <strong>🌐 Web Apps (PWAs):</strong>
+    <!--<a href="#" onclick="openWindow('https://docs.google.com', 'Google Docs')">📄 Google Docs</a>
         <a href="#" onclick="openWindow('https://www.google.com/maps', 'Google Maps Web')">🗺️ Google Maps Web</a>
         <a href="#" onclick="openWindow('https://outlook.live.com', 'Outlook')">📧 Outlook</a>
         <a href="#" onclick="openWindow('https://www.youtube.com', 'YouTube')">📺 YouTube</a>
@@ -182,162 +262,162 @@
         <a href="#" onclick="openWindow('https://calendar.google.com', 'Google Calendar')">📅 Google Calendar</a>
         <a href="#" onclick="openWindow('https://web.whatsapp.com', 'WhatsApp Web')">📲 WhatsApp Web</a>
 	<a href="#" onclick="openWindow('https://www.tiktok.com/pt-BR', 'TikTok Web')">🇹 TikTok Web</a>-->
-	<a href="#" onclick="openWindow('https://google.com/?igu=1', 'Google')">🌎 Google</a>
-        <a href="#" onclick="openWindow('https://stedit.app', 'Smart Text Editor')">🗒️ Smart Text Editor</a>
-        <a href="#" onclick="openWindow('https://ngexcel-demo.netlify.app', 'NG Excel Demo')">📊 NG Excel Demo</a>
-        <a href="#" onclick="openWindow('https://paint.js.org', 'Paint js')">🎨 Paint js</a>  
-        
-        <strong>💽 Local File System Web Apps:</strong>   
-	<a href="#" onclick="openWindow('offline_apps/browser.html', 'Browser')">🌎 Browser</a>
-        <a href="#" onclick="openWindow('offline_apps/camera.html', 'Camera')">📸 Camera</a>
-        <a href="#" onclick="openWindow('offline_apps/word.html', 'Word')">📄 Word</a>
-        <a href="#" onclick="openWindow('offline_apps/excel.html', 'Excel')">📊 Excel</a>
-        <a href="#" onclick="openWindow('offline_apps/whiteboard/index.html', 'Paint')">🖌️ Paint Offline</a>
-	<a href="#" onclick="openWindow('offline_apps/rotina.html', 'Matinal')">🌄 Rotina Matinal</a>
-        <a href="#" onclick="openWindow('offline_apps/diario/diario.html', 'Diario')">📓 Diário</a>
-        <a href="#" onclick="openWindow('offline_apps/tarefas.html', 'Tarefas')">✔️ Tarefas</a>
-        <a href="#" onclick="openWindow('offline_apps/calculadora.html', 'Calculadora')">🖩 Calculadora</a>
-	<a href="#" onclick="openWindow('offline_apps/youtube-wrapper.html', 'Youtube')">📺 Youtube</a>
-	<a href="#" onclick="openWindow('offline_apps/terminal.html', 'Terminal')">👨🏽‍💻 Terminal</a>
-        <button onclick="iniciarTouchpad()">🖱️Ativar Touchpad</button>
-  	<script src="offline_apps/touchpad.js"></script><br>
-        <strong>📢 Público:</strong>  
+    <a href="#" onclick="openWindow('https://google.com/?igu=1', 'Google')">🌎 Google</a>
+    <a href="#" onclick="openWindow('https://stedit.app', 'Smart Text Editor')">🗒️ Smart Text Editor</a>
+    <a href="#" onclick="openWindow('https://ngexcel-demo.netlify.app', 'NG Excel Demo')">📊 NG Excel Demo</a>
+    <a href="#" onclick="openWindow('https://paint.js.org', 'Paint js')">🎨 Paint js</a>
+
+    <strong>💽 Local File System Web Apps:</strong>
+    <a href="#" onclick="openWindow('offline_apps/browser.html', 'Browser')">🌎 Browser</a>
+    <a href="#" onclick="openWindow('offline_apps/camera.html', 'Camera')">📸 Camera</a>
+    <a href="#" onclick="openWindow('offline_apps/word.html', 'Word')">📄 Word</a>
+    <a href="#" onclick="openWindow('offline_apps/excel.html', 'Excel')">📊 Excel</a>
+    <a href="#" onclick="openWindow('offline_apps/whiteboard/index.html', 'Paint')">🖌️ Paint Offline</a>
+    <a href="#" onclick="openWindow('offline_apps/rotina.html', 'Matinal')">🌄 Rotina Matinal</a>
+    <a href="#" onclick="openWindow('offline_apps/diario/diario.html', 'Diario')">📓 Diário</a>
+    <a href="#" onclick="openWindow('offline_apps/tarefas.html', 'Tarefas')">✔️ Tarefas</a>
+    <a href="#" onclick="openWindow('offline_apps/calculadora.html', 'Calculadora')">🖩 Calculadora</a>
+    <a href="#" onclick="openWindow('offline_apps/youtube-wrapper.html', 'Youtube')">📺 Youtube</a>
+    <a href="#" onclick="openWindow('offline_apps/terminal.html', 'Terminal')">👨🏽‍💻 Terminal</a>
+    <button onclick="iniciarTouchpad()">🖱️Ativar Touchpad</button>
+    <script src="offline_apps/touchpad.js"></script><br>
+    <strong>📢 Público:</strong>
     <a href="#" onclick="openWindow('public/privacidade.html', 'Privacidade')">🔏 Privacidade</a>
     <a href="#" onclick="openWindow('public/sobre.html', 'Sobre')">📖 Sobre</a>
-    </div>
+  </div>
 
-    <script>
-         function toggleMenu() {
-            let menu = document.getElementById('startMenu');
-            menu.classList.toggle('show');
-        }
+  <script>
+    function toggleMenu() {
+      let menu = document.getElementById('startMenu');
+      menu.classList.toggle('show');
+    }
 
-        function openWindow(url, title) {
-            let win = document.createElement('div');
-            win.classList.add('window');
-	    win.style.top = Math.random() * 50 + '%';
-            win.style.left = Math.random() * 50 + '%';
-            win.style.zIndex = ++zIndexAtual;
+    function openWindow(url, title) {
+      let win = document.createElement('div');
+      win.classList.add('window');
+      win.style.top = Math.random() * 50 + '%';
+      win.style.left = Math.random() * 50 + '%';
+      win.style.zIndex = ++zIndexAtual;
 
-            win.addEventListener("mousedown", () => trazerParaFrente(win));
-	    win.addEventListener("touchstart", () => trazerParaFrente(win));
-        
+      win.addEventListener("mousedown", () => trazerParaFrente(win));
+      win.addEventListener("touchstart", () => trazerParaFrente(win));
 
-            let titlebar = document.createElement('div');
-            titlebar.classList.add('titlebar');
-            titlebar.innerHTML = `
+
+      let titlebar = document.createElement('div');
+      titlebar.classList.add('titlebar');
+      titlebar.innerHTML = `
                 <span class="window-title">${title}</span>
                 <div class="window-buttons">
                     <button onclick="minimizeWindow(this)">🗕</button>
                     <button onclick="maximizeWindow(this)">🗖</button>
                     <button onclick="closeWindow(this)">✖</button>
                 </div>`;
-            titlebar.addEventListener('mousedown', dragMouseDown);
-            titlebar.addEventListener('touchstart', dragMouseDown, { passive: false });
+      titlebar.addEventListener('mousedown', dragMouseDown);
+      titlebar.addEventListener('touchstart', dragMouseDown, { passive: false });
 
-            titlebar.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('mousedown', e => e.stopPropagation());
-                btn.addEventListener('touchstart', e => e.stopPropagation());
-            });
+      titlebar.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mousedown', e => e.stopPropagation());
+        btn.addEventListener('touchstart', e => e.stopPropagation());
+      });
 
-            let iframe = document.createElement('iframe');
-            iframe.src = url;
+      let iframe = document.createElement('iframe');
+      iframe.src = url;
 
-            win.appendChild(titlebar);
-            win.appendChild(iframe);
-            document.body.appendChild(win);
-            let resizer = document.createElement('div');
-	    resizer.classList.add('resizer');
-            win.appendChild(resizer);
-	    initResizer(win);
-            win.style.display = 'block';
-        }
-
-
-	let zIndexAtual = 10;
-
-	function trazerParaFrente(window) {
-           zIndexAtual++;
-	   window.style.zIndex = zIndexAtual; 
-
-	   document.querySelectorAll('.window').forEach(j => j.classList.remove('ativa'));
-           window.classList.add('ativa');         
- 
-        }
+      win.appendChild(titlebar);
+      win.appendChild(iframe);
+      document.body.appendChild(win);
+      let resizer = document.createElement('div');
+      resizer.classList.add('resizer');
+      win.appendChild(resizer);
+      initResizer(win);
+      win.style.display = 'block';
+    }
 
 
-        function closeWindow(btn) {
-            btn.closest('.window').remove();
-        }
+    let zIndexAtual = 10;
 
-  let minimizedWindows = [];
+    function trazerParaFrente(window) {
+      zIndexAtual++;
+      window.style.zIndex = zIndexAtual;
 
-function minimizeWindow(btn) {
-    const win = btn.closest('.window');
-    win.style.display = 'none';
+      document.querySelectorAll('.window').forEach(j => j.classList.remove('ativa'));
+      window.classList.add('ativa');
 
-    const title = win.querySelector('.window-title').innerText;
-    const taskButton = document.createElement('button');
-    taskButton.innerText = title;
-    taskButton.classList.add('taskbar-window-btn');
-    taskButton.onclick = () => {
+    }
+
+
+    function closeWindow(btn) {
+      btn.closest('.window').remove();
+    }
+
+    let minimizedWindows = [];
+
+    function minimizeWindow(btn) {
+      const win = btn.closest('.window');
+      win.style.display = 'none';
+
+      const title = win.querySelector('.window-title').innerText;
+      const taskButton = document.createElement('button');
+      taskButton.innerText = title;
+      taskButton.classList.add('taskbar-window-btn');
+      taskButton.onclick = () => {
         win.style.display = 'block';
         taskButton.remove();
         minimizedWindows = minimizedWindows.filter(w => w.win !== win);
-    };
+      };
 
-    document.querySelector('.taskbar').appendChild(taskButton);
-    minimizedWindows.push({ win, button: taskButton });
-}
+      document.querySelector('.taskbar').appendChild(taskButton);
+      minimizedWindows.push({ win, button: taskButton });
+    }
 
 
-        function maximizeWindow(btn) {
-            let win = btn.closest('.window');
-            if (win.style.width !== '100vw') {
-                win.style.width = '100vw';
-                win.style.height = '100vh';
-                win.style.top = '0';
-                win.style.left = '0';
-            } else {
-                win.style.width = '400px';
-                win.style.height = '300px';
-                win.style.top = '20%';
-                win.style.left = '30%';
-            }
-        }
+    function maximizeWindow(btn) {
+      let win = btn.closest('.window');
+      if (win.style.width !== '100vw') {
+        win.style.width = '100vw';
+        win.style.height = '100vh';
+        win.style.top = '0';
+        win.style.left = '0';
+      } else {
+        win.style.width = '400px';
+        win.style.height = '300px';
+        win.style.top = '20%';
+        win.style.left = '30%';
+      }
+    }
 
-        function dragMouseDown(e) {
-            e.preventDefault();
-            let win = e.currentTarget.parentElement;
-            let pos3 = e.clientX || e.touches?.[0].clientX;
-            let pos4 = e.clientY || e.touches?.[0].clientY;
+    function dragMouseDown(e) {
+      e.preventDefault();
+      let win = e.currentTarget.parentElement;
+      let pos3 = e.clientX || e.touches?.[0].clientX;
+      let pos4 = e.clientY || e.touches?.[0].clientY;
 
-            document.onmouseup = document.ontouchend = closeDragElement;
-            document.onmousemove = document.ontouchmove = elementDrag;
+      document.onmouseup = document.ontouchend = closeDragElement;
+      document.onmousemove = document.ontouchmove = elementDrag;
 
-            function elementDrag(e) {
-                e.preventDefault();
-                let clientX = e.clientX || e.touches?.[0].clientX;
-                let clientY = e.clientY || e.touches?.[0].clientY;
-                win.style.top = (win.offsetTop - (pos4 - clientY)) + "px";
-                win.style.left = (win.offsetLeft - (pos3 - clientX)) + "px";
-                pos3 = clientX;
-                pos4 = clientY;
-            }
+      function elementDrag(e) {
+        e.preventDefault();
+        let clientX = e.clientX || e.touches?.[0].clientX;
+        let clientY = e.clientY || e.touches?.[0].clientY;
+        win.style.top = (win.offsetTop - (pos4 - clientY)) + "px";
+        win.style.left = (win.offsetLeft - (pos3 - clientX)) + "px";
+        pos3 = clientX;
+        pos4 = clientY;
+      }
 
-            function closeDragElement() {
-                document.onmouseup = null;
-                document.onmousemove = null;
-                document.ontouchend = null;
-                document.ontouchmove = null;
-            }
-        }
-        
-        function initResizer(win) {
-    const resizer = win.querySelector('.resizer');
-    let startX, startY, startWidth, startHeight;
+      function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+        document.ontouchend = null;
+        document.ontouchmove = null;
+      }
+    }
 
-    function dragStart(e) {
+    function initResizer(win) {
+      const resizer = win.querySelector('.resizer');
+      let startX, startY, startWidth, startHeight;
+
+      function dragStart(e) {
         e.preventDefault();
         startX = e.clientX || e.touches?.[0].clientX;
         startY = e.clientY || e.touches?.[0].clientY;
@@ -348,40 +428,40 @@ function minimizeWindow(btn) {
         document.addEventListener('mouseup', stopDrag);
         document.addEventListener('touchmove', drag, { passive: false });
         document.addEventListener('touchend', stopDrag);
-    }
+      }
 
-    function drag(e) {
+      function drag(e) {
         e.preventDefault();
         const clientX = e.clientX || e.touches?.[0].clientX;
         const clientY = e.clientY || e.touches?.[0].clientY;
         win.style.width = startWidth + (clientX - startX) + 'px';
         win.style.height = startHeight + (clientY - startY) + 'px';
-    }
+      }
 
-    function stopDrag() {
+      function stopDrag() {
         document.removeEventListener('mousemove', drag);
         document.removeEventListener('mouseup', stopDrag);
         document.removeEventListener('touchmove', drag);
         document.removeEventListener('touchend', stopDrag);
+      }
+
+      resizer.addEventListener('mousedown', dragStart);
+      resizer.addEventListener('touchstart', dragStart, { passive: false });
     }
 
-    resizer.addEventListener('mousedown', dragStart);
-    resizer.addEventListener('touchstart', dragStart, { passive: false });
-}
 
-
-        // Ctrl+W fecha a última janela aberta
-        document.addEventListener('keydown', e => {
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'w') {
-                const windows = document.querySelectorAll('.window');
-                if (windows.length > 0) {
-                    e.preventDefault();
-                    windows[windows.length - 1].remove();
-                }
-            }
-        });
-    </script>
+    // Ctrl+W fecha a última janela aberta
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'w') {
+        const windows = document.querySelectorAll('.window');
+        if (windows.length > 0) {
+          e.preventDefault();
+          windows[windows.length - 1].remove();
+        }
+      }
+    });
+  </script>
 
 </body>
-</html>
 
+</html>
