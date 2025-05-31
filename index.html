@@ -211,7 +211,7 @@
   <meta name="google-site-verification" content="abc123XYZ">
 </head>
 
-<body>
+<body onload="onLoad()">
   <div id="desktop" class="desktop">
     <div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google')">
       <img src="images/google.png" alt="Google">
@@ -287,6 +287,11 @@
   </div>
 
   <script>
+  
+    function onLoad(){
+    openWindow("public/sobre.html", "Sobre");
+    }
+      
     function toggleMenu() {
       let menu = document.getElementById('startMenu');
       menu.classList.toggle('show');
