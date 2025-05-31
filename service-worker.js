@@ -1,4 +1,4 @@
-const CACHE_NAME = "web-desktop-cache-v1";
+const CACHE_NAME = "web-desktop-cache-v2";
 const urlsToCache = [
   "./",
   "./index.html",
