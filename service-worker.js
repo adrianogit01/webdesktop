@@ -2,7 +2,7 @@ const CACHE_NAME = "web-desktop-cache-v1";
 const urlsToCache = [
   "./",
   "./index.html",
-  "./offline_apps/word.html",
+  "./offline_apps/word/word.html",
   "./offline_apps/excel.html",
   "./offline_apps/browser.html",
   "./offline_apps/whiteboard/index.html",
