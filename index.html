@@ -58,6 +58,15 @@
       padding: 0 10px;
       z-index: 100;
     }
+    
+     #searchInput {
+     width: 100%;
+     padding: 6px 8px;
+     margin-bottom: 8px;
+     font-size: 14px;
+     border: 1px solid #ccc;
+     border-radius: 4px;
+   }
 
     .menu.show {
       display: block;
@@ -242,6 +251,7 @@
   </div>
 
   <div class="menu" id="startMenu">
+  <input type="text" id="searchInput" placeholder="Pesquisar apps...">
     <strong>📱 Apps Nativos:</strong>
     <a href="whatsapp://send?text=Olá" target="_blank">📲 WhatsApp</a>
     <a href="twitter://">🐦 Twitter</a>
@@ -465,6 +475,28 @@
         }
       }
     });
+    
+    // Aguarda carregar o DOM antes de aplicar o filtro
+document.addEventListener('DOMContentLoaded', function() {
+  var searchInput = document.getElementById('searchInput');
+
+  // Evento 'input' dispara sempre que o usuário digita no campo
+  searchInput.addEventListener('input', function() {
+    var filter = searchInput.value.toLowerCase();             // Texto do filtro em caixa baixa
+    var apps = document.querySelectorAll('#startMenu a');     // Seleciona todos os links dentro do menu
+
+    apps.forEach(function(appLink) {
+      var text = appLink.textContent.toLowerCase();          // Texto interno do link
+      // Verifica se o nome do app contém o filtro
+      if (text.includes(filter)) {
+        appLink.style.display = '';  // Exibe o link se corresponder
+      } else {
+        appLink.style.display = 'none'; // Oculta se não corresponder
+      }
+    });
+  });
+});
+
   </script>
 
 </body>
