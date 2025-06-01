@@ -142,7 +142,7 @@
     }
 
     .menu {
-      position: fixed;
+      position: absolute;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       bottom: 50px;
@@ -224,18 +224,18 @@
 <body onload="onLoad()">
   <div id="desktop" class="desktop">
     <div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google')">
-      <img src="images/google.png" alt="Google">
-      <span>Google</span>
+      <!--<img src="images/google.png" alt="Google">-->
+      <a>🇬 Google</a>
     </div>
     <div class="shortcut" onclick="openWindow('offline_apps/word.html', 'Word')">
-      <img src="images/word.png" alt="Word">
-      <span>Word</span>
+     <!-- <img src="images/word.png" alt="Word">-->
+      <a>📄 Word</a>
     </div>
     <div class="shortcut" onclick="openWindow('offline_apps/filemanager.html', 'Files')">
-      <span>🗂️ Files</span>
+      <a>🗂️ Files</a>
     </div>
     <div class="shortcut" onclick="openWindow('offline_apps/player.html', 'Player')">
-      <span>🎞️ Player</span>
+      <a>🎞️ Player</a>
     </div>
     <!-- Anúncio -->
     <div id="ad-google">

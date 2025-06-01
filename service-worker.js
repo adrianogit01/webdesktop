@@ -1,4 +1,4 @@
-const CACHE_NAME = "web-desktop-cache-v2";
+const CACHE_NAME = "web-desktop-cache-v3";
 const urlsToCache = [
   "./",
   "./index.html",
@@ -15,9 +15,7 @@ const urlsToCache = [
   "./offline_apps/youtube-wrapper.html",
   "./offline_apps/filemanager.html",
   "./offline_apps/player.html",
-  "./offline_apps/terminal.html",
-  "./images/google.png",
-  "./images/word.png"  
+  "./offline_apps/terminal.html"
 ];
 
 self.addEventListener("install", function(event) {
