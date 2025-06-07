@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt">
-
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1e1e1e">
-  <div id="welcome"
+    <div id="welcome"
     style="position:absolute;bottom:50px;left:10px;background: #f5f5f5;color: #333;padding:10px;border-radius:8px;z-index:-110">
     <h3>Bem-vindo ao Web Desktop</h3>
     <p>Este é um ambiente simulado de desktop no navegador, feito em HTML, CSS e JS. Explore aplicativos como
@@ -27,22 +26,17 @@
       });
     }
   </script>
-
-  <title>Web Desktop</title>
+  <title>Desktop Web</title>
   <style>
-    * {
+      * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
-      min-height: 200vh;
-      /* força o dobro da altura da tela */
-      ;
-      font-family: Arial, sans-serif;
-      background: #1e1e1e;
-      color: white;
+      margin: 0;
+      font-family: sans-serif;
+      background: #1e1e2f;
       overflow: hidden;
     }
 
@@ -50,6 +44,7 @@
       position: fixed;
       bottom: 0;
       left: 0;
+      right: 0;
       width: 100%;
       height: 50px;
       background: rgba(0, 0, 0, 0.8);
@@ -59,7 +54,7 @@
       z-index: 100;
     }
     
-     #searchInput {
+       #searchInput {
      width: 100%;
      padding: 6px 8px;
      margin-bottom: 8px;
@@ -67,8 +62,8 @@
      border: 1px solid #ccc;
      border-radius: 4px;
    }
-
-    .menu.show {
+   
+     .menu.show {
       display: block;
     }
 
@@ -95,7 +90,7 @@
       z-index: 10;
       border-radius: 8px;
     }
-
+    
     .titlebar {
       background: #333;
       padding: 5px;
@@ -212,17 +207,27 @@
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
       overflow: hidden;
     }
-    
+
+    .zoom-control {
+      margin-left: auto;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .zoom-control input[type="range"] {
+      width: 120px;
+    }
   </style>
-  <!-- Script do Google AdSense -->
+   <!-- Script do Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4818539305804157"
     crossorigin="anonymous"></script>
   <!-- Exemplo  -->
   <meta name="google-site-verification" content="abc123XYZ">
 </head>
-
 <body onload="onLoad()">
-  <div id="desktop" class="desktop">
+   <div id="desktop" class="desktop">
     <div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google')">
       <!--<img src="images/google.png" alt="Google">-->
       <a>🇬 Google</a>
@@ -247,11 +252,16 @@
     </div>
   </div>
 
+  <!-- Barra de tarefas -->
   <div class="taskbar">
-    <button onclick="toggleMenu()">🪟</button>
+    <button onclick="toggleMenu()">🪟 Menu Iniciar</button>
+    <div class="zoom-control">
+      <label for="zoomSlider">Zoom:</label>
+      <input id="zoomSlider" type="range" min="50" max="150" value="100">
+    </div>
   </div>
-
-  <div class="menu" id="startMenu">
+  
+   <div class="menu" id="startMenu">
   <input type="text" id="searchInput" placeholder="Pesquisar apps...">
     <strong>📱 Apps Nativos:</strong>
     <a href="whatsapp://send?text=Olá" target="_blank">📲 WhatsApp</a>
@@ -298,9 +308,10 @@
     <a href="#" onclick="openWindow('public/sobre.html', 'Sobre')">📖 Sobre</a>
   </div>
 
+
   <script>
   
-    function onLoad(){
+      function onLoad(){
     openWindow("public/sobre.html", "Sobre");
     }
       
@@ -498,8 +509,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+    // Controle de zoom via slider
+    const zoomSlider = document.getElementById('zoomSlider');
+    zoomSlider.addEventListener('input', () => {
+      const zoom = zoomSlider.value;
+      setGlobalZoom(zoom);
+    });
 
+    function setGlobalZoom(percent) {
+      localStorage.setItem('desktopZoom', percent);
+      document.body.style.zoom = percent + '%';
+    }
+
+    // Carregar zoom salvo ao iniciar
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedZoom = localStorage.getItem('desktopZoom') || 100;
+      document.getElementById('zoomSlider').value = savedZoom;
+      setGlobalZoom(savedZoom);
+    });
   </script>
 </body>
-
 </html>
+
