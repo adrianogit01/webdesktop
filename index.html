@@ -5,12 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1e1e1e">
-    <div id="welcome"
-    style="position:absolute;bottom:50px;left:10px;background: #f5f5f5;color: #333;padding:10px;border-radius:8px;z-index:-110">
-    <h3>Bem-vindo ao Web Desktop</h3>
-    <p>Este é um ambiente simulado de desktop no navegador, feito em HTML, CSS e JS. Explore aplicativos como
-      calculadora, player de mídia e navegador web!</p>
-  </div>
+   
 
 
   <script>
@@ -230,6 +225,21 @@
     .grey-filter {
     filter: grayscale(1) invert(1);
    }
+   
+#iframe-relogio {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  transform: translate(-50%, -50%);
+  border: none;
+  background: transparent;
+  pointer-events: none;
+  z-index: 0;
+}
+
+
 
  
   </style>
@@ -240,7 +250,14 @@
   <meta name="google-site-verification" content="abc123XYZ">
 </head>
 <body onload="onLoad()">
+ <div id="welcome"
+    style="position:absolute;bottom:50px;left:10px;background: #f5f5f5;color: #333;padding:10px;border-radius:8px;z-index:-110">
+    <h3>Bem-vindo ao Web Desktop</h3>
+    <p>Este é um ambiente simulado de desktop no navegador, feito em HTML, CSS e JS. Explore aplicativos como
+      calculadora, player de mídia e navegador web!</p>
+  </div>
    <div id="desktop" class="desktop">
+   <iframe src="offline_apps/relogio.html" id="iframe-relogio"></iframe>
     <div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google')">
       <!--<img src="images/google.png" alt="Google">-->
       <a>🇬 Google</a>
@@ -303,7 +320,7 @@
     <a href="#" onclick="openWindow('https://paint.js.org', 'Paint js')">🎨 Paint js</a>
     <a href="#" onclick="openWindow('https://www.photopea.com/', 'Photopea')">🎨 Photopea</a>
     <a href="#" onclick="openWindow('https://editor.method.ac/', 'SVG Editor')">📐 SVG Editor</a>
-    <a href="#" onclick="openWindow('https://onecompiler.com/html', '</> Code Editor')"></> Code Editor</a>
+    <a href="#" onclick="openWindow('https://onecompiler.com/html', 'Code Editor')">💻 Code Editor</a>
     <a href="#" onclick="openWindow('https://lrq3000.github.io/javascript-racer/v5.game.html', 'JS R 5')">🚗 JS R 5</a>
    
     <strong>💽 Local File System HTML with JS Apps:</strong>
@@ -328,6 +345,7 @@
     <a href="#" onclick="openWindow('public/privacidade.html', 'Privacidade')">🔏 Privacidade</a>
     <a href="#" onclick="openWindow('public/sobre.html', 'Sobre')">📖 Sobre</a>
   </div>
+
 
 
   <script>
@@ -554,6 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
   
   </script>
+  
 </body>
 </html>
 
