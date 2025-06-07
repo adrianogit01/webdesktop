@@ -1,6 +1,26 @@
-// touchpad.js
+let touchpadAtivo = false;
+
+function toggleTouchpad() {
+  if (touchpadAtivo) {
+    // Desativa: remove os elementos e event listeners
+    const pad = document.getElementById("custom-touchpad");
+    const cursor = document.getElementById("custom-cursor");
+    if (pad) pad.remove();
+    if (cursor) cursor.remove();
+
+    // Remove event listener de scroll
+    window.removeEventListener("scroll", atualizarCursorPos);
+    touchpadAtivo = false;
+  } else {
+    iniciarTouchpad();
+    touchpadAtivo = true;
+  }
+}
+
+let atualizarCursorPos; // precisa ser acessível para remoção
+
 function iniciarTouchpad() {
-  if (document.getElementById("custom-touchpad")) return; // evita duplicar
+  if (document.getElementById("custom-touchpad")) return;
 
   const cursor = document.createElement("div");
   cursor.id = "custom-cursor";
@@ -79,11 +99,13 @@ function iniciarTouchpad() {
     lastTap = now;
   });
 
-  window.addEventListener("scroll", () => {
+  atualizarCursorPos = () => {
     x = window.innerWidth / 2;
     y = window.innerHeight / 2 + window.scrollY;
     cursor.style.left = `${x}px`;
     cursor.style.top = `${y - window.scrollY}px`;
-  });
+  };
+
+  window.addEventListener("scroll", atualizarCursorPos);
 }
 
