@@ -58,30 +58,79 @@ function iniciarTouchpad() {
   let lastTap = 0;
   let startX, startY;
 
-  pad.addEventListener("touchstart", e => {
-    const touch = e.touches[0];
-    startX = touch.clientX;
-    startY = touch.clientY;
-  });
+let dragging = false;
+let dragStartTimer;
+let dragTarget = null;
 
-  pad.addEventListener("touchmove", e => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    const dx = touch.clientX - startX;
-    const dy = touch.clientY - startY;
+pad.addEventListener("touchstart", e => {
+  const touch = e.touches[0];
+  startX = touch.clientX;
+  startY = touch.clientY;
 
-    x = Math.max(0, Math.min(window.innerWidth, x + dx));
-    y = Math.max(0, Math.min(document.body.scrollHeight, y + dy));
+  // Posição real do cursor
+  const realX = x;
+  const realY = y - window.scrollY;
 
-    cursor.style.left = `${x}px`;
-    cursor.style.top = `${y}px`;
+  dragStartTimer = setTimeout(() => {
+    const el = document.elementFromPoint(realX, realY);
+    if (el) {
+      dragTarget = el;
+      dragging = true;
 
-    startX = touch.clientX;
-    startY = touch.clientY;
-  });
+      const downEvent = new MouseEvent("mousedown", {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+        clientX: realX,
+        clientY: realY
+      });
+      el.dispatchEvent(downEvent);
+    }
+  }, 300); // tempo para considerar "segurando para arrastar"
+});
 
-  pad.addEventListener("touchend", e => {
-    e.preventDefault();
+pad.addEventListener("touchmove", e => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  const dx = touch.clientX - startX;
+  const dy = touch.clientY - startY;
+
+  x = Math.max(0, Math.min(window.innerWidth, x + dx));
+  y = Math.max(0, Math.min(document.body.scrollHeight, y + dy));
+
+  cursor.style.left = `${x}px`;
+  cursor.style.top = `${y}px`;
+
+  if (dragging && dragTarget) {
+    const moveEvent = new MouseEvent("mousemove", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+      clientX: x,
+      clientY: y - window.scrollY
+    });
+    dragTarget.dispatchEvent(moveEvent);
+  }
+
+  startX = touch.clientX;
+  startY = touch.clientY;
+});
+
+pad.addEventListener("touchend", e => {
+  e.preventDefault();
+  clearTimeout(dragStartTimer);
+
+  if (dragging && dragTarget) {
+    const upEvent = new MouseEvent("mouseup", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+      clientX: x,
+      clientY: y - window.scrollY
+    });
+    dragTarget.dispatchEvent(upEvent);
+  } else {
+    // Detectar duplo toque para "click"
     const now = Date.now();
     if (now - lastTap < 300) {
       const el = document.elementFromPoint(x, y - window.scrollY);
@@ -97,7 +146,12 @@ function iniciarTouchpad() {
       }
     }
     lastTap = now;
-  });
+  }
+
+  dragging = false;
+  dragTarget = null;
+});
+
 
   atualizarCursorPos = () => {
     x = window.innerWidth / 2;
