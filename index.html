@@ -219,6 +219,16 @@
     .zoom-control input[type="range"] {
       width: 120px;
     }
+    
+    .sepia-filter {
+    filter: sepia(1);
+    }
+    
+    .grey-filter {
+    filter: grayscale(1) invert(1);
+   }
+
+ 
   </style>
    <!-- Script do Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4818539305804157"
@@ -291,7 +301,8 @@
     <a href="#" onclick="openWindow('https://www.photopea.com/', 'Photopea')">🎨 Photopea</a>
     <a href="#" onclick="openWindow('https://editor.method.ac/', 'SVG Editor')">📐 SVG Editor</a>
     <a href="#" onclick="openWindow('https://onecompiler.com/html', '</> Code Editor')"></> Code Editor</a>
-
+    <a href="#" onclick="openWindow('https://lrq3000.github.io/javascript-racer/v5.game.html', 'JS R 5')">JS R 5</a>
+   
     <strong>💽 Local File System HTML with JS Apps:</strong>
     <a href="#" onclick="openWindow('offline_apps/browser.html', 'Browser')">🌎 Browser</a>
     <a href="#" onclick="openWindow('offline_apps/camera.html', 'Camera')">📸 Camera</a>
@@ -306,6 +317,10 @@
     <a href="#" onclick="openWindow('offline_apps/terminal.html', 'Terminal')">👨🏽‍💻 Terminal</a>
     <button onclick="iniciarTouchpad()">🖱️Ativar Touchpad</button>
     <script src="offline_apps/touchpad.js"></script><br>
+    <button onclick="toggleSepia()">🟤 Modo Sépia</button>
+    <script src="offline_apps/sepia-toggle.js"></script>
+    <button onclick="toggleGrey()">⚫ Modo Preto e Branco</button>
+    <script src="offline_apps/grey-toggle.js"></script>
     <strong>📢 Público:</strong>
     <a href="#" onclick="openWindow('public/privacidade.html', 'Privacidade')">🔏 Privacidade</a>
     <a href="#" onclick="openWindow('public/sobre.html', 'Sobre')">📖 Sobre</a>
@@ -350,6 +365,9 @@
         btn.addEventListener('mousedown', e => e.stopPropagation());
         btn.addEventListener('touchstart', e => e.stopPropagation());
       });
+      
+      applySepiaToElement(win);
+      applyGreyToElement(win);
 
       let iframe = document.createElement('iframe');
       iframe.src = url;
@@ -530,6 +548,8 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('zoomSlider').value = savedZoom;
       setGlobalZoom(savedZoom);
     });
+    
+  
   </script>
 </body>
 </html>
