@@ -1,0 +1,144 @@
+<!-- Interface -->
+<div>
+  <input type="file" id="upload-m3u" />
+  <input type="text" id="m3u-url" placeholder="Ou insira a URL da lista M3U" />
+  <button id="load-url">Carregar URL</button>
+</div>
+<input type="text" id="search" placeholder="Buscar canal..." />
+<div id="shortcuts"></div>
+<div id="categories"></div>
+<ul id="channel-list" style="max-height: 300px; overflow-y: auto;"></ul>
+<video id="iptv-player" controls autoplay style="width: 100%; max-height: 400px; margin-top: 1em;"></video>
+
+<!-- Dependência -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<script>
+  const inputFile = document.getElementById('upload-m3u');
+  const urlInput = document.getElementById('m3u-url');
+  const loadUrlBtn = document.getElementById('load-url');
+  const searchInput = document.getElementById('search');
+  const list = document.getElementById('channel-list');
+  const categoriesDiv = document.getElementById('categories');
+  const shortcutsDiv = document.getElementById('shortcuts');
+  const video = document.getElementById('iptv-player');
+
+  let allChannels = [];
+  let currentCategory = null;
+  let shortcuts = [];
+
+  inputFile.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    const text = await file.text();
+    loadM3U(text);
+  });
+
+  loadUrlBtn.addEventListener('click', async () => {
+    const url = urlInput.value.trim();
+    if (!url) return alert("Informe a URL M3U");
+
+    try {
+      const res = await fetch(url);
+      const text = await res.text();
+      loadM3U(text);
+    } catch (err) {
+      alert("Erro ao carregar a URL");
+    }
+  });
+
+  searchInput.addEventListener('input', renderChannels);
+
+  function loadM3U(text) {
+    allChannels = [];
+    shortcuts = [];
+    currentCategory = null;
+
+    const lines = text.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].startsWith('#EXTINF')) {
+        const infoLine = lines[i];
+        const url = lines[i + 1]?.trim();
+
+        const nameMatch = infoLine.match(/,(.*)$/);
+        const groupMatch = infoLine.match(/group-title="(.*?)"/i);
+
+        const name = nameMatch ? nameMatch[1] : 'Sem Nome';
+        const group = groupMatch ? groupMatch[1] : 'Sem Categoria';
+
+        const isFavorite = /#FAV/i.test(infoLine);
+        const channel = { name, url, group };
+
+        allChannels.push(channel);
+        if (isFavorite) shortcuts.push(channel);
+      }
+    }
+
+    renderShortcuts();
+    renderCategories();
+    renderChannels();
+  }
+
+  function renderShortcuts() {
+    shortcutsDiv.innerHTML = '';
+    if (shortcuts.length === 0) return;
+
+    const label = document.createElement('strong');
+    label.textContent = '⭐ Favoritos: ';
+    shortcutsDiv.appendChild(label);
+
+    shortcuts.forEach(channel => {
+      const btn = document.createElement('button');
+      btn.textContent = channel.name;
+      btn.style.margin = '0 0.5em 0.5em 0';
+      btn.onclick = () => playChannel(channel.url);
+      shortcutsDiv.appendChild(btn);
+    });
+  }
+
+  function renderCategories() {
+    const categories = [...new Set(allChannels.map(c => c.group))];
+    categoriesDiv.innerHTML = '';
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.textContent = cat;
+      btn.style.margin = '0 0.5em 0.5em 0';
+      btn.onclick = () => {
+        currentCategory = cat === currentCategory ? null : cat;
+        renderChannels();
+      };
+      categoriesDiv.appendChild(btn);
+    });
+  }
+
+  function renderChannels() {
+    const search = searchInput.value.toLowerCase();
+    list.innerHTML = '';
+
+    const filtered = allChannels.filter(c =>
+      (!currentCategory || c.group === currentCategory) &&
+      c.name.toLowerCase().includes(search)
+    );
+
+    for (const channel of filtered) {
+      const li = document.createElement('li');
+      li.textContent = channel.name;
+      li.style.cursor = 'pointer';
+      li.style.marginBottom = '0.5em';
+      li.onclick = () => playChannel(channel.url);
+      list.appendChild(li);
+    }
+  }
+
+  function playChannel(url) {
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(url);
+      hls.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = url;
+    } else {
+      alert("Seu navegador não suporta HLS.");
+    }
+  }
+</script>
+
