@@ -257,7 +257,7 @@
       calculadora, player de mídia e navegador web!</p>
   </div>
    <div id="desktop" class="desktop">
-   <iframe src="offline_apps/relogio.html" id="iframe-relogio"></iframe>
+   <iframe src="offline_apps/relogio.html" id="iframe-relogio" pointer-events: none; z-index: 0;"></iframe>
     <div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google')">
       <!--<img src="images/google.png" alt="Google">-->
       <a>🇬 Google</a>
@@ -380,8 +380,8 @@
       titlebar.innerHTML = `
                 <span class="window-title">${title}</span>
                 <div class="window-buttons">
-                    <button onclick="minimizeWindow(this)">🗕</button>
-                    <button onclick="maximizeWindow(this)">🗖</button>
+                    <button onclick="minimizeWindow(this)">➖</button>
+                    <button onclick="maximizeWindow(this)">🔳</button>
                     <button onclick="closeWindow(this)">✖</button>
                 </div>`;
       titlebar.addEventListener('mousedown', dragMouseDown);
