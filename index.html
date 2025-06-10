@@ -89,8 +89,10 @@
       border-radius: 8px;
     }
     
-    .titlebar {
-      background: #333;
+   .titlebar {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(0, 0, 0, 0.6);
       padding: 5px;
       cursor: move;
       color: white;
@@ -132,6 +134,27 @@
       z-index: 5;
       touch-action: none;
       border-top-left-radius: 5px;
+    }
+    
+   .start-button {
+      height: 35px;
+      background-color: #706f6f;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .button {
+      height: 30px;
+      background-color: #706f6f;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      font-weight: bold;
     }
 
     .menu {
@@ -284,7 +307,8 @@
 
   <!-- Barra de tarefas -->
   <div class="taskbar">
-    <button onclick="toggleMenu()">🪟 Iniciar</button>
+    <!--<button onclick="toggleMenu()">🪟 Iniciar</button>-->
+        <button class="start-button" onclick="toggleMenu()">☰ Iniciar</button>
     <div class="zoom-control">
       <label for="zoomSlider">Zoom:</label>
       <input id="zoomSlider" type="range" min="50" max="150" value="100">
@@ -338,13 +362,13 @@
     <a href="#" onclick="openWindow('offline_apps/iptv.html', 'IPTV')">📺 IPTV</a>
     <a href="#" onclick="openWindow('offline_apps/terminal.html', 'Terminal')">👨🏽‍💻 Terminal</a>
     <a href="#" onclick="openWindow('offline_apps/spacedesk/spacedesk.html', 'SpaceDesk Local')">🖥️ Space_Desk Local</a>
-    <button onclick="toggleTouchpad()">🖱️ Ativar/Desativar Touchpad</button>
+     <button class="button" onclick="toggleTouchpad()">🖱️ Ativar/Desativar Touchpad</button>
     <script src="offline_apps/touchpad.js"></script><br>
-    <button onclick="toggleSepia()">🟤 Modo Sépia</button>
+    <button class="button" onclick="toggleSepia()">🟤 Modo Sépia</button>
     <script src="offline_apps/sepia-toggle.js"></script>
-    <button onclick="toggleGrey()">⚫ Modo Preto e Branco</button>
+    <button class="button" onclick="toggleGrey()">⚫ Modo Preto e Branco</button>
     <script src="offline_apps/grey-toggle.js"></script>
-    <button onclick="toggleHUD()">🕶️ Modo HUD/Holográfico</button>
+    <button class="button" onclick="toggleHUD()">🕶️ Modo HUD/Holográfico</button>
     <script src="offline_apps/hud-toggle.js"></script>
     <strong>📢 Público:</strong>
     <a href="#" onclick="openWindow('public/privacidade.html', 'Privacidade')">🔏 Privacidade</a>
