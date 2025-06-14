@@ -274,6 +274,13 @@
   z-index: -1;
 }
 
+.calendario {
+  right: 10%;
+  padding: 1rem; 
+  background: #222; 
+  color: #fff; 
+  border-radius: 8px;
+}
 
 
  
@@ -325,6 +332,15 @@
       <label for="zoomSlider">Zoom:</label>
       <input id="zoomSlider" type="range" min="50" max="150" value="100">
     </div>
+     <!--<div class="canlendario">
+      <label>Calendário</label> <input class="form-control" type="date" th:field="*{data}" placeholder="Calendário" />
+    </div>-->
+    <div class="calendario">
+  <h3 id="data-atual"></h3>
+  <label>📅 Calendário</label><br>
+  <input id="calendario" class="form-control" type="date" />
+</div>
+
   </div>
   
    <div class="menu" id="startMenu">
@@ -606,6 +622,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
   
   </script>
+  
+  <script>
+  // Exibe a data atual em texto
+  const hoje = new Date();
+  const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById('data-atual').innerText = hoje.toLocaleDateString('pt-BR', opcoes);
+</script>
   
 </body>
 </html>
