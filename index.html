@@ -84,32 +84,57 @@
       /*background: rgba(0, 0, 0, 0.8);
       border: 1px solid white;*/
       background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(15px) saturate(160%);
-      -webkit-backdrop-filter: blur(15px) saturate(160%);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px) saturate(180%);
+      -webkit-backdrop-filter: blur(15px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       display: none;
       resize: both;
       overflow: hidden;
       z-index: 10;
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+       box-shadow:
+        inset 0 0 0.5px rgba(255, 255, 255, 0.4),
+        0 0 30px rgba(255, 255, 255, 0.05);
       border-radius: 6px;
       /*transition: all 0.3s ease;*/
     }
     
+   
+     .window::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(
+          circle at top left,
+          rgba(255, 255, 255, 0.35) 0%,
+          transparent 60%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(255, 255, 255, 0.15) 0%,
+          transparent 80%
+        );
+      mask-image: linear-gradient(to bottom right, rgba(255,255,255,0.7), transparent);
+    }
+    
     
    .titlebar {
+      height: 35px;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       /*background: rgba(0, 0, 0, 0.6);*/
       background: rgba(120, 120, 120, 0.2);
-      padding: 5px;
+      padding: 0 1rem;
       cursor: move;
       color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
       touch-action: none;
+      font-weight: bold;
     }
+    
     
    .titlebar .window-buttons button {
       background: none;
@@ -168,8 +193,6 @@
 
     .menu {
       position: fixed;
-      /*backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);*/
       background: rgba(12, 12, 12, 0.6);
       backdrop-filter: blur(15px) saturate(160%);
       -webkit-backdrop-filter: blur(15px) saturate(160%);
@@ -177,13 +200,14 @@
       left: 10px;
       width: 300px;
       max-height: 70vh;
-      /* Limita a altura do menu */
-      /*background: rgba(0, 0, 0, 0.6);*/
       padding: 10px;
       display: none;
       border-radius: 8px;
       z-index: 100;
       overflow-y: auto;
+      box-shadow:
+        inset 0 0 0.5px rgba(255, 255, 255, 0.4),
+        0 0 30px rgba(255, 255, 255, 0.05);
       /* Adiciona a barra de rolagem quando necessário */
     }
 
@@ -314,6 +338,9 @@
     <div class="shortcut" onclick="openWindow('offline_apps/player.html', 'Player')">
       <a>🎞️ Player</a>
     </div>
+    <div class="shortcut" onclick="openWindow('offline_apps/rss.html', 'RSS')">
+      <a>📡 RSS</a>
+    </div>
     <!-- Anúncio -->
     <!--<div id="ad-google">
       <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1234567890123456" data-ad-slot="9876543210"
@@ -369,7 +396,7 @@
    
     <strong>💽 Local File System HTML with JS Apps:</strong>
     <a href="#" onclick="openWindow('offline_apps/browser.html', 'Browser 🌎')">🌎 Browser</a>
-    <a href="#" onclick="openWindow('offline_apps/f3.html', 'MotoFone F3 📱')">📱 MotoFone F3</a>
+    <a href="#" onclick="openWindow('offline_apps/motof3.html', 'MotoFone F3 📱')">📱 MotoFone F3</a>
     <a href="#" onclick="openWindow('offline_apps/camera.html', 'Camera 📸')">📸 Camera</a>
     <a href="#" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">📄 Word</a>
     <a href="#" onclick="openWindow('offline_apps/excel.html', 'Excel 📊')">📊 Excel</a>
