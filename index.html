@@ -28,16 +28,27 @@
       padding: 0;
       box-sizing: border-box;
     }
+ 
+    
     body {
-       min-height: 200vh;
+    min-height: 200vh;
       /* força o dobro da altura da tela */
       ;
-      font-family: Arial, sans-serif;
-      background: #1e1e1e;
-      /*background-image: url("trigo.jpg");*/
-      color: white;
-      overflow: hidden;
-    }
+    background: #1e1e1e;
+    font-family: Arial, sans-serif;
+    color: white;
+    transition: background 0.5s ease;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+   }
+
+body.fundo-imagem {
+  background: url("images/trigo.jpg") no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
 
     .taskbar {
       position: fixed;
@@ -412,6 +423,7 @@
      <button class="button" onclick="toggleTouchpad()">🖱️ Ativar/Desativar Touchpad</button>
     <!-- <button class="button" onclick="iniciarTouchpad()">🖱️ Touchpad</button>-->
     <script src="offline_apps/touchpad.js"></script><br>
+    <button class="button" onclick="alternarFundo()">🌄 Alternar Fundo</button>
     <button class="button" onclick="toggleSepia()">🟤 Modo Sépia</button>
     <script src="offline_apps/sepia-toggle.js"></script>
     <button class="button" onclick="toggleGrey()">⚫ Modo Preto e Branco</button>
@@ -656,6 +668,13 @@ document.addEventListener('DOMContentLoaded', function() {
   const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   document.getElementById('data-atual').innerText = hoje.toLocaleDateString('pt-BR', opcoes);
 </script>
+
+<script>
+  function alternarFundo() {
+    document.body.classList.toggle("fundo-imagem");
+  }
+</script>
+
   
 </body>
 </html>
