@@ -208,8 +208,8 @@ body.fundo-imagem {
       font-weight: bold;
     }
 
-    
-    .menu {
+  
+.menu {
   position: fixed;
   background: rgba(12, 12, 12, 0.6);
   backdrop-filter: blur(15px) saturate(160%);
@@ -217,7 +217,6 @@ body.fundo-imagem {
   bottom: 50px;
   left: 10px;
   width: 300px;
-  max-height: 50vh; /* valor padrão para telas grandes */
   padding: 10px;
   display: none;
   border-radius: 8px;
@@ -227,12 +226,15 @@ body.fundo-imagem {
     inset 0 0 0.5px rgba(255, 255, 255, 0.4),
     0 0 30px rgba(255, 255, 255, 0.05);
   transition: max-height 0.3s ease-in-out;
+  
+  /* Define um valor seguro inicial */
+  max-height: 50vh;
 }
 
-/* Para celulares e telas menores */
-@media (max-width: 668px) {
+/* Para celulares (largura de tela menor que 768px) */
+@media (max-width: 768px) {
   .menu {
-    max-height: 100vh;
+    max-height: 100dvh !important;
   }
 }
 
