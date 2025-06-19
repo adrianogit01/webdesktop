@@ -216,7 +216,7 @@ body.fundo-imagem {
       bottom: 50px;
       left: 10px;
       width: 300px;
-      max-height: 90vh;
+      max-height: 75vh;
       padding: 10px;
       display: none;
       border-radius: 8px;
@@ -358,6 +358,12 @@ body.fundo-imagem {
     <div class="shortcut" onclick="openWindow('offline_apps/rss.html', 'RSS')">
       <a>📡 RSS</a>
     </div>
+    <div class="shortcut" onclick="openWindow('offline_apps/rotina.html', 'Matinal')">
+      <a>🌄 Rotina Matinal</a>
+    </div>
+    <div class="shortcut" onclick="openWindow('offline_apps/tarefas.html', 'Tarefas')">
+      <a>✔️ Tarefas</a>
+    </div>
     <!-- Anúncio -->
     <!--<div id="ad-google">
       <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1234567890123456" data-ad-slot="9876543210"
@@ -389,20 +395,12 @@ body.fundo-imagem {
   
    <div class="menu" id="startMenu">
   <input type="text" id="searchInput" placeholder="Pesquisar apps...">
-    <strong>📱 Apps Nativos:</strong>
-    <a href="whatsapp://send?text=Olá" target="_blank">📲 WhatsApp</a>
-    <a href="facetime://">📞 FaceTime</a>
-    <a href="mailto:">✉️ Mail</a>
-    <a href="maps://">🗺️ Apple Maps</a>
-    <a href="music://">🎵 Apple Music</a>
-    <a href="sms://">💬 Mensagens</a>
-
     <strong>🌐 Web Apps (PWAs and Others):</strong>
     <!--<a href="#" onclick="openWindow('https://google.com/?igu=1', 'Google 🔍')">🔍 Google</a>-->
     <a href="#" onclick="openWindow('https://stedit.app', 'Smart Text Editor 🗒️')">🗒️ Smart Text Editor</a>
     <a href="#" onclick="openWindow('https://ethercalc.net/jpr8lzsc7boj', 'EtherCalc 📊')">📊 EtherCalc</a>
-    <a href="#" onclick="openWindow('https://ngexcel-demo.netlify.app', 'NG Excel Demo 📊')">📊 NG Excel Demo</a>
-    <a href="#" onclick="openWindow('http://viewer.spacedesk.net/', 'SpaceDesk 🖥️')">🖥️ SpaceDesk</a>
+   <!-- <a href="#" onclick="openWindow('https://ngexcel-demo.netlify.app', 'NG Excel Demo 📊')">📊 NG Excel Demo</a>-->
+   <!-- <a href="#" onclick="openWindow('http://viewer.spacedesk.net/', 'SpaceDesk 🖥️')">🖥️ SpaceDesk</a>-->
     <a href="#" onclick="openWindow('https://paint.js.org', 'Paint js 🎨')">🎨 Paint js</a>
     <a href="#" onclick="openWindow('https://www.photopea.com/', 'Photopea 🎨')">🎨 Photopea</a>
     <a href="#" onclick="openWindow('https://editor.method.ac/', 'SVG Editor 📐')">📐 SVG Editor</a>
@@ -417,14 +415,20 @@ body.fundo-imagem {
     <a href="#" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">📄 Word</a>
     <a href="#" onclick="openWindow('offline_apps/excel.html', 'Excel 📊')">📊 Excel</a>
     <a href="#" onclick="openWindow('offline_apps/whiteboard/index.html', 'Paint 🖌️')">🖌️ Paint Offline</a>
-    <a href="#" onclick="openWindow('offline_apps/rotina.html', 'Matinal 🌄')">🌄 Rotina Matinal</a>
+    
     <a href="#" onclick="openWindow('offline_apps/diario/diario.html', 'Diario 📓')">📓 Diário</a>
-    <a href="#" onclick="openWindow('offline_apps/tarefas.html', 'Tarefas ✔️')">✔️ Tarefas</a>
     <a href="#" onclick="openWindow('offline_apps/calculadora.html', 'Calculadora 🖩')">🖩 Calculadora</a>
     <a href="#" onclick="openWindow('offline_apps/youtube-wrapper.html', 'Youtube 📺')">📺 Youtube</a>
     <a href="#" onclick="openWindow('offline_apps/iptv.html', 'IPTV 📺')">📺 IPTV</a>
     <a href="#" onclick="openWindow('offline_apps/terminal.html', 'Terminal 👨🏽‍💻')">👨🏽‍💻 Terminal</a>
-    <a href="#" onclick="openWindow('offline_apps/spacedesk/spacedesk.html', 'SpaceDesk Local 🖥️')">🖥️ Space_Desk Local</a>
+    <!--<a href="#" onclick="openWindow('offline_apps/spacedesk/spacedesk.html', 'SpaceDesk Local 🖥️')">🖥️ Space_Desk Local</a>-->
+    <strong>📱 Apps Nativos:</strong>
+    <a href="whatsapp://send?text=Olá" target="_blank">📲 WhatsApp</a>
+    <a href="facetime://">📞 FaceTime</a>
+    <a href="mailto:">✉️ Mail</a>
+    <a href="maps://">🗺️ Apple Maps</a>
+    <a href="music://">🎵 Apple Music</a>
+    <a href="sms://">💬 Mensagens</a>
      <button class="button" onclick="toggleTouchpad()">🖱️ Ativar/Desativar Touchpad</button>
     <!-- <button class="button" onclick="iniciarTouchpad()">🖱️ Touchpad</button>-->
     <script src="offline_apps/touchpad.js"></script><br>
