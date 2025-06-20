@@ -15,6 +15,8 @@ const PRECACHE_URLS = [
   "./offline_apps/youtube-wrapper.html",
   "./offline_apps/filemanager.html",
   "./offline_apps/player.html",
+  "./offline_apps/porcentagem.html",
+  "./offline_apps/calcdata.html",
   "./offline_apps/terminal.html"
 ];
 
