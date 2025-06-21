@@ -187,15 +187,21 @@ body.fundo-imagem {
       border-top-left-radius: 5px;
     }
     
-   .start-button {
-      height: 35px;
-      background-color: #706f6f;
-      border: none;
-      color: white;
-      padding: 5px 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+    
+    .start-button {
+  height: 35px;
+  background-color: #706f6f;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: bold;
+  position: fixed;
+  bottom: 10px;
+  left: 10px; /* posição inicial */
+  z-index: 101; /* garantir que fique acima do menu */
+}
+
     
     .button {
       height: 30px;
@@ -450,6 +456,7 @@ body.fundo-imagem {
     <script src="offline_apps/grey-toggle.js"></script>
     <button class="button" onclick="toggleHUD()">🕶️ Modo HUD/Holográfico</button>
     <script src="offline_apps/hud-toggle.js"></script>
+    <button onclick="alternarMenuCentro()" class="button">Alternar Menu: Centro/Esquerda</button>
     <strong>📢 Público:</strong>
     <a href="#" onclick="openWindow('public/privacidade.html', 'Privacidade')">🔏 Privacidade</a>
     <a href="#" onclick="openWindow('public/sobre.html', 'Sobre')">📖 Sobre</a>
@@ -694,6 +701,32 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.toggle("fundo-imagem");
   }
 </script>
+
+<script>
+  let menuCentralizado = false;
+
+  function alternarMenuCentro() {
+    const menu = document.querySelector('.menu');
+    const startButton = document.querySelector('.start-button');
+
+    if (!menuCentralizado) {
+      menu.style.left = '50%';
+      menu.style.transform = 'translateX(-50%)';
+      startButton.style.left = '50%';
+      startButton.style.transform = 'translateX(-50%)';
+      startButton.style.position = 'fixed';
+      menuCentralizado = true;
+    } else {
+      menu.style.left = '10px';
+      menu.style.transform = 'none';
+      startButton.style.left = '10px';
+      startButton.style.transform = 'none';
+      startButton.style.position = 'fixed';
+      menuCentralizado = false;
+    }
+  }
+</script>
+
 
   
 </body>
