@@ -264,8 +264,9 @@ body.fundo-imagem {
     }
 
 
-    .shortcut {
-      width: 60px;
+    
+   .shortcut {
+      width: 80px;
       text-align: center;
       cursor: pointer;
       color: white;
@@ -274,6 +275,17 @@ body.fundo-imagem {
     .shortcut img {
       width: 48px;
       height: 48px;
+    }
+    
+    .shortcut-taskbar {
+      width: 60px;
+      text-align: center;
+      cursor: pointer;
+      color: white;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     #ad-google {
@@ -350,32 +362,29 @@ body.fundo-imagem {
    <iframe src="offline_apps/relogio.html" id="iframe-relogio" pointer-events: none; z-index: 0;"></iframe>
     <!--<div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google 🇬')">
       <img src="images/google.png" alt="Google">
-      <a>🇬 Google</a>
+      <span>🇬 Google</span>
     </div>-->
-    <div class="shortcut" onclick="openWindow('offline_apps/word.html', 'Word 📄')">
+    <div class="shortcut" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">
      <!-- <img src="images/word.png" alt="Word">-->
-      <a>📄 Word</a>
-    </div>
-    <div class="shortcut" onclick="openWindow('offline_apps/filemanager.html', 'Files 🗂️')">
-      <a>🗂️ Files</a>
+      <span>📄 Word</span>
     </div>
     <div class="shortcut" onclick="openWindow('offline_apps/player.html', 'Player 🎞️')">
-      <a>🎞️ Player</a>
+      <span>🎞️ Player</span>
     </div>
     <div class="shortcut" onclick="openWindow('offline_apps/rss.html', 'RSS 📡')">
-      <a>📡 RSS</a>
+      <span>📡 RSS</span>
     </div>
     <div class="shortcut" onclick="openWindow('offline_apps/rotina.html', 'Matinal 🌄')">
-      <a>🌄 Rotina Matinal</a>
+      <span>🌄 Rotina Matinal</span>
     </div>
     <div class="shortcut" onclick="openWindow('offline_apps/tarefas.html', 'Tarefas ✔️')">
-      <a>✔️ Tarefas</a>
+      <span>✔️ Tarefas</span>
     </div><br>
     <div class="shortcut" onclick="openWindow('offline_apps/calcdata.html', 'Calc. de Datas 🗓️')">
-      <a>🗓️ Cal. de Datas</a>
+      <span>🗓️ Cal. de Datas</span>
     </div>
     <div class="shortcut" onclick="openWindow('offline_apps/porcentagem.html', 'Calc. de Porcentagem 🔣')">
-      <a>🔣 Cal. de Porcentagem</a>
+      <span>🔣 Cal. de Porcentagem</span>
     </div>
     <!-- Anúncio -->
     <!--<div id="ad-google">
@@ -391,18 +400,18 @@ body.fundo-imagem {
   <div class="taskbar">
     <!--<button onclick="toggleMenu()">🪟 Iniciar</button>-->
         <button class="start-button" onclick="toggleMenu()">☰ Iniciar</button>
+    <div class="shortcut-taskbar" onclick="openWindow('offline_apps/filemanager.html', 'Files 🗂️')">
+      <span>🗂️ Files</span>
+    </div>
     <div class="zoom-control">
       <label for="zoomSlider">Zoom:</label>
       <input id="zoomSlider" type="range" min="50" max="150" value="100">
     </div>
-     <!--<div class="canlendario">
-      <label>Calendário</label> <input class="form-control" type="date" th:field="*{data}" placeholder="Calendário" />
-    </div>-->
-    <div class="calendario">
+   <!-- <div class="calendario">
   <h3 id="data-atual"></h3>
   <label>📅 Calendário</label><br>
   <input id="calendario" class="form-control" type="date" />
-</div>
+</div>-->
 
   </div>
   
