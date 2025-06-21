@@ -1,6 +1,6 @@
 <!-- Interface -->
  <style>
-/* #Reset & Basics (Inspired by E. Meyers)
+ /* #Reset & Basics (Inspired by E. Meyers)
 ================================================== */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 	margin-left: 10px;
@@ -51,28 +51,26 @@ body {
 }
 
 .input{
-display: grid;
+width: 70px;
+display: inline;
 justify-content: center;
-margin-bottom: 35px;
+margin-bottom: 8px;
 text-align: justify;
-padding-left: 15px;
-padding-right: 15px;
+padding-left: 8px;
+padding-right: 8px;
 }
 
-/*.innerHTML {
- font-weight: ligther;
-}*/
 
 
 .custom-btn {
-  width: 130px;
+  width: 190px;
   height: 40px;
   color: #4c4c4c;
   border-radius: 5px;
   padding: 10px 25px;
   font-family: 'Lato', sans-serif;
   font-size: 22px;
-  font-weight: 900;
+  font-weight: 599;
   font-style: normal;
   text-shadow: 0px 1px 0px #fff;
   text-decoration: none;
@@ -101,6 +99,8 @@ padding-right: 15px;
   border-radius: 5px;
   margin-bottom: 25px;
 }
+
+
 /* #Typography
 ================================================== */
 h1, h2, h3, h4, h5, h6 {
@@ -249,18 +249,38 @@ header, body {
 .socialMediaContainer2 { height: 70px; width: 230px; margin: 30px auto 0px auto;}
 .addthis_inline_follow_toolbox p {margin:0}
 
+
   </style>
 <div>
   <input type="file" id="upload-m3u" />
   <input type="text" id="m3u-url" placeholder="Ou insira a URL da lista M3U" />
-  <button id="load-url">Carregar URL</button>
+  <button class="custom-btn button" id="load-url">Carregar URL</button>
 </div>
+<div class="bottom-gradient">
+    <span class="left"></span>
+    <span class="center"></span>
+    <span class="right"></span>
+  </div>
 <input type="text" id="search" placeholder="Buscar canal..." />
 <div id="shortcuts"></div>
+<div class="bottom-gradient">
+    <span class="left"></span>
+    <span class="center"></span>
+    <span class="right"></span>
+  </div>
 <div id="categories"></div>
+<div class="bottom-gradient">
+    <span class="left"></span>
+    <span class="center"></span>
+    <span class="right"></span>
+  </div>
 <ul id="channel-list" style="max-height: 300px; overflow-y: auto;"></ul>
 <video id="iptv-player" controls autoplay style="width: 100%; max-height: 400px; margin-top: 1em;"></video>
-
+<div class="bottom-gradient">
+    <span class="left"></span>
+    <span class="center"></span>
+    <span class="right"></span>
+  </div>
 <!-- Dependência -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
