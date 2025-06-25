@@ -38,10 +38,10 @@
   </div>
 
   <script>
-    const API_KEY = "SUA_CHAVE_AQUI"; // <- coloque sua chave da OpenWeather aqui
+    const API_KEY = "d415916a0f9b3a55563d5a6206fbe419"; // <- coloque sua chave da OpenWeather aqui
 
     function getWeatherData(lat, lon) {
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=pt_br&appid=${d415916a0f9b3a55563d5a6206fbe419}`;
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=pt_br&appid=${API_KEY}`;
       
       fetch(url)
         .then(res => res.json())
