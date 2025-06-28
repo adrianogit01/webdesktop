@@ -692,10 +692,16 @@ document.addEventListener('DOMContentLoaded', function() {
       setGlobalZoom(zoom);
     });
 
+    
     function setGlobalZoom(percent) {
-      localStorage.setItem('desktopZoom', percent);
-      document.body.style.zoom = percent + '%';
-    }
+  localStorage.setItem('desktopZoom', percent);
+  const escala = percent / 100;
+  document.body.style.transform = `scale(${escala})`;
+  document.body.style.transformOrigin = `top left`;
+  document.body.style.width = `${100 / escala}%`;
+  document.body.style.height = `${100 / escala}%`;
+}
+
 
     // Carregar zoom salvo ao iniciar
     window.addEventListener('DOMContentLoaded', () => {
