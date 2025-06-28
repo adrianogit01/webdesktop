@@ -8,18 +8,17 @@
     body {
       margin: 0;
       font-family: sans-serif;
-      /*background: rgba(255, 255, 255, 0.08);*/
       background: radial-gradient(
           circle at top left,
-          rgba(255, 255, 255, 0.35) 0%,
-          transparent 60%
+          rgba(200, 200, 200, 0.95) 0%,
+          transparent 10%
         ),
         radial-gradient(
           circle at bottom right,
-          rgba(255, 255, 255, 0.15) 0%,
-          transparent 80%
+          rgba(200, 200, 200, 0.75) 0%,
+          transparent 30%
         );
-      mask-image: linear-gradient(to bottom right, rgba(255,255,255,0.7), transparent);
+      mask-image: linear-gradient(to bottom right, rgba(200,200,200,1.0), transparent);
       backdrop-filter: blur(15px) saturate(180%);
       -webkit-backdrop-filter: blur(15px) saturate(180%);
       color: white;
@@ -29,15 +28,20 @@
       justify-content: center;
       height: 100vh;
     }
+    
+   
     #weather {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(15px) saturate(180%);
-      -webkit-backdrop-filter: blur(15px) saturate(180%);
+      background: rgba(5, 5, 5, 0.9);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
       padding: 1rem 2rem;
       border-radius: 16px;
       text-align: center;
+      text-shadow: 0px 1.3px 0px #333333;
       box-shadow: 0 0 10px #000;
     }
+    
+   
     #weather img {
       width: 64px;
       height: 64px;
@@ -45,6 +49,8 @@
     .loading {
       opacity: 0.6;
     }
+    
+   
   </style>
 </head>
 <body>
