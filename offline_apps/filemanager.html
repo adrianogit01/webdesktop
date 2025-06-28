@@ -1,44 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FileManager | AdDev</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css"
+  />
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
-    #filemanager-root { padding: 1rem; }
-    .toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .toolbar button { background: #ddd; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
-    .path-display { margin: 10px 0; font-size: 14px; color: #444; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.5rem; }
-    .item { background: white; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; }
-    .item.selected { outline: 2px dashed #007bff; background: #e0f0ff; }
-    .item-icon { font-size: 24px; margin-bottom: 5px; }
-    .context-menu { position: absolute; display: none; background: white; border: 1px solid #ccc; border-radius: 5px; z-index: 1000; }
-    .context-menu ul { list-style: none; margin: 0; padding: 0; }
-    .context-menu li { padding: 8px 12px; cursor: pointer; }
-    .context-menu li:hover { background: #eee; }
-    .preview-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: none; justify-content: center; align-items: center; background: rgba(0,0,0,0.6); z-index: 2000; flex-direction: column; }
-    .preview-content { background: white; padding: 1rem; max-width: 90vw; max-height: 80vh; overflow: auto; border-radius: 10px; margin-bottom: 1rem; }
-    .preview-nav { display: flex; gap: 1rem; }
-    .preview-nav button { padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    pre code.hljs { padding: 1em; display: block; border-radius: 5px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+      padding: 1rem;
+    }
+    .toolbar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .toolbar button {
+      background: #ddd;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .path-display {
+      margin: 10px 0;
+      font-size: 14px;
+      color: #444;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.5rem;
+    }
+    .item {
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .item.selected {
+      outline: 2px dashed #007bff;
+      background: #e0f0ff;
+    }
+    .item-icon {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    .context-menu {
+      position: absolute;
+      display: none;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+    .context-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .context-menu li {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .context-menu li:hover {
+      background: #eee;
+    }
+    .preview-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 2000;
+      flex-direction: column;
+    }
+    .preview-content {
+      background: white;
+      padding: 1rem;
+      max-width: 90vw;
+      max-height: 80vh;
+      overflow: auto;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+    .preview-nav {
+      display: flex;
+      gap: 1rem;
+    }
+    .preview-nav button {
+      padding: 6px 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    pre code.hljs {
+      padding: 1em;
+      display: block;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
-  <div id="filemanager-root">
-    <div class="toolbar">
-      <button onclick="createFolder()">📁 Nova Pasta</button>
-      <button onclick="uploadFile()">📤 Upload</button>
-      <button onclick="deleteItem()">🗑️ Excluir</button>
-      <button onclick="goBack()">⬅️ Voltar</button>
-    </div>
-    <div class="path-display" id="currentPath"></div>
-    <div class="grid" id="fileGrid"></div>
-    <input type="file" id="fileInput" style="display:none" />
+  <div class="toolbar">
+    <button onclick="createFolder()">📁 Nova Pasta</button>
+    <button onclick="uploadFile()">📤 Upload</button>
+    <button onclick="deleteItem()">🗑️ Excluir</button>
+    <button onclick="goBack()">⬅️ Voltar</button>
+    <button onclick="importCameraPhotos()">📷 Importar Fotos da Câmera</button>
   </div>
+  <div class="path-display" id="currentPath"></div>
+  <div class="grid" id="fileGrid"></div>
+  <input type="file" id="fileInput" style="display:none" />
 
   <div class="context-menu" id="contextMenu">
     <ul>
@@ -75,7 +166,9 @@
     const previewModal = document.getElementById("previewModal");
     const previewContent = document.getElementById("previewContent");
 
-    document.addEventListener("click", () => contextMenu.style.display = "none");
+    document.addEventListener("click", () => {
+      contextMenu.style.display = "none";
+    });
 
     function getCurrentDir() {
       let dir = root;
@@ -98,8 +191,13 @@
       dir.forEach((item, index) => {
         const div = document.createElement("div");
         div.className = "item" + (selectedIndex === index ? " selected" : "");
-        div.innerHTML = `<div class='item-icon'><i class='fa ${item.isDir ? "fa-folder" : "fa-file"}'></i></div><div>${item.name}</div>`;
-        div.onclick = () => { selectedIndex = index; render(); };
+        div.innerHTML = `<div class='item-icon'><i class='fa ${
+          item.isDir ? "fa-folder" : "fa-file"
+        }'></i></div><div>${item.name}</div>`;
+        div.onclick = () => {
+          selectedIndex = index;
+          render();
+        };
         div.ondblclick = () => {
           if (item.isDir) {
             currentPath.push(item.name);
@@ -134,11 +232,12 @@
       fileInput.click();
     }
 
-    fileInput.onchange = e => {
-      Array.from(e.target.files).forEach(file => {
+    fileInput.onchange = (e) => {
+      Array.from(e.target.files).forEach((file) => {
         getCurrentDir().push({ isDir: false, name: file.name, file });
       });
       render();
+      fileInput.value = "";
     };
 
     function deleteItem() {
@@ -153,7 +252,10 @@
       if (selectedIndex != null) {
         const item = getCurrentDir()[selectedIndex];
         const name = prompt("Novo nome:", item.name);
-        if (name) { item.name = name; render(); }
+        if (name) {
+          item.name = name;
+          render();
+        }
       }
     }
 
@@ -168,7 +270,7 @@
     function previewFile(item) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        const ext = item.name.split('.').pop().toLowerCase();
+        const ext = item.name.split(".").pop().toLowerCase();
         const content = e.target.result;
         if (["jpg", "jpeg", "png", "gif", "svg"].includes(ext)) {
           previewContent.innerHTML = `<img src="${content}" style="max-width:100%;max-height:80vh;">`;
@@ -177,8 +279,11 @@
           previewContent.innerHTML = `<iframe src="${blobUrl}" style="width:80vw;height:80vh;" frameborder="0"></iframe>`;
         } else if (["md", "markdown"].includes(ext)) {
           previewContent.innerHTML = marked.parse(content);
-        } else if (["js","html","css","json","txt"].includes(ext)) {
-          previewContent.innerHTML = `<pre><code class="language-${ext}">${content.replace(/</g,"&lt;")}</code></pre>`;
+        } else if (["js", "html", "css", "json", "txt"].includes(ext)) {
+          previewContent.innerHTML = `<pre><code class="language-${ext}">${content.replace(
+            /</g,
+            "&lt;"
+          )}</code></pre>`;
           hljs.highlightAll();
         } else {
           previewContent.innerHTML = `<pre>${content}</pre>`;
@@ -217,7 +322,31 @@
       }
     }
 
+    // Função nova para importar fotos do localStorage (cameraPhotos)
+    function importCameraPhotos() {
+      let fotos = JSON.parse(localStorage.getItem("cameraPhotos") || "[]");
+      if (fotos.length === 0) {
+        alert("Não há fotos para importar.");
+        return;
+      }
+      fotos.forEach(({ name, dataUrl }) => {
+        const arr = dataUrl.split(",");
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) u8arr[n] = bstr.charCodeAt(n);
+        const blob = new Blob([u8arr], { type: mime });
+        const file = new File([blob], name, { type: mime });
+        getCurrentDir().push({ isDir: false, name, file });
+      });
+      localStorage.removeItem("cameraPhotos");
+      alert(fotos.length + " foto(s) importada(s) com sucesso!");
+      render();
+    }
+
     render();
   </script>
 </body>
 </html>
+
