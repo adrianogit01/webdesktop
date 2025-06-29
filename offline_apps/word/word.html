@@ -12,9 +12,6 @@
         padding: 0;
         height: 100%;
       }
-      textarea {
-        height: 100vh;
-      }
       #custom-buttons {
         display: flex;
         gap: 10px;
@@ -35,6 +32,9 @@
           width: 100%;
         }
       }
+      textarea {
+        height: 100vh;
+      }
     </style>
   </head>
   <body>
@@ -42,6 +42,7 @@
       <button onclick="saveContent('html')">💾 Salvar .html</button>
       <button onclick="saveContent('txt')">💾 Salvar .txt</button>
       <button onclick="saveContent('docx')">💾 Salvar .docx</button>
+      <button onclick="saveContent('odt')">💾 Salvar .odt</button>
       <input type="file" accept=".html,.txt" onchange="loadFile(event)" />
     </div>
 
@@ -50,7 +51,13 @@
     <script>
       const EDITOR_KEY = "tinymce-autosave";
 
-      // Função para salvar o conteúdo
+      function saveContent(type) {
+        const content = tinymce.get("editor").getContent({ format: type === 'txt' ? 'text' : 'html' });
+        const blob = new Blob([content], { type: type === "txt" ? "text/plain" : "text/html;charset=utf-8" });
+        const filename = `documento.${type}`;
+        saveAs(blob, filename);
+      }
+      
       function saveContent(type) {
         const content = tinymce.get("editor").getContent({ format: type === 'txt' ? 'text' : 'html' });
         const blob = new Blob([content], { type: type === "txt" ? "text/plain" : "text/html;charset=utf-8" });
@@ -58,7 +65,6 @@
         saveAs(blob, filename);
       }
 
-      // Carregar arquivos locais
       function loadFile(event) {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -69,25 +75,68 @@
         reader.readAsText(file);
       }
 
-      // Verifica modo escuro do sistema
       const useDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-      // Inicia o editor
       tinymce.init({
         selector: "#editor",
-        height: "800",
-        plugins: "autosave image link table lists code fullscreen",
-        toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code fullscreen",
-        menubar: false,
+        height: 800,
+        plugins:
+          "print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons",
+        toolbar:
+          "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print | insertfile image media template link anchor codesample | ltr rtl",
+        menubar: "file edit view insert format tools table help",
+        autosave_interval: "30s",
+        autosave_prefix: "{path}{query}-{id}-",
+        autosave_retention: "2m",
+        image_advtab: true,
+        image_caption: true,
+        imagetools_cors_hosts: ["picsum.photos"],
+        importcss_append: true,
+        toolbar_mode: "sliding",
+        quickbars_selection_toolbar:
+          "bold italic | quicklink h2 h3 blockquote quickimage quicktable",
+        noneditable_noneditable_class: "mceNonEditable",
+        contextmenu: "link image imagetools table",
         skin: useDarkMode ? "oxide-dark" : "oxide",
         content_css: useDarkMode ? "dark" : "default",
+        content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+        link_list: [
+          { title: "Minha página 1", value: "https://www.exemplo.com" },
+          { title: "Minha página 2", value: "https://www.outro.com" }
+        ],
+        image_list: [
+          { title: "Logo", value: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_92x30dp.png" }
+        ],
+        file_picker_callback: function (callback, value, meta) {
+          if (meta.filetype === "file") {
+            callback("https://www.google.com/logos/google.jpg", { text: "Arquivo exemplo" });
+          }
+          if (meta.filetype === "image") {
+            callback("https://www.google.com/logos/google.jpg", { alt: "Imagem exemplo" });
+          }
+          if (meta.filetype === "media") {
+            callback("movie.mp4", {
+              source2: "alt.ogg",
+              poster: "https://www.google.com/logos/google.jpg",
+            });
+          }
+        },
+        templates: [
+          {
+            title: "Nova Tabela",
+            description: "Cria uma nova tabela",
+            content: '<table border="1"><tr><th>Coluna 1</th><th>Coluna 2</th></tr><tr><td>Valor 1</td><td>Valor 2</td></tr></table>',
+          },
+          {
+            title: "História",
+            description: "Comece sua história",
+            content: "Era uma vez...",
+          },
+        ],
         setup: function (editor) {
-          // Salva no localStorage sempre que houver alteração
           editor.on("Change KeyUp", () => {
             localStorage.setItem(EDITOR_KEY, editor.getContent());
           });
-
-          // Restaura o conteúdo salvo anteriormente
           editor.on("init", () => {
             const saved = localStorage.getItem(EDITOR_KEY);
             if (saved) editor.setContent(saved);
