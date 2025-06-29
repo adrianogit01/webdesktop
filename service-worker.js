@@ -4,6 +4,7 @@ const PRECACHE_URLS = [
   "./index.html",
   "./offline_apps/word/word.html",
   "./offline_apps/word/tinymce.min.js",
+  "./offline_apps/word/FileSaver.min.js",
   "./offline_apps/excel.html",
   "./offline_apps/browser.html",
   "./offline_apps/whiteboard/index.html",
