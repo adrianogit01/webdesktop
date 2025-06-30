@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Busca no YouTube (via Google)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 8px;
+    }
+    iframe {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Buscar vídeos no YouTube (via Google)</h1>
+
+  <input id="search" type="text" placeholder="Digite sua busca" size="40"/>
+  <button onclick="search()">Buscar no Google</button>
+
+  <br><br>
+
+  <input id="ytlink" type="text" placeholder="Ou cole um link do YouTube" size="40"/>
+  <button onclick="embed()">Abrir vídeo</button>
+
+  <div id="player-area">
+    <iframe id="player" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    function search() {
+      const query = document.getElementById("search").value;
+      if (!query) return;
+      const url = `https://www.google.com/search?q=site:youtube.com+${encodeURIComponent(query)}`;
+      window.open(url, "_blank");
+    }
+
+    function embed() {
+      const input = document.getElementById("ytlink").value.trim();
+      const match = input.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
+      if (!match) {
+        alert("Link inválido. Certifique-se de que é um link de vídeo do YouTube.");
+        return;
+      }
+      const videoId = match[1];
+      document.getElementById("player").src = `https://www.youtube.com/embed/${videoId}`;
+    }
+  </script>
+</body>
+</html>
+
