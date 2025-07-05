@@ -67,15 +67,11 @@
       const query = document.getElementById("search-input").value;
       if (!query) return;
 
-      const res = await fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, {
-        mode: "cors"
-      });
-
+      const res = await fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`);
       const text = await res.text();
 
-      // Regex para capturar IDs de vídeos
       const matches = [...text.matchAll(/"videoId":"(.*?)"/g)];
-      const ids = [...new Set(matches.map(m => m[1]))].slice(0, 8); // Remove duplicatas, pega 8
+      const ids = [...new Set(matches.map(m => m[1]))].slice(0, 8);
 
       const container = document.getElementById("results");
       container.innerHTML = "";
@@ -88,7 +84,7 @@
           <div class="thumb-title">ID: ${id}</div>
         `;
         div.onclick = () => {
-          document.getElementById("player").src = `https://www.youtube.com/embed/${id}`;
+          document.getElementById("player").src = \`https://www.youtube.com/embed/\${id}\`;
         };
         container.appendChild(div);
       });
@@ -96,4 +92,3 @@
   </script>
 </body>
 </html>
-
