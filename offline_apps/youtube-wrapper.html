@@ -2,53 +2,98 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Em manutenção</title>
+  <title>YouTube Sem API</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
+      font-family: sans-serif;
       background: #111;
       color: #fff;
-      font-family: sans-serif;
+    }
+    #search-bar {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
+      padding: 10px;
+      background: #222;
     }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
+    #search-bar input {
+      flex: 1;
+      padding: 8px;
+      font-size: 16px;
     }
-
-    p {
-      font-size: 1.2rem;
-      color: #aaa;
+    #search-bar button {
+      padding: 8px 16px;
+      background: #cc0000;
+      color: white;
+      border: none;
+      cursor: pointer;
     }
-
-    .loader {
-      margin-top: 2rem;
-      border: 8px solid #333;
-      border-top: 8px solid #09f;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1s linear infinite;
+    #results {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 10px;
+      gap: 10px;
+      overflow-y: auto;
+      max-height: 200px;
     }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .thumb {
+      cursor: pointer;
+      width: 180px;
+    }
+    .thumb img {
+      width: 100%;
+    }
+    .thumb-title {
+      font-size: 14px;
+      color: #ccc;
+      margin-top: 4px;
+    }
+    #player {
+      width: 100%;
+      height: calc(100vh - 270px);
+      border: none;
     }
   </style>
 </head>
 <body>
-  <h1>🚧 Em manutenção</h1>
-  <p>Estamos trabalhando para melhorar esta funcionalidade.<br>Volte em breve!</p>
-  <div class="loader"></div>
+  <div id="search-bar">
+    <input type="text" id="search-input" placeholder="Buscar vídeos...">
+    <button onclick="searchVideos()">Buscar</button>
+  </div>
+  <div id="results"></div>
+  <iframe id="player" allowfullscreen></iframe>
+
+  <script>
+    async function searchVideos() {
+      const query = document.getElementById("search-input").value;
+      if (!query) return;
+
+      const res = await fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, {
+        mode: "cors"
+      });
+
+      const text = await res.text();
+
+      // Regex para capturar IDs de vídeos
+      const matches = [...text.matchAll(/"videoId":"(.*?)"/g)];
+      const ids = [...new Set(matches.map(m => m[1]))].slice(0, 8); // Remove duplicatas, pega 8
+
+      const container = document.getElementById("results");
+      container.innerHTML = "";
+
+      ids.forEach(id => {
+        const div = document.createElement("div");
+        div.className = "thumb";
+        div.innerHTML = `
+          <img src="https://i.ytimg.com/vi/${id}/mqdefault.jpg" alt="thumb">
+          <div class="thumb-title">ID: ${id}</div>
+        `;
+        div.onclick = () => {
+          document.getElementById("player").src = `https://www.youtube.com/embed/${id}`;
+        };
+        container.appendChild(div);
+      });
+    }
+  </script>
 </body>
 </html>
 
