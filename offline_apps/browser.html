@@ -5,15 +5,25 @@
   <title>Navegador Simulado</title>
   <style>
     body { margin: 0; font-family: sans-serif; }
-    #tabs { display: flex; background: #333; color: white; }
+    #tabs {
+      display: flex;
+      background: #333;
+      color: white;
+      overflow-x: auto;
+    }
     .tab {
       padding: 8px 12px;
       cursor: pointer;
       background: #444;
       border-right: 1px solid #222;
+      display: flex;
+      align-items: center;
     }
     .tab.active {
       background: #222;
+    }
+    .tab span {
+      white-space: nowrap;
     }
     #controls {
       display: flex;
@@ -41,6 +51,7 @@
   <div id="tabs"></div>
 
   <div id="controls">
+    <button onclick="voltar()">⬅ Voltar</button>
     <input type="text" id="url-bar" placeholder="Digite a URL...">
     <button onclick="go()">Ir</button>
     <button onclick="novaAba()">+ Aba</button>
@@ -49,11 +60,11 @@
   <iframe id="browser-frame"></iframe>
 
   <script>
-    let abas = [];
+    let abas = []; // [{ url: string, historico: string[], indice: number }]
     let abaAtiva = -1;
 
     function novaAba(url = "https://google.com/?igu=1") {
-      abas.push(url);
+      abas.push({ url, historico: [url], indice: 0 });
       abaAtiva = abas.length - 1;
       atualizarAbas();
       carregarPagina(url);
@@ -62,31 +73,75 @@
     function atualizarAbas() {
       const container = document.getElementById("tabs");
       container.innerHTML = "";
-      abas.forEach((url, i) => {
+      abas.forEach((aba, i) => {
         const tab = document.createElement("div");
         tab.className = "tab" + (i === abaAtiva ? " active" : "");
-        tab.innerText = url.replace(/^https?:\/\//, "").slice(0, 20) + (url.length > 20 ? "..." : "");
-        tab.onclick = () => {
+
+        const title = document.createElement("span");
+        title.innerText = aba.url.replace(/^https?:\/\//, "").slice(0, 15) + (aba.url.length > 15 ? "..." : "");
+        title.style.flex = "1";
+        title.onclick = () => {
           abaAtiva = i;
-          document.getElementById("url-bar").value = abas[i];
-          carregarPagina(abas[i]);
+          document.getElementById("url-bar").value = aba.url;
+          carregarPagina(aba.url, false);
           atualizarAbas();
         };
+
+        const closeBtn = document.createElement("span");
+        closeBtn.innerText = " ❌";
+        closeBtn.style.marginLeft = "8px";
+        closeBtn.style.cursor = "pointer";
+        closeBtn.onclick = (e) => {
+          e.stopPropagation(); // impede clique de ativar a aba
+          fecharAba(i);
+        };
+
+        tab.appendChild(title);
+        tab.appendChild(closeBtn);
         container.appendChild(tab);
       });
+    }
+
+    function fecharAba(indice) {
+      abas.splice(indice, 1);
+      if (abaAtiva >= indice) abaAtiva--;
+      if (abas.length === 0) {
+        novaAba();
+      } else {
+        abaAtiva = Math.max(0, abaAtiva);
+        const aba = abas[abaAtiva];
+        carregarPagina(aba.url, false);
+      }
+      atualizarAbas();
     }
 
     function go() {
       const urlInput = document.getElementById("url-bar").value;
       const url = urlInput.startsWith("http") ? urlInput : "https://" + urlInput;
       if (abaAtiva >= 0) {
-        abas[abaAtiva] = url;
+        const aba = abas[abaAtiva];
+        aba.historico = aba.historico.slice(0, aba.indice + 1); // remove 'futuro'
+        aba.historico.push(url);
+        aba.indice++;
+        aba.url = url;
         carregarPagina(url);
         atualizarAbas();
       }
     }
 
-    function carregarPagina(url) {
+    function voltar() {
+      if (abaAtiva >= 0) {
+        const aba = abas[abaAtiva];
+        if (aba.indice > 0) {
+          aba.indice--;
+          aba.url = aba.historico[aba.indice];
+          carregarPagina(aba.url, false);
+          atualizarAbas();
+        }
+      }
+    }
+
+    function carregarPagina(url, registrar = true) {
       document.getElementById("browser-frame").src = url;
       document.getElementById("url-bar").value = url;
     }
@@ -97,3 +152,4 @@
 
 </body>
 </html>
+
