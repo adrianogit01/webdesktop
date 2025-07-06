@@ -52,6 +52,7 @@
 
   <div id="controls">
     <button onclick="voltar()">⬅ Voltar</button>
+    <button onclick="avancar()">➡ Avançar</button>
     <input type="text" id="url-bar" placeholder="Digite a URL...">
     <button onclick="go()">Ir</button>
     <button onclick="novaAba()">+ Aba</button>
@@ -67,7 +68,7 @@
       abas.push({ url, historico: [url], indice: 0 });
       abaAtiva = abas.length - 1;
       atualizarAbas();
-      carregarPagina(url);
+      carregarPagina(url, false);
     }
 
     function atualizarAbas() {
@@ -92,7 +93,7 @@
         closeBtn.style.marginLeft = "8px";
         closeBtn.style.cursor = "pointer";
         closeBtn.onclick = (e) => {
-          e.stopPropagation(); // impede clique de ativar a aba
+          e.stopPropagation();
           fecharAba(i);
         };
 
@@ -119,12 +120,7 @@
       const urlInput = document.getElementById("url-bar").value;
       const url = urlInput.startsWith("http") ? urlInput : "https://" + urlInput;
       if (abaAtiva >= 0) {
-        const aba = abas[abaAtiva];
-        aba.historico = aba.historico.slice(0, aba.indice + 1); // remove 'futuro'
-        aba.historico.push(url);
-        aba.indice++;
-        aba.url = url;
-        carregarPagina(url);
+        carregarPagina(url, true);
         atualizarAbas();
       }
     }
@@ -141,12 +137,32 @@
       }
     }
 
-    function carregarPagina(url, registrar = true) {
-      document.getElementById("browser-frame").src = url;
-      document.getElementById("url-bar").value = url;
+    function avancar() {
+      if (abaAtiva >= 0) {
+        const aba = abas[abaAtiva];
+        if (aba.indice < aba.historico.length - 1) {
+          aba.indice++;
+          aba.url = aba.historico[aba.indice];
+          carregarPagina(aba.url, false);
+          atualizarAbas();
+        }
+      }
     }
 
-    // Inicializa com uma aba padrão
+    function carregarPagina(url, registrar = true) {
+      const iframe = document.getElementById("browser-frame");
+      iframe.src = url;
+      document.getElementById("url-bar").value = url;
+
+      if (registrar && abaAtiva >= 0) {
+        const aba = abas[abaAtiva];
+        aba.historico = aba.historico.slice(0, aba.indice + 1);
+        aba.historico.push(url);
+        aba.indice++;
+        aba.url = url;
+      }
+    }
+
     novaAba("https://google.com/?igu=1");
   </script>
 
