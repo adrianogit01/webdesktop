@@ -4,44 +4,80 @@
   <meta charset="UTF-8">
   <title>Navegador Simulado</title>
   <style>
-    body { margin: 0; font-family: sans-serif; }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background-color: #1e1e1e;
+      color: #ccc;
+    }
     #tabs {
       display: flex;
-      background: #333;
-      color: white;
+      background: #2a2a2a;
+      padding: 0 4px;
       overflow-x: auto;
+      border-bottom: 1px solid #444;
     }
     .tab {
-      padding: 8px 12px;
-      cursor: pointer;
-      background: #444;
-      border-right: 1px solid #222;
       display: flex;
       align-items: center;
+      background: #3a3a3a;
+      color: #ddd;
+      border-radius: 8px 8px 0 0;
+      margin: 4px 4px 0 0;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      max-width: 200px;
     }
     .tab.active {
-      background: #222;
+      background: #1e1e1e;
+      color: white;
+      box-shadow: inset 0 -2px 0 #4285f4;
+    }
+    .tab:hover {
+      background: #444;
     }
     .tab span {
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     #controls {
       display: flex;
+      align-items: center;
+      gap: 6px;
       padding: 8px;
-      background: #f0f0f0;
+      background: #2b2b2b;
+      border-bottom: 1px solid #444;
     }
     #controls input {
       flex: 1;
-      padding: 6px;
-      font-size: 16px;
+      padding: 8px;
+      background: #1e1e1e;
+      border: 1px solid #555;
+      color: white;
+      font-size: 15px;
+      border-radius: 6px;
     }
     #controls button {
-      margin-left: 4px;
-      padding: 6px 10px;
+      background: #333;
+      color: #ccc;
+      border: 1px solid #555;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #controls button:hover {
+      background: #444;
+      color: white;
     }
     #browser-frame {
       width: 100%;
-      height: calc(100vh - 80px);
+      height: calc(100vh - 112px); /* altura das abas + controles */
       border: none;
     }
   </style>
@@ -51,8 +87,8 @@
   <div id="tabs"></div>
 
   <div id="controls">
-    <button onclick="voltar()">⬅ Voltar</button>
-    <button onclick="avancar()">➡ Avançar</button>
+    <button onclick="voltar()">⬅</button>
+    <button onclick="avancar()">➡</button>
     <input type="text" id="url-bar" placeholder="Digite a URL...">
     <button onclick="go()">Ir</button>
     <button onclick="novaAba()">+ Aba</button>
@@ -61,7 +97,7 @@
   <iframe id="browser-frame"></iframe>
 
   <script>
-    let abas = []; // [{ url: string, historico: string[], indice: number }]
+    let abas = [];
     let abaAtiva = -1;
 
     function novaAba(url = "https://google.com/?igu=1") {
@@ -79,7 +115,7 @@
         tab.className = "tab" + (i === abaAtiva ? " active" : "");
 
         const title = document.createElement("span");
-        title.innerText = aba.url.replace(/^https?:\/\//, "").slice(0, 15) + (aba.url.length > 15 ? "..." : "");
+        title.innerText = aba.url.replace(/^https?:\/\//, "").slice(0, 20);
         title.style.flex = "1";
         title.onclick = () => {
           abaAtiva = i;
