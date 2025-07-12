@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lançador Minimalista</title>
+  <style>
+    @font-face {
+      font-family: 'PixelLCD';
+      src: local('Courier New'), monospace;
+    }
+
+    body {
+      background: #292929;
+      color: #fff;
+      font-family: 'PixelLCD', monospace;
+      width: 100%;
+      height: auto;
+      min-height: 100vh;
+      font-size: 1.8rem;
+      line-height: 1.6;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      letter-spacing: 3px;
+      filter: grayscale(100%) contrast(1.2);
+      padding: 20px;
+    }
+
+    a {
+      color: #fff;
+      text-decoration: none;
+      margin: 6px 0;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div id="hora">--:--</div>
+  <div id="data">--/--/--</div>
+
+  <!-- Comunicação -->
+  <a href="whatsapp://send?text=Olá" target="_blank">📲 WhatsApp</a>
+  <a href="facetime://">📞 FaceTime</a>
+  <a href="mailto:">✉️ Mail</a>
+  <a href="sms://">💬 Mensagens</a>
+  <a href="tel:+5511999999999">📞 Ligar</a>
+  <a href="tg://resolve?domain=SeuUsuario">💬 Telegram</a>
+  <a href="skype:echo123?call">📞 Skype</a>
+  <a href="sgnl://signal.me/#p/+55119999">🔒 Signal</a>
+
+  <!-- Mapas -->
+  <a href="maps://">🗺️ Apple Maps</a>
+  <a href="comgooglemaps://">🗺️ Google Maps</a>
+  <a href="waze://">🧭 Waze</a>
+
+  <!-- Mídia -->
+  <a href="music://">🎵 Apple Music</a>
+  <a href="spotify://">🎵 Spotify</a>
+  <a href="youtube://">📺 YouTube</a>
+  <a href="podcast://">🎙️ Podcasts</a>
+  <a href="photos-redirect://">🖼️ Galeria</a>
+
+  <!-- Navegação -->
+  <a href="http://">🌐 Safari</a>
+  <a href="googlechrome://example.com">🌍 Chrome</a>
+  <a href="brave://">🦁 Brave</a>
+  <a href="google://">🔎 Google</a>
+
+  <!-- Utilitários -->
+  <a href="App-Prefs:">⚙️ Ajustes (iOS)</a>
+  <a href="calshow://">🗓️ Calendário</a>
+  <a href="mobilenotes://">📝 Notas</a>
+  <a href="clock-alarm://">⏰ Relógio</a>
+  <a href="camera://">📷 Câmera</a>
+  <a href="calculator://">🧮 Calculadora</a>
+
+  <script>
+    const horaDiv = document.getElementById('hora');
+    const dataDiv = document.getElementById('data');
+    let mostrarPontos = true;
+
+    function atualizarRelogio() {
+      const agora = new Date();
+      const horas = String(agora.getHours()).padStart(2, '0');
+      const minutos = String(agora.getMinutes()).padStart(2, '0');
+      const dia = String(agora.getDate()).padStart(2, '0');
+      const mes = String(agora.getMonth() + 1).padStart(2, '0');
+      const ano = String(agora.getFullYear()).slice(-2);
+      const separador = mostrarPontos ? ':' : ' ';
+
+      horaDiv.textContent = `${horas}${separador}${minutos}`;
+      dataDiv.textContent = `${dia}/${mes}/${ano}`;
+      mostrarPontos = !mostrarPontos;
+    }
+
+    setInterval(atualizarRelogio, 1000);
+    atualizarRelogio();
+  </script>
+</body>
+</html>
+
