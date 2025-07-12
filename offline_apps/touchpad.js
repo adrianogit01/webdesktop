@@ -41,7 +41,7 @@ function iniciarTouchpad() {
   Object.assign(pad.style, {
     position: "fixed",
     right: "0",
-    bottom: "0",
+    bottom: "50px",
     width: "60%",
     height: "220px",
     backgroundColor: "rgba(255,255,255,0.5)",
