@@ -2,88 +2,136 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lançador Minimalista</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="theme-color" content="#111" />
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+  <title>Lancador Minimalista</title>
   <style>
     @font-face {
       font-family: 'PixelLCD';
       src: local('Courier New'), monospace;
     }
-
     body {
-      background: #292929;
+      background: #111;
       color: #fff;
       font-family: 'PixelLCD', monospace;
-      width: 100%;
-      height: auto;
-      min-height: 100vh;
       font-size: 1.8rem;
       line-height: 1.6;
-      border-radius: 6px;
-      margin-bottom: 10px;
+      letter-spacing: 3px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      letter-spacing: 3px;
-      filter: grayscale(100%) contrast(1.2);
       padding: 20px;
+      filter: grayscale(100%) contrast(1.5);
+      image-rendering: pixelated;
+      user-select: none;
     }
-
+    #hora, #data { margin: 10px 0; }
     a {
+      display: block;
       color: #fff;
       text-decoration: none;
-      margin: 6px 0;
+      margin: 5px 0;
+      transition: transform 0.1s, background-color 0.2s;
+      padding: 3px 8px;
+      border-radius: 3px;
     }
-
-    a:hover {
-      text-decoration: underline;
+    a:hover { text-decoration: underline; }
+    a:active {
+      transform: scale(0.97);
+      background-color: #222;
     }
+    section {
+      margin: 20px 0 10px;
+      width: 100%;
+      max-width: 360px;
+    }
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 5px;
+      border-bottom: 1px dashed #444;
+      padding-bottom: 4px;
+    }
+    .hidden { display: none !important; }
+    button {
+      margin: 10px 0;
+      font-family: inherit;
+      font-size: 1.4rem;
+      background: none;
+      border: 1px dashed #666;
+      color: #fff;
+      padding: 5px 12px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #222; }
   </style>
 </head>
 <body>
   <div id="hora">--:--</div>
   <div id="data">--/--/--</div>
 
-  <!-- Comunicação -->
-  <a href="whatsapp://send?text=Olá" target="_blank">📲 WhatsApp</a>
-  <a href="facetime://">📞 FaceTime</a>
-  <a href="mailto:">✉️ Mail</a>
-  <a href="sms://">💬 Mensagens</a>
-  <a href="tel:+5511999999999">📞 Ligar</a>
-  <a href="tg://resolve?domain=SeuUsuario">💬 Telegram</a>
-  <a href="skype:echo123?call">📞 Skype</a>
-  <a href="sgnl://signal.me/#p/+55119999">🔒 Signal</a>
+  <button id="share" class="hidden">🔗 Compartilhar esta página</button>
+  <button id="restaurar">🔄 Mostrar todos os atalhos</button>
+  <button id="exportar">📤 Exportar configurações</button>
+  <input id="importar" type="file" accept=".json" style="display:none" />
+  <button onclick="document.getElementById('importar').click()">📥 Importar configurações</button>
+  <button onclick="salvarNoGunDB()">☁️ Sincronizar com a nuvem</button>
 
-  <!-- Mapas -->
-  <a href="maps://">🗺️ Apple Maps</a>
-  <a href="comgooglemaps://">🗺️ Google Maps</a>
-  <a href="waze://">🧭 Waze</a>
+  <section>
+    <h2>Comunicação</h2>
+    <a href="whatsapp://send?text=Olá">📲 WhatsApp</a>
+    <a href="facetime://">📞 FaceTime</a>
+    <a href="mailto:">✉️ Mail</a>
+    <a href="sms://">💬 Mensagens</a>
+    <a href="tel:+5511999999999">📞 Ligar</a>
+    <a href="tg://resolve?domain=SeuUsuario">💬 Telegram</a>
+    <a href="skype:echo123?call">📞 Skype</a>
+    <a href="sgnl://signal.me/#p/+55119999">🔒 Signal</a>
+  </section>
 
-  <!-- Mídia -->
-  <a href="music://">🎵 Apple Music</a>
-  <a href="spotify://">🎵 Spotify</a>
-  <a href="youtube://">📺 YouTube</a>
-  <a href="podcast://">🎙️ Podcasts</a>
-  <a href="photos-redirect://">🖼️ Galeria</a>
+  <section>
+    <h2>Mapas</h2>
+    <a href="maps://">🗺️ Apple Maps</a>
+    <a href="comgooglemaps://">🗺️ Google Maps</a>
+    <a href="waze://">🧭 Waze</a>
+  </section>
 
-  <!-- Navegação -->
-  <a href="http://">🌐 Safari</a>
-  <a href="googlechrome://example.com">🌍 Chrome</a>
-  <a href="brave://">🦁 Brave</a>
-  <a href="google://">🔎 Google</a>
+  <section>
+    <h2>Mídia</h2>
+    <a href="music://">🎵 Apple Music</a>
+    <a href="spotify://">🎵 Spotify</a>
+    <a href="youtube://">📺 YouTube</a>
+    <a href="podcast://">🎙️ Podcasts</a>
+    <a href="photos-redirect://">🖼️ Galeria</a>
+  </section>
 
-  <!-- Utilitários -->
-  <a href="App-Prefs:">⚙️ Ajustes (iOS)</a>
-  <a href="calshow://">🗓️ Calendário</a>
-  <a href="mobilenotes://">📝 Notas</a>
-  <a href="clock-alarm://">⏰ Relógio</a>
-  <a href="camera://">📷 Câmera</a>
-  <a href="calculator://">🧮 Calculadora</a>
+  <section>
+    <h2>Navegação</h2>
+    <a href="http://">🌐 Safari</a>
+    <a href="googlechrome://example.com">🌍 Chrome</a>
+    <a href="brave://">🦁 Brave</a>
+    <a href="google://">🔎 Google</a>
+  </section>
+
+  <section>
+    <h2>Utilitários</h2>
+    <a href="App-Prefs:">⚙️ Ajustes (iOS)</a>
+    <a href="calshow://">🗓️ Calendário</a>
+    <a href="mobilenotes://">📝 Notas</a>
+    <a href="clock-alarm://">⏰ Relógio</a>
+    <a href="camera://">📷 Câmera</a>
+    <a href="calculator://">🧮 Calculadora</a>
+  </section>
 
   <script>
     const horaDiv = document.getElementById('hora');
     const dataDiv = document.getElementById('data');
+    const shareBtn = document.getElementById('share');
+    const restoreBtn = document.getElementById('restaurar');
+    const links = document.querySelectorAll('a');
     let mostrarPontos = true;
 
     function atualizarRelogio() {
@@ -94,7 +142,6 @@
       const mes = String(agora.getMonth() + 1).padStart(2, '0');
       const ano = String(agora.getFullYear()).slice(-2);
       const separador = mostrarPontos ? ':' : ' ';
-
       horaDiv.textContent = `${horas}${separador}${minutos}`;
       dataDiv.textContent = `${dia}/${mes}/${ano}`;
       mostrarPontos = !mostrarPontos;
@@ -102,6 +149,128 @@
 
     setInterval(atualizarRelogio, 1000);
     atualizarRelogio();
+
+    // Persistência garantida
+    if ('storage' in navigator && 'persist' in navigator.storage) {
+      navigator.storage.persist().then(persisted => {
+        console.log(persisted ? 'Armazenamento persistente concedido.' : 'Negado.');
+      });
+    }
+
+    // Oculta links incompatíveis com Android
+    if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      document.querySelectorAll('a[href^="App-Prefs"]').forEach(link => link.remove());
+    }
+
+    // Aplicar visibilidade com base no localStorage
+    function aplicarConfiguracoesLocais() {
+      links.forEach(link => {
+        const href = link.getAttribute('href');
+        if (localStorage.getItem('oculto_' + href)) {
+          link.classList.add('hidden');
+        } else {
+          link.classList.remove('hidden');
+        }
+      });
+    }
+
+    aplicarConfiguracoesLocais();
+
+    // Ocultar link por toque longo ou botão direito
+    links.forEach(link => {
+      const href = link.getAttribute('href');
+      let pressTimer;
+      link.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        localStorage.setItem('oculto_' + href, '1');
+        aplicarConfiguracoesLocais();
+      });
+      link.addEventListener('touchstart', () => {
+        pressTimer = setTimeout(() => {
+          localStorage.setItem('oculto_' + href, '1');
+          aplicarConfiguracoesLocais();
+        }, 800);
+      });
+      link.addEventListener('touchend', () => clearTimeout(pressTimer));
+    });
+
+    // Restaurar
+    restoreBtn.addEventListener('click', () => {
+      links.forEach(link => localStorage.removeItem('oculto_' + link.getAttribute('href')));
+      aplicarConfiguracoesLocais();
+    });
+
+    // Compartilhamento
+    if (navigator.share) {
+      shareBtn.classList.remove('hidden');
+      shareBtn.addEventListener('click', () => {
+        navigator.share({ title: 'Lançador Minimalista', url: window.location.href });
+      });
+    }
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('DOMContentLoaded', () => {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+
+    // Exportar configurações
+    document.getElementById('exportar').addEventListener('click', () => {
+      const dados = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const chave = localStorage.key(i);
+        if (chave.startsWith('oculto_') || chave.startsWith('favorito_')) {
+          dados[chave] = localStorage.getItem(chave);
+        }
+      }
+      const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'configuracoes-lancador.json';
+      a.click();
+    });
+
+    // Importar configurações
+    document.getElementById('importar').addEventListener('change', function () {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const dados = JSON.parse(e.target.result);
+          Object.keys(dados).forEach(k => localStorage.setItem(k, dados[k]));
+          aplicarConfiguracoesLocais();
+        } catch {
+          alert('Erro ao importar arquivo.');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // GunDB sincronização
+    const gun = Gun('https://gun-manhattan.herokuapp.com/gun');
+    let userID = localStorage.getItem('userID') || prompt("Informe seu ID para sincronizar:");
+    if (userID) localStorage.setItem('userID', userID);
+    const configRef = gun.get('lancador').get(userID);
+
+    function salvarNoGunDB() {
+      const dados = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const chave = localStorage.key(i);
+        if (chave.startsWith('oculto_') || chave.startsWith('favorito_')) {
+          dados[chave] = localStorage.getItem(chave);
+        }
+      }
+      configRef.put(dados);
+      alert('Configurações sincronizadas!');
+    }
+
+    configRef.once(data => {
+      if (!data) return;
+      Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
+      aplicarConfiguracoesLocais();
+    });
   </script>
 </body>
 </html>
