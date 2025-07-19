@@ -362,7 +362,7 @@ body.fundo-imagem {
       calculadora, player de mídia e navegador web!</p>
   </div>-->
    <div id="desktop" class="desktop">
-   <iframe src="offline_apps/relogio.html" id="iframe-relogio" pointer-events: none; z-index: 0;"></iframe>
+  <!-- <iframe src="offline_apps/relogio.html" id="iframe-relogio" pointer-events: none; z-index: 0;"></iframe>-->
     <!--<div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google 🇬')">
       <img src="images/google.png" alt="Google">
       <span>🇬 Google</span>
@@ -421,21 +421,7 @@ body.fundo-imagem {
    <div class="menu" id="startMenu">
   <input type="text" id="searchInput" placeholder="Pesquisar apps...">
   <hr>
-<strong>➕ Adicionar novo atalho:</strong>
-<form id="addShortcutForm" style="margin-top:8px;">
-  <input type="text" id="shortcutName" placeholder="Nome do atalho" required style="width:60%; padding:4px;"/>
-  <input type="url" id="shortcutURL" placeholder="URL do atalho" required style="width:35%; padding:4px;"/>
-  <button type="submit" class="button" style="padding:5px 10px;">Adicionar</button>
-</form>
 
-<hr>
-<strong>💾 Exportar / Importar atalhos</strong><br>
-<button id="exportBtn" class="button" style="margin-top:5px;">Exportar atalhos (JSON)</button><br><br>
-
-<label for="importInput" style="cursor:pointer; text-decoration: underline; color: #ccc;">
-  📂 Importar atalhos (JSON)
-</label>
-<input type="file" id="importInput" accept=".json" style="display:none;">
 
 
     <strong>🌐 Web Apps (PWAs and Others):</strong>
@@ -477,6 +463,21 @@ body.fundo-imagem {
     <a href="#" onclick="openWindow('offline_apps/terminal.html', 'Terminal 👨🏽‍💻')">👨🏽‍💻 Terminal</a>
     <a href="#" onclick="openWindow('offline_apps/gravador.html', 'Gravador 🎤')">🎤 Gravador</a>
     <!--<a href="#" onclick="openWindow('offline_apps/spacedesk/spacedesk.html', 'SpaceDesk Local 🖥️')">🖥️ Space_Desk Local</a>-->
+    <strong>➕ Adicionar novo atalho:</strong>
+<form id="addShortcutForm" style="margin-top:8px;">
+  <input type="text" id="shortcutName" placeholder="Nome do atalho" required style="width:60%; padding:4px;"/>
+  <input type="url" id="shortcutURL" placeholder="URL do atalho" required style="width:35%; padding:4px;"/>
+  <button type="submit" class="button" style="padding:5px 10px;">Adicionar</button>
+</form>
+
+<hr>
+<strong>💾 Exportar / Importar atalhos</strong><br>
+<button id="exportBtn" class="button" style="margin-top:5px;">Exportar atalhos (JSON)</button><br><br>
+
+<label for="importInput" style="cursor:pointer; text-decoration: underline; color: #ccc;">
+  📂 Importar atalhos (JSON)
+</label>
+<input type="file" id="importInput" accept=".json" style="display:none;">
     <strong>📱 Apps Nativos:</strong>
     <a href="App-Prefs:">⚙️ Ajustes (iOS)</a>
     <a href="calshow://">🗓️ Calendário</a>
