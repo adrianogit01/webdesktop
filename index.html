@@ -428,6 +428,16 @@ body.fundo-imagem {
   <button type="submit" class="button" style="padding:5px 10px;">Adicionar</button>
 </form>
 
+<hr>
+<strong>💾 Exportar / Importar atalhos</strong><br>
+<button id="exportBtn" class="button" style="margin-top:5px;">Exportar atalhos (JSON)</button><br><br>
+
+<label for="importInput" style="cursor:pointer; text-decoration: underline; color: #ccc;">
+  📂 Importar atalhos (JSON)
+</label>
+<input type="file" id="importInput" accept=".json" style="display:none;">
+
+
     <strong>🌐 Web Apps (PWAs and Others):</strong>
     <!--<a href="#" onclick="openWindow('https://google.com/?igu=1', 'Google 🔍')">🔍 Google</a>-->
     <!--<a href="#" onclick="openWindow('https://lite.duckduckgo.com/lite/', 'Duck Duck Go 🦆🔍')">🦆🔍 Duck Duck Go</a>-->
@@ -802,6 +812,70 @@ addShortcutForm.addEventListener('submit', e => {
   
 // Carregar atalhos ao iniciar a página
 window.addEventListener('DOMContentLoaded', carregarAtalhos);
+
+const exportBtn = document.getElementById('exportBtn');
+const importInput = document.getElementById('importInput');
+
+// Exportar atalhos para JSON e baixar arquivo
+exportBtn.addEventListener('click', () => {
+  const dataStr = JSON.stringify(atalhosExtras, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'atalhos.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+// Importar atalhos a partir do arquivo JSON
+importInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const dados = JSON.parse(e.target.result);
+      if (!Array.isArray(dados)) throw new Error('JSON inválido: deve ser um array.');
+
+      // Opcional: substituir atalhos atuais
+      atalhosExtras = dados;
+
+      // Salvar e renderizar novamente:
+      salvarAtalhos();
+
+      // Limpar atalhos atuais visuais (desktop e menu)
+      // Remove atalhos criados dinamicamente antes do formulário
+      // (Vamos remover todos atalhos na área desktop e no menu, exceto os fixos)
+
+      // Desktop: remove atalhos extras (assumindo que eles tem o span com "🔗" no texto)
+      const atalhosDesktop = [...desktop.querySelectorAll('.shortcut')];
+      atalhosDesktop.forEach(atalhoEl => {
+        if (atalhoEl.textContent.startsWith('🔗')) atalhoEl.remove();
+      });
+
+      // Menu: remove links de atalhos extras antes do formulário
+      const linksMenu = [...startMenu.querySelectorAll('a')];
+      linksMenu.forEach(link => {
+        if (link.textContent.startsWith('🔗')) link.remove();
+      });
+
+      // Renderiza novos atalhos importados
+      atalhosExtras.forEach(criarAtalho);
+
+      alert('Atalhos importados com sucesso!');
+      importInput.value = ''; // reset para poder importar novamente o mesmo arquivo se quiser
+    } catch (err) {
+      alert('Erro ao importar atalhos: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+});
+
 
   
   </script>
