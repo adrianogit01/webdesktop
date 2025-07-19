@@ -420,6 +420,14 @@ body.fundo-imagem {
   
    <div class="menu" id="startMenu">
   <input type="text" id="searchInput" placeholder="Pesquisar apps...">
+  <hr>
+<strong>➕ Adicionar novo atalho:</strong>
+<form id="addShortcutForm" style="margin-top:8px;">
+  <input type="text" id="shortcutName" placeholder="Nome do atalho" required style="width:60%; padding:4px;"/>
+  <input type="url" id="shortcutURL" placeholder="URL do atalho" required style="width:35%; padding:4px;"/>
+  <button type="submit" class="button" style="padding:5px 10px;">Adicionar</button>
+</form>
+
     <strong>🌐 Web Apps (PWAs and Others):</strong>
     <!--<a href="#" onclick="openWindow('https://google.com/?igu=1', 'Google 🔍')">🔍 Google</a>-->
     <!--<a href="#" onclick="openWindow('https://lite.duckduckgo.com/lite/', 'Duck Duck Go 🦆🔍')">🦆🔍 Duck Duck Go</a>-->
@@ -726,6 +734,75 @@ document.addEventListener('DOMContentLoaded', function() {
       setGlobalZoom(savedZoom);
     });
     
+    const desktop = document.getElementById('desktop');
+const startMenu = document.getElementById('startMenu');
+const addShortcutForm = document.getElementById('addShortcutForm');
+
+let atalhosExtras = []; // armazenará atalhos do usuário
+
+// Função para criar elemento atalho (desktop e menu)
+function criarAtalho({name, url}) {
+  // Atalho no desktop
+  const atalhoDesktop = document.createElement('div');
+  atalhoDesktop.className = 'shortcut';
+  atalhoDesktop.title = name;
+  atalhoDesktop.onclick = () => openWindow(url, name);
+  atalhoDesktop.innerHTML = `<span>🔗 ${name}</span>`;
+  desktop.appendChild(atalhoDesktop);
+
+  // Atalho no menu iniciar (antes dos controles de adicionar)
+  const linkMenu = document.createElement('a');
+  linkMenu.href = "#";
+  linkMenu.textContent = `🔗 ${name}`;
+  linkMenu.onclick = e => {
+    e.preventDefault();
+    openWindow(url, name);
+    toggleMenu(); // opcional: fecha menu após abrir
+  };
+  startMenu.insertBefore(linkMenu, addShortcutForm);
+}
+
+// Salvar atalhos no localStorage
+function salvarAtalhos() {
+  localStorage.setItem('userShortcuts', JSON.stringify(atalhosExtras));
+}
+
+// Carregar atalhos do localStorage
+function carregarAtalhos() {
+  const dados = localStorage.getItem('userShortcuts');
+  if (dados) {
+    atalhosExtras = JSON.parse(dados);
+    atalhosExtras.forEach(criarAtalho);
+  }
+}
+
+// Lidar com submissão do formulário
+addShortcutForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('shortcutName').value.trim();
+  const url = document.getElementById('shortcutURL').value.trim();
+
+  if (!name || !url) return alert('Preencha nome e URL.');
+
+  // Verifica se URL é válida (pode ser melhorado)
+  try {
+    new URL(url);
+  } catch {
+    return alert('URL inválida.');
+  }
+
+  const novoAtalho = { name, url };
+  atalhosExtras.push(novoAtalho);
+  salvarAtalhos();
+  criarAtalho(novoAtalho);
+
+  // limpa formulário
+  addShortcutForm.reset();
+});
+  
+// Carregar atalhos ao iniciar a página
+window.addEventListener('DOMContentLoaded', carregarAtalhos);
+
   
   </script>
   
