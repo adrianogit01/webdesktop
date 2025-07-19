@@ -367,26 +367,26 @@ body.fundo-imagem {
       <img src="images/google.png" alt="Google">
       <span>🇬 Google</span>
     </div>-->
-    <div class="shortcut" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">
+    <div class="shortcut" data-id="word" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">
      <!--<img src="images/word.png" alt="Word">-->
       <span>📄 Word</span>
     </div>
-    <div class="shortcut" onclick="openWindow('offline_apps/player.html', 'Player 🎞️')">
+    <div class="shortcut" data-id="player" onclick="openWindow('offline_apps/player.html', 'Player 🎞️')">
       <span>🎞️ Player</span>
     </div>
-    <div class="shortcut" onclick="openWindow('offline_apps/rss.html', 'RSS 📡')">
+    <div class="shortcut" data-id="rss" onclick="openWindow('offline_apps/rss.html', 'RSS 📡')">
       <span>📡 RSS</span>
     </div>
-    <div class="shortcut" onclick="openWindow('offline_apps/rotina.html', 'Matinal 🌄')">
+    <div class="shortcut" data-id="matinal" onclick="openWindow('offline_apps/rotina.html', 'Matinal 🌄')">
       <span>🌄 Rotina Matinal</span>
     </div>
-    <div class="shortcut" onclick="openWindow('offline_apps/tarefas.html', 'Tarefas ✔️')">
+    <div class="shortcut" data-id="tarefas" onclick="openWindow('offline_apps/tarefas.html', 'Tarefas ✔️')">
       <span>✔️ Tarefas</span>
     </div><br>
-    <div class="shortcut" onclick="openWindow('offline_apps/calcdata.html', 'Calc. de Datas 🗓️')">
+    <div class="shortcut" data-id="calcdata" onclick="openWindow('offline_apps/calcdata.html', 'Calc. de Datas 🗓️')">
       <span>🗓️ Cal. de Datas</span>
     </div>
-    <div class="shortcut" onclick="openWindow('offline_apps/porcentagem.html', 'Calc. de Porcentagem 🔣')">
+    <div class="shortcut" data-id="porcentagem" onclick="openWindow('offline_apps/porcentagem.html', 'Calc. de Porcentagem 🔣')">
       <span>🔣 Cal. de Porcentagem</span>
     </div>
     <!-- Anúncio -->
@@ -425,43 +425,43 @@ body.fundo-imagem {
 
 
     <strong>🌐 Web Apps (PWAs and Others):</strong>
-    <!--<a href="#" onclick="openWindow('https://google.com/?igu=1', 'Google 🔍')">🔍 Google</a>-->
-    <!--<a href="#" onclick="openWindow('https://lite.duckduckgo.com/lite/', 'Duck Duck Go 🦆🔍')">🦆🔍 Duck Duck Go</a>-->
+    <!--<a href="#" data-id="google" onclick="openWindow('https://google.com/?igu=1', 'Google 🔍')">🔍 Google</a>-->
+    <!--<a href="#" data-id="duck" onclick="openWindow('https://lite.duckduckgo.com/lite/', 'Duck Duck Go 🦆🔍')">🦆🔍 Duck Duck Go</a>-->
 
-    <a href="#" onclick="openWindow('https://stedit.app', 'Smart Text Editor 🗒️')">🗒️ Smart Text Editor</a>
-    <a href="#" onclick="openWindow('https://ethercalc.net/jpr8lzsc7boj', 'EtherCalc 📊')">📊 EtherCalc</a>
-   <!-- <a href="#" onclick="openWindow('https://ngexcel-demo.netlify.app', 'NG Excel Demo 📊')">📊 NG Excel Demo</a>-->
-   <!-- <a href="#" onclick="openWindow('http://viewer.spacedesk.net/', 'SpaceDesk 🖥️')">🖥️ SpaceDesk</a>-->
-   <!-- <a href="#" onclick="openWindow('https://onedoes.github.io/snapdrop/', 'Snapdrop 📡')">📡 Snapdrop</a>-->
-    <a href="#" onclick="openWindow('https://imageresizer.com/crop-image', 'Recortar Imagem 🖼️')">🖼️ Recortar Imagem</a>
-    <a href="#" onclick="openWindow('https://paint.js.org', 'Paint js 🎨')">🎨 Paint js</a>
-    <a href="#" onclick="openWindow('https://www.photopea.com/', 'Photopea 🎨')">🎨 Photopea</a>
-    <a href="#" onclick="openWindow('https://editor.method.ac/', 'SVG Editor 📐')">📐 SVG Editor</a>
-    <a href="#" onclick="openWindow('https://onecompiler.com/html', 'Code Editor 💻')">💻 Code Editor</a>
-    <a href="#" onclick="openWindow('https://www.onlineocr.net/pt/', 'Online OCR 🖼️➡️📃')">🖼️➡️📃 Online OCR</a>
-    <a href="#" onclick="openWindow('https://screenmirroring.app/sender', 'Enviar Tela 🖵')">🖵 Enviar Tela</a>
-    <a href="#" onclick="openWindow('https://screenmirroring.app/receiver', 'Receber Tela 🖵')">🖵 Receber Tela</a>
-    <a href="#" onclick="openWindow('https://pluto.tv/br/live-tv', 'Pluto TV 📺')">📺 Pluto TV</a>
-    <a href="#" onclick="openWindow('https://lrq3000.github.io/javascript-racer/v5.game.html', 'JS R 5 🚗')">🚗 JS R 5</a>
-    <a href="#" onclick="openWindow('https://vaporboy.net/', 'VaporBoy 🎮')">🎮 VaporBoy</a>
+    <a href="#" data-id="stedit" onclick="openWindow('https://stedit.app', 'Smart Text Editor 🗒️')">🗒️ Smart Text Editor</a>
+    <a href="#" data-id="ether" onclick="openWindow('https://ethercalc.net/jpr8lzsc7boj', 'EtherCalc 📊')">📊 EtherCalc</a>
+   <!-- <a href="#" data-id="ng" onclick="openWindow('https://ngexcel-demo.netlify.app', 'NG Excel Demo 📊')">📊 NG Excel Demo</a>-->
+   <!-- <a href="#" data-id="space" onclick="openWindow('http://viewer.spacedesk.net/', 'SpaceDesk 🖥️')">🖥️ SpaceDesk</a>-->
+   <!-- <a href="#" data-id="snapdrop" onclick="openWindow('https://onedoes.github.io/snapdrop/', 'Snapdrop 📡')">📡 Snapdrop</a>-->
+    <a href="#" data-id="crop" onclick="openWindow('https://imageresizer.com/crop-image', 'Recortar Imagem 🖼️')">🖼️ Recortar Imagem</a>
+    <a href="#" data-id="paintjs" onclick="openWindow('https://paint.js.org', 'Paint js 🎨')">🎨 Paint js</a>
+    <a href="#" data-id="photopea" onclick="openWindow('https://www.photopea.com/', 'Photopea 🎨')">🎨 Photopea</a>
+    <a href="#" data-id="svgedit" onclick="openWindow('https://editor.method.ac/', 'SVG Editor 📐')">📐 SVG Editor</a>
+    <a href="#" data-id="codedit" onclick="openWindow('https://onecompiler.com/html', 'Code Editor 💻')">💻 Code Editor</a>
+    <a href="#" data-id="photopea" onclick="openWindow('https://www.onlineocr.net/pt/', 'Online OCR 🖼️➡️📃')">🖼️➡️📃 Online OCR</a>
+    <a href="#" data-id="screensender" onclick="openWindow('https://screenmirroring.app/sender', 'Enviar Tela 🖵')">🖵 Enviar Tela</a>
+    <a href="#" data-id="screenreceiver" onclick="openWindow('https://screenmirroring.app/receiver', 'Receber Tela 🖵')">🖵 Receber Tela</a>
+    <a href="#" data-id="plutotv" onclick="openWindow('https://pluto.tv/br/live-tv', 'Pluto TV 📺')">📺 Pluto TV</a>
+    <a href="#" data-id="jsr5" onclick="openWindow('https://lrq3000.github.io/javascript-racer/v5.game.html', 'JS R 5 🚗')">🚗 JS R 5</a>
+    <a href="#" data-id="vaporboy" onclick="openWindow('https://vaporboy.net/', 'VaporBoy 🎮')">🎮 VaporBoy</a>
    
     <strong>💽 Local File System HTML with JS Apps:</strong>
-    <a href="#" onclick="openWindow('offline_apps/browser.html', 'Browser 🌎')">🌎 Browser</a>
-    <a href="#" onclick="openWindow('offline_apps/openmaps.html', 'Open Maps 🗺️')">🗺️ Open Maps</a>
-    <a href="#" onclick="openWindow('offline_apps/googlemaps.html', 'Google Maps 🧭')">🧭 Google Maps</a>
-    <a href="#" onclick="openWindow('offline_apps/clima.html', 'Clima 🌦️')">🌦️ Clima</a>
-    <a href="#" onclick="openWindow('offline_apps/motof3.html', 'MotoFone F3 📱')">📱 MotoFone F3</a>
-    <a href="#" onclick="openWindow('offline_apps/camera.html', 'Camera 📸')">📸 Camera</a>
-    <a href="#" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">📄 Word</a>
-    <a href="#" onclick="openWindow('offline_apps/excel.html', 'Excel 📊')">📊 Excel</a>
-    <a href="#" onclick="openWindow('offline_apps/recortaimagem.html', 'Recortador Offline de Imagem 🖼️')">🖼️ Recortador Offline de Imagem </a>
-    <a href="#" onclick="openWindow('offline_apps/whiteboard/index.html', 'Paint 🖌️')">🖌️ Paint Offline</a>
-    <a href="#" onclick="openWindow('offline_apps/diario/diario.html', 'Diario 📓')">📓 Diário</a>
-    <a href="#" onclick="openWindow('offline_apps/calculadora.html', 'Calculadora 🖩')">🖩 Calculadora</a>
-    <a href="#" onclick="openWindow('offline_apps/youtube-wrapper.html', 'Youtube 📺')">📺 Youtube</a>
-    <a href="#" onclick="openWindow('offline_apps/iptv.html', 'IPTV 📺')">📺 IPTV</a>
-    <a href="#" onclick="openWindow('offline_apps/terminal.html', 'Terminal 👨🏽‍💻')">👨🏽‍💻 Terminal</a>
-    <a href="#" onclick="openWindow('offline_apps/gravador.html', 'Gravador 🎤')">🎤 Gravador</a>
+    <a href="#" data-id="browser" onclick="openWindow('offline_apps/browser.html', 'Browser 🌎')">🌎 Browser</a>
+    <a href="#" data-id="openmaps" onclick="openWindow('offline_apps/openmaps.html', 'Open Maps 🗺️')">🗺️ Open Maps</a>
+    <a href="#" data-id="googlemaps" onclick="openWindow('offline_apps/googlemaps.html', 'Google Maps 🧭')">🧭 Google Maps</a>
+    <a href="#" data-id="clima" onclick="openWindow('offline_apps/clima.html', 'Clima 🌦️')">🌦️ Clima</a>
+    <a href="#" data-id="motof3" onclick="openWindow('offline_apps/motof3.html', 'MotoFone F3 📱')">📱 MotoFone F3</a>
+    <a href="#" data-id="camera" onclick="openWindow('offline_apps/camera.html', 'Camera 📸')">📸 Camera</a>
+    <a href="#" data-id="word" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">📄 Word</a>
+    <a href="#" data-id="excel" onclick="openWindow('offline_apps/excel.html', 'Excel 📊')">📊 Excel</a>
+    <a href="#" data-id="cropoff" onclick="openWindow('offline_apps/recortaimagem.html', 'Recortador Offline de Imagem 🖼️')">🖼️ Recortador Offline de Imagem </a>
+    <a href="#" data-id="paintoff" onclick="openWindow('offline_apps/whiteboard/index.html', 'Paint 🖌️')">🖌️ Paint Offline</a>
+    <a href="#" data-id="diario" onclick="openWindow('offline_apps/diario/diario.html', 'Diario 📓')">📓 Diário</a>
+    <a href="#" data-id="calculadora" onclick="openWindow('offline_apps/calculadora.html', 'Calculadora 🖩')">🖩 Calculadora</a>
+    <a href="#" data-id="youtube" onclick="openWindow('offline_apps/youtube-wrapper.html', 'Youtube 📺')">📺 Youtube</a>
+    <a href="#" data-id="iptv" onclick="openWindow('offline_apps/iptv.html', 'IPTV 📺')">📺 IPTV</a>
+    <a href="#" data-id="terminal" onclick="openWindow('offline_apps/terminal.html', 'Terminal 👨🏽‍💻')">👨🏽‍💻 Terminal</a>
+    <a href="#" data-id="gravador" onclick="openWindow('offline_apps/gravador.html', 'Gravador 🎤')">🎤 Gravador</a>
     <!--<a href="#" onclick="openWindow('offline_apps/spacedesk/spacedesk.html', 'SpaceDesk Local 🖥️')">🖥️ Space_Desk Local</a>-->
 <hr>
     <strong>➕ Adicionar novo atalho:</strong>
