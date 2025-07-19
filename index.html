@@ -479,6 +479,7 @@ body.fundo-imagem {
   📂 Importar atalhos (JSON)
 </label>
 <input type="file" id="importInput" accept=".json" style="display:none;">
+<button id="mostrarTodosBtn" class="button">👁️ Mostrar todos os atalhos ocultos</button>
     <strong>📱 Apps Nativos:</strong>
     <a href="App-Prefs:">⚙️ Ajustes (iOS)</a>
     <a href="calshow://">🗓️ Calendário</a>
@@ -707,8 +708,8 @@ body.fundo-imagem {
     
     // Aguarda carregar o DOM antes de aplicar o filtro
 document.addEventListener('DOMContentLoaded', function() {
+  
   var searchInput = document.getElementById('searchInput');
-
   // Evento 'input' dispara sempre que o usuário digita no campo
   searchInput.addEventListener('input', function() {
     var filter = searchInput.value.toLowerCase();             // Texto do filtro em caixa baixa
@@ -724,7 +725,40 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+  aplicarOcultos();
+  adicionarBotaoOcultar();
 });
+
+function adicionarBotaoOcultar() {
+  document.querySelectorAll('[data-id]').forEach(el => {
+    if (!el.classList.contains('tem-botao-ocultar')) {
+      const btn = document.createElement('button');
+      btn.innerText = '⚫';
+      btn.title = 'Ocultar este atalho';
+      btn.style.marginLeft = '5px';
+      btn.style.fontSize = '12px';
+      btn.style.background = 'rgba(255,255,255,0.1)';
+      btn.style.color = 'white';
+      btn.style.border = 'none';
+      btn.style.cursor = 'pointer';
+
+      btn.onclick = e => {
+        e.stopPropagation();
+        const id = el.getAttribute('data-id');
+        if (id) {
+          atalhosOcultos.add(id);
+          salvarAtalhos();
+          el.style.display = 'none';
+        }
+      };
+
+      el.appendChild(btn);
+      el.classList.add('tem-botao-ocultar');
+    }
+  });
+}
+
+
     // Controle de zoom via slider
     const zoomSlider = document.getElementById('zoomSlider');
     zoomSlider.addEventListener('input', () => {
@@ -739,18 +773,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // Carregar zoom salvo ao iniciar
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedZoom = localStorage.getItem('desktopZoom') || 100;
-      document.getElementById('zoomSlider').value = savedZoom;
-      setGlobalZoom(savedZoom);
-    });
+    
     
     const desktop = document.getElementById('desktop');
 const startMenu = document.getElementById('startMenu');
 const addShortcutForm = document.getElementById('addShortcutForm');
 
-let atalhosExtras = []; // armazenará atalhos do usuário
+let dadosDesktop = JSON.parse(localStorage.getItem('desktopData')) || {
+  atalhosExtras: [],
+  ocultos: []
+};
+
+let atalhosExtras = dadosDesktop.atalhosExtras;
+let atalhosOcultos = new Set(dadosDesktop.ocultos); // armazenará atalhos do usuário
 
 // Função para criar elemento atalho (desktop e menu)
 function criarAtalho({name, url}) {
@@ -776,8 +811,12 @@ function criarAtalho({name, url}) {
 
 // Salvar atalhos no localStorage
 function salvarAtalhos() {
-  localStorage.setItem('userShortcuts', JSON.stringify(atalhosExtras));
+  localStorage.setItem('desktopData', JSON.stringify({
+    atalhosExtras,
+    ocultos: [...atalhosOcultos]
+  }));
 }
+
 
 // Carregar atalhos do localStorage
 function carregarAtalhos() {
@@ -786,6 +825,12 @@ function carregarAtalhos() {
     atalhosExtras = JSON.parse(dados);
     atalhosExtras.forEach(criarAtalho);
   }
+}
+
+function aplicarOcultos() {
+  atalhosOcultos.forEach(id => {
+    document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.style.display = 'none');
+  });
 }
 
 // Lidar com submissão do formulário
@@ -812,15 +857,25 @@ addShortcutForm.addEventListener('submit', e => {
   addShortcutForm.reset();
 });
   
-// Carregar atalhos ao iniciar a página
-window.addEventListener('DOMContentLoaded', carregarAtalhos);
+
+window.addEventListener('DOMContentLoaded', () => {
+  carregarAtalhos();
+
+  const savedZoom = localStorage.getItem('desktopZoom') || 100;
+  document.getElementById('zoomSlider').value = savedZoom;
+  setGlobalZoom(savedZoom);
+});
+
 
 const exportBtn = document.getElementById('exportBtn');
 const importInput = document.getElementById('importInput');
 
 // Exportar atalhos para JSON e baixar arquivo
 exportBtn.addEventListener('click', () => {
-  const dataStr = JSON.stringify(atalhosExtras, null, 2);
+  const dataStr = JSON.stringify({
+    atalhosExtras,
+    ocultos: [...atalhosOcultos]
+  }, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
 
@@ -839,44 +894,46 @@ importInput.addEventListener('change', e => {
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const dados = JSON.parse(e.target.result);
-      if (!Array.isArray(dados)) throw new Error('JSON inválido: deve ser um array.');
+reader.onload = e => {
+  try {
+    const dados = JSON.parse(e.target.result);
+    if (!dados || typeof dados !== 'object') throw new Error('JSON inválido.');
 
-      // Opcional: substituir atalhos atuais
-      atalhosExtras = dados;
+    atalhosExtras = Array.isArray(dados.atalhosExtras) ? dados.atalhosExtras : [];
+    atalhosOcultos = new Set(Array.isArray(dados.ocultos) ? dados.ocultos : []);
 
-      // Salvar e renderizar novamente:
-      salvarAtalhos();
+    salvarAtalhos();
 
-      // Limpar atalhos atuais visuais (desktop e menu)
-      // Remove atalhos criados dinamicamente antes do formulário
-      // (Vamos remover todos atalhos na área desktop e no menu, exceto os fixos)
+    // Limpar atalhos extras da UI
+    document.querySelectorAll('.shortcut').forEach(el => {
+      if (el.textContent.startsWith('🔗')) el.remove();
+    });
+    document.querySelectorAll('#startMenu a').forEach(el => {
+      if (el.textContent.startsWith('🔗')) el.remove();
+    });
 
-      // Desktop: remove atalhos extras (assumindo que eles tem o span com "🔗" no texto)
-      const atalhosDesktop = [...desktop.querySelectorAll('.shortcut')];
-      atalhosDesktop.forEach(atalhoEl => {
-        if (atalhoEl.textContent.startsWith('🔗')) atalhoEl.remove();
-      });
+    // Renderizar novamente
+    atalhosExtras.forEach(criarAtalho);
+    aplicarOcultos();
+    adicionarBotaoOcultar();
 
-      // Menu: remove links de atalhos extras antes do formulário
-      const linksMenu = [...startMenu.querySelectorAll('a')];
-      linksMenu.forEach(link => {
-        if (link.textContent.startsWith('🔗')) link.remove();
-      });
-
-      // Renderiza novos atalhos importados
-      atalhosExtras.forEach(criarAtalho);
-
-      alert('Atalhos importados com sucesso!');
-      importInput.value = ''; // reset para poder importar novamente o mesmo arquivo se quiser
-    } catch (err) {
-      alert('Erro ao importar atalhos: ' + err.message);
-    }
-  };
+    alert('Configurações restauradas com sucesso!');
+  } catch (err) {
+    alert('Erro ao importar: ' + err.message);
+  }
+};
   reader.readAsText(file);
 });
+
+document.getElementById('mostrarTodosBtn').addEventListener('click', () => {
+  atalhosOcultos.clear();
+  salvarAtalhos();
+  document.querySelectorAll('[data-id]').forEach(el => {
+    el.style.display = '';
+  });
+});
+
+
 
 
   
