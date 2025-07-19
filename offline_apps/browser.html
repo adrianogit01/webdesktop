@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <title>Navegador Simulado</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: system-ui, sans-serif;
@@ -77,7 +75,7 @@
     }
     #browser-frame {
       width: 100%;
-      height: calc(100vh - 112px); /* altura das abas + controles */
+      height: calc(100vh - 112px);
       border: none;
     }
   </style>
@@ -185,9 +183,14 @@
       }
     }
 
-    function carregarPagina(url, registrar = true) {
+    function carregarPagina(url, registrar = true, viaProxy = false) {
       const iframe = document.getElementById("browser-frame");
-      iframe.src = url;
+
+      const finalUrl = viaProxy
+        ? "https://proxy-server-0muc.onrender.com/proxy?url=" + encodeURIComponent(url)
+        : url;
+
+      iframe.src = finalUrl;
       document.getElementById("url-bar").value = url;
 
       if (registrar && abaAtiva >= 0) {
@@ -197,6 +200,21 @@
         aba.indice++;
         aba.url = url;
       }
+
+      iframe.onerror = () => {
+        if (!viaProxy) {
+          console.warn("Falha direta. Tentando via proxy...");
+          carregarPagina(url, false, true);
+        }
+      };
+
+      setTimeout(() => {
+        const blank = iframe.contentDocument?.body?.childNodes.length === 0;
+        if (!viaProxy && blank) {
+          console.warn("Conteúdo em branco. Tentando via proxy...");
+          carregarPagina(url, false, true);
+        }
+      }, 1000);
     }
 
     novaAba("https://google.com/?igu=1");
