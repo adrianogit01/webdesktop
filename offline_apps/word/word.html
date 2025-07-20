@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Editor Word-Like</title>
     <script src="tinymce.min.js"></script>
+    <script src="mammoth.browser.min.js"></script>
+    <script src="webodf.js"></script>
     <script src="FileSaver.min.js"></script>
     <style>
       html, body {
@@ -43,7 +45,7 @@
       <button onclick="saveContent('txt')">💾 Salvar .txt</button>
       <button onclick="saveContent('docx')">💾 Salvar .docx</button>
       <button onclick="saveContent('odt')">💾 Salvar .odt</button>
-      <input type="file" accept=".html,.txt" onchange="loadFile(event)" />
+      <input type="file" accept=".html,.txt,.docx,.odt" onchange="loadFile(event)" />
     </div>
 
     <textarea id="editor"></textarea>
@@ -66,14 +68,46 @@
       }
 
       function loadFile(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const content = e.target.result;
-          tinymce.get("editor").setContent(content);
-        };
-        reader.readAsText(file);
-      }
+  const file = event.target.files[0];
+  const extension = file.name.split('.').pop().toLowerCase();
+
+  if (extension === 'docx') {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      mammoth.convertToHtml({ arrayBuffer: e.target.result })
+        .then(result => {
+          tinymce.get("editor").setContent(result.value);
+        })
+        .catch(err => console.error("Erro ao ler DOCX:", err));
+    };
+    reader.readAsArrayBuffer(file);
+
+  } else if (extension === 'odt') {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const container = document.createElement("div");
+      document.body.appendChild(container);
+
+      const odfCanvas = new odf.OdfCanvas(container);
+      odfCanvas.load(e.target.result);
+
+      setTimeout(() => {
+        tinymce.get("editor").setContent(container.innerHTML);
+        document.body.removeChild(container);
+      }, 1000); // dá tempo de renderizar
+    };
+    reader.readAsDataURL(file);
+
+  } else {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const content = e.target.result;
+      tinymce.get("editor").setContent(content);
+    };
+    reader.readAsText(file);
+  }
+}
+
 
       const useDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
