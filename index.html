@@ -216,6 +216,11 @@ body.fundo-imagem {
       margin-bottom: 10px;
       font-weight: bold;
     }
+    
+    button[title="Ocultar este atalho"]:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 
     .menu {
       position: fixed;
@@ -367,7 +372,7 @@ body.fundo-imagem {
       <img src="images/google.png" alt="Google">
       <span>🇬 Google</span>
     </div>-->
-    <div class="shortcut" data-id="word" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">
+    <div class="shortcut" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">
      <!--<img src="images/word.png" alt="Word">-->
       <span>📄 Word</span>
     </div>
@@ -446,22 +451,22 @@ body.fundo-imagem {
     <a href="#" data-id="vaporboy" onclick="openWindow('https://vaporboy.net/', 'VaporBoy 🎮')">🎮 VaporBoy</a>
    
     <strong>💽 Local File System HTML with JS Apps:</strong>
-    <a href="#" data-id="browser" onclick="openWindow('offline_apps/browser.html', 'Browser 🌎')">🌎 Browser</a>
-    <a href="#" data-id="openmaps" onclick="openWindow('offline_apps/openmaps.html', 'Open Maps 🗺️')">🗺️ Open Maps</a>
-    <a href="#" data-id="googlemaps" onclick="openWindow('offline_apps/googlemaps.html', 'Google Maps 🧭')">🧭 Google Maps</a>
+    <a href="#" onclick="openWindow('offline_apps/browser.html', 'Browser 🌎')">🌎 Browser</a>
+    <a href="#" onclick="openWindow('offline_apps/openmaps.html', 'Open Maps 🗺️')">🗺️ Open Maps</a>
+    <a href="#" onclick="openWindow('offline_apps/googlemaps.html', 'Google Maps 🧭')">🧭 Google Maps</a>
     <a href="#" data-id="clima" onclick="openWindow('offline_apps/clima.html', 'Clima 🌦️')">🌦️ Clima</a>
     <a href="#" data-id="motof3" onclick="openWindow('offline_apps/motof3.html', 'MotoFone F3 📱')">📱 MotoFone F3</a>
-    <a href="#" data-id="camera" onclick="openWindow('offline_apps/camera.html', 'Camera 📸')">📸 Camera</a>
-    <a href="#" data-id="word" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">📄 Word</a>
-    <a href="#" data-id="excel" onclick="openWindow('offline_apps/excel.html', 'Excel 📊')">📊 Excel</a>
-    <a href="#" data-id="cropoff" onclick="openWindow('offline_apps/recortaimagem.html', 'Recortador Offline de Imagem 🖼️')">🖼️ Recortador Offline de Imagem </a>
+    <a href="#" onclick="openWindow('offline_apps/camera.html', 'Camera 📸')">📸 Camera</a>
+    <a href="#" onclick="openWindow('offline_apps/word/word.html', 'Word 📄')">📄 Word</a>
+    <a href="#" onclick="openWindow('offline_apps/excel.html', 'Excel 📊')">📊 Excel</a>
+    <a href="#" onclick="openWindow('offline_apps/recortaimagem.html', 'Recortador Offline de Imagem 🖼️')">🖼️ Recortador Offline de Imagem </a>
     <a href="#" data-id="paintoff" onclick="openWindow('offline_apps/whiteboard/index.html', 'Paint 🖌️')">🖌️ Paint Offline</a>
     <a href="#" data-id="diario" onclick="openWindow('offline_apps/diario/diario.html', 'Diario 📓')">📓 Diário</a>
-    <a href="#" data-id="calculadora" onclick="openWindow('offline_apps/calculadora.html', 'Calculadora 🖩')">🖩 Calculadora</a>
+    <a href="#" onclick="openWindow('offline_apps/calculadora.html', 'Calculadora 🖩')">🖩 Calculadora</a>
     <a href="#" data-id="youtube" onclick="openWindow('offline_apps/youtube-wrapper.html', 'Youtube 📺')">📺 Youtube</a>
     <a href="#" data-id="iptv" onclick="openWindow('offline_apps/iptv.html', 'IPTV 📺')">📺 IPTV</a>
     <a href="#" data-id="terminal" onclick="openWindow('offline_apps/terminal.html', 'Terminal 👨🏽‍💻')">👨🏽‍💻 Terminal</a>
-    <a href="#" data-id="gravador" onclick="openWindow('offline_apps/gravador.html', 'Gravador 🎤')">🎤 Gravador</a>
+    <a href="#" onclick="openWindow('offline_apps/gravador.html', 'Gravador 🎤')">🎤 Gravador</a>
     <!--<a href="#" onclick="openWindow('offline_apps/spacedesk/spacedesk.html', 'SpaceDesk Local 🖥️')">🖥️ Space_Desk Local</a>-->
 <hr>
     <strong>➕ Adicionar novo atalho:</strong>
@@ -474,12 +479,12 @@ body.fundo-imagem {
 <hr>
 <strong>💾 Exportar / Importar atalhos</strong><br>
 <button id="exportBtn" class="button" style="margin-top:5px;">Exportar atalhos (JSON)</button><br><br>
-
-<label for="importInput" style="cursor:pointer; text-decoration: underline; color: #ccc;">
+<label for="importInput" style="cursor:pointer; text-decoration: underline; color: #ccc; padding:4px;">
   📂 Importar atalhos (JSON)
 </label>
-<input type="file" id="importInput" accept=".json" style="display:none;">
+<input type="file" id="importInput" accept=".json" style="display:none; padding:4px;">
 <button id="mostrarTodosBtn" class="button">👁️ Mostrar todos os atalhos ocultos</button>
+<hr>
     <strong>📱 Apps Nativos:</strong>
     <a href="App-Prefs:">⚙️ Ajustes (iOS)</a>
     <a href="calshow://">🗓️ Calendário</a>
@@ -513,8 +518,10 @@ body.fundo-imagem {
     <script src="offline_apps/sepia-toggle.js"></script>
     <button class="button" onclick="toggleGrey()">⚫ Modo P&B Negativo</button>
     <script src="offline_apps/grey-toggle.js"></script>
+    <div>
     <button class="button" onclick="toggleHUD()">🕶️ Alternar Modo HUD/Holográfico</button>
     <script src="offline_apps/hud-toggle.js"></script>
+    <div>
     <button onclick="alternarMenuCentro()" class="button">Alternar Menu: Centro/Esquerda</button>
     <strong>📢 Público:</strong>
     <a href="#" onclick="openWindow('public/privacidade.html', 'Privacidade')">🔏 Privacidade</a>
@@ -733,7 +740,7 @@ function adicionarBotaoOcultar() {
   document.querySelectorAll('[data-id]').forEach(el => {
     if (!el.classList.contains('tem-botao-ocultar')) {
       const btn = document.createElement('button');
-      btn.innerText = '⚫';
+      btn.innerText = ' ✖️';
       btn.title = 'Ocultar este atalho';
       btn.style.marginLeft = '5px';
       btn.style.fontSize = '12px';
@@ -775,7 +782,7 @@ function adicionarBotaoOcultar() {
 
     
     
-    const desktop = document.getElementById('desktop');
+const desktop = document.getElementById('desktop');
 const startMenu = document.getElementById('startMenu');
 const addShortcutForm = document.getElementById('addShortcutForm');
 
@@ -786,6 +793,9 @@ let dadosDesktop = JSON.parse(localStorage.getItem('desktopData')) || {
 
 let atalhosExtras = dadosDesktop.atalhosExtras;
 let atalhosOcultos = new Set(dadosDesktop.ocultos); // armazenará atalhos do usuário
+
+carregarAtalhos(); // isso vai carregar e preencher os dois acima corretamente
+
 
 // Função para criar elemento atalho (desktop e menu)
 function criarAtalho({name, url}) {
@@ -820,12 +830,17 @@ function salvarAtalhos() {
 
 // Carregar atalhos do localStorage
 function carregarAtalhos() {
-  const dados = localStorage.getItem('userShortcuts');
+  const dados = localStorage.getItem('desktopData');
   if (dados) {
-    atalhosExtras = JSON.parse(dados);
+    const obj = JSON.parse(dados);
+    atalhosExtras = obj.atalhosExtras || [];
+    atalhosOcultos = new Set(obj.ocultos || []);
     atalhosExtras.forEach(criarAtalho);
+    aplicarOcultos();
+    adicionarBotaoOcultar();
   }
 }
+
 
 function aplicarOcultos() {
   atalhosOcultos.forEach(id => {
@@ -849,6 +864,11 @@ addShortcutForm.addEventListener('submit', e => {
   }
 
   const novoAtalho = { name, url };
+  
+  if (atalhosExtras.some(a => a.name === name && a.url === url)) {
+  return alert('Este atalho já foi adicionado.');
+  }
+  
   atalhosExtras.push(novoAtalho);
   salvarAtalhos();
   criarAtalho(novoAtalho);
