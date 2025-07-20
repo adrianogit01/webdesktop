@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
@@ -14,40 +15,13 @@
         padding: 0;
         height: 100%;
       }
-      #custom-buttons {
-        display: flex;
-        gap: 10px;
-        padding: 10px;
-        flex-wrap: wrap;
-        background: #f2f2f2;
-      }
-      #custom-buttons button {
-        padding: 6px 12px;
-        font-size: 14px;
-        cursor: pointer;
-      }
-      @media (max-width: 600px) {
-        #custom-buttons {
-          flex-direction: column;
-        }
-        #custom-buttons button {
-          width: 100%;
-        }
-      }
       textarea {
         height: 100vh;
       }
     </style>
   </head>
   <body>
-    <div id="custom-buttons">
-      <button onclick="saveContent('html')">💾 Salvar .html</button>
-      <button onclick="saveContent('txt')">💾 Salvar .txt</button>
-      <button onclick="saveContent('docx')">💾 Salvar .docx</button>
-      <button onclick="saveContent('odt')">💾 Salvar .odt</button>
-      <input type="file" accept=".html,.txt,.docx,.odt" onchange="loadFile(event)" />
-    </div>
-
+    <input type="file" id="fileInput" accept=".html,.txt,.docx,.odt" style="display:none" onchange="loadFile(event)" />
     <textarea id="editor"></textarea>
 
     <script>
@@ -59,55 +33,47 @@
         const filename = `documento.${type}`;
         saveAs(blob, filename);
       }
-      
-      function saveContent(type) {
-        const content = tinymce.get("editor").getContent({ format: type === 'txt' ? 'text' : 'html' });
-        const blob = new Blob([content], { type: type === "txt" ? "text/plain" : "text/html;charset=utf-8" });
-        const filename = `documento.${type}`;
-        saveAs(blob, filename);
-      }
 
       function loadFile(event) {
-  const file = event.target.files[0];
-  const extension = file.name.split('.').pop().toLowerCase();
+        const file = event.target.files[0];
+        const extension = file.name.split('.').pop().toLowerCase();
 
-  if (extension === 'docx') {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      mammoth.convertToHtml({ arrayBuffer: e.target.result })
-        .then(result => {
-          tinymce.get("editor").setContent(result.value);
-        })
-        .catch(err => console.error("Erro ao ler DOCX:", err));
-    };
-    reader.readAsArrayBuffer(file);
+        if (extension === 'docx') {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            mammoth.convertToHtml({ arrayBuffer: e.target.result })
+              .then(result => {
+                tinymce.get("editor").setContent(result.value);
+              })
+              .catch(err => console.error("Erro ao ler DOCX:", err));
+          };
+          reader.readAsArrayBuffer(file);
 
-  } else if (extension === 'odt') {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const container = document.createElement("div");
-      document.body.appendChild(container);
+        } else if (extension === 'odt') {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const container = document.createElement("div");
+            document.body.appendChild(container);
 
-      const odfCanvas = new odf.OdfCanvas(container);
-      odfCanvas.load(e.target.result);
+            const odfCanvas = new odf.OdfCanvas(container);
+            odfCanvas.load(e.target.result);
 
-      setTimeout(() => {
-        tinymce.get("editor").setContent(container.innerHTML);
-        document.body.removeChild(container);
-      }, 1000); // dá tempo de renderizar
-    };
-    reader.readAsDataURL(file);
+            setTimeout(() => {
+              tinymce.get("editor").setContent(container.innerHTML);
+              document.body.removeChild(container);
+            }, 1000);
+          };
+          reader.readAsDataURL(file);
 
-  } else {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const content = e.target.result;
-      tinymce.get("editor").setContent(content);
-    };
-    reader.readAsText(file);
-  }
-}
-
+        } else {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const content = e.target.result;
+            tinymce.get("editor").setContent(content);
+          };
+          reader.readAsText(file);
+        }
+      }
 
       const useDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
@@ -119,55 +85,34 @@
         toolbar:
           "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print | insertfile image media template link anchor codesample | ltr rtl",
         menubar: "file edit view insert format tools table help",
-        autosave_interval: "30s",
-        autosave_prefix: "{path}{query}-{id}-",
-        autosave_retention: "2m",
-        image_advtab: true,
-        image_caption: true,
-        imagetools_cors_hosts: ["picsum.photos"],
-        importcss_append: true,
-        toolbar_mode: "sliding",
-        quickbars_selection_toolbar:
-          "bold italic | quicklink h2 h3 blockquote quickimage quicktable",
-        noneditable_noneditable_class: "mceNonEditable",
-        contextmenu: "link image imagetools table",
-        skin: useDarkMode ? "oxide-dark" : "oxide",
-        content_css: useDarkMode ? "dark" : "default",
-        content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-        link_list: [
-          { title: "Minha página 1", value: "https://www.exemplo.com" },
-          { title: "Minha página 2", value: "https://www.outro.com" }
-        ],
-        image_list: [
-          { title: "Logo", value: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_92x30dp.png" }
-        ],
-        file_picker_callback: function (callback, value, meta) {
-          if (meta.filetype === "file") {
-            callback("https://www.google.com/logos/google.jpg", { text: "Arquivo exemplo" });
-          }
-          if (meta.filetype === "image") {
-            callback("https://www.google.com/logos/google.jpg", { alt: "Imagem exemplo" });
-          }
-          if (meta.filetype === "media") {
-            callback("movie.mp4", {
-              source2: "alt.ogg",
-              poster: "https://www.google.com/logos/google.jpg",
-            });
+        menu: {
+          file: {
+            title: "Arquivo",
+            items: "newdocument openfile | savehtml savetxt savedocx saveodt | print"
           }
         },
-        templates: [
-          {
-            title: "Nova Tabela",
-            description: "Cria uma nova tabela",
-            content: '<table border="1"><tr><th>Coluna 1</th><th>Coluna 2</th></tr><tr><td>Valor 1</td><td>Valor 2</td></tr></table>',
-          },
-          {
-            title: "História",
-            description: "Comece sua história",
-            content: "Era uma vez...",
-          },
-        ],
         setup: function (editor) {
+          editor.ui.registry.addMenuItem("openfile", {
+            text: "📂 Abrir arquivo...",
+            onAction: () => document.getElementById("fileInput").click()
+          });
+          editor.ui.registry.addMenuItem("savehtml", {
+            text: "💾 Salvar como HTML",
+            onAction: () => saveContent("html")
+          });
+          editor.ui.registry.addMenuItem("savetxt", {
+            text: "💾 Salvar como TXT",
+            onAction: () => saveContent("txt")
+          });
+          editor.ui.registry.addMenuItem("savedocx", {
+            text: "💾 Salvar como DOCX",
+            onAction: () => saveContent("docx")
+          });
+          editor.ui.registry.addMenuItem("saveodt", {
+            text: "💾 Salvar como ODT",
+            onAction: () => saveContent("odt")
+          });
+
           editor.on("Change KeyUp", () => {
             localStorage.setItem(EDITOR_KEY, editor.getContent());
           });
@@ -176,8 +121,10 @@
             if (saved) editor.setContent(saved);
           });
         },
+        skin: useDarkMode ? "oxide-dark" : "oxide",
+        content_css: useDarkMode ? "dark" : "default",
+        content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }"
       });
     </script>
   </body>
 </html>
-
