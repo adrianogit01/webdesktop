@@ -794,11 +794,11 @@ let dadosDesktop = JSON.parse(localStorage.getItem('desktopData')) || {
 let atalhosExtras = dadosDesktop.atalhosExtras;
 let atalhosOcultos = new Set(dadosDesktop.ocultos); // armazenará atalhos do usuário
 
-carregarAtalhos(); // isso vai carregar e preencher os dois acima corretamente
-
-
 // Função para criar elemento atalho (desktop e menu)
 function criarAtalho({name, url}) {
+  // Evita duplicação no desktop
+  if ([...document.querySelectorAll('.shortcut')].some(el => el.textContent.includes(name))) return;
+
   // Atalho no desktop
   const atalhoDesktop = document.createElement('div');
   atalhoDesktop.className = 'shortcut';
@@ -807,17 +807,18 @@ function criarAtalho({name, url}) {
   atalhoDesktop.innerHTML = `<span>🔗 ${name}</span>`;
   desktop.appendChild(atalhoDesktop);
 
-  // Atalho no menu iniciar (antes dos controles de adicionar)
+  // Atalho no menu iniciar
   const linkMenu = document.createElement('a');
   linkMenu.href = "#";
   linkMenu.textContent = `🔗 ${name}`;
   linkMenu.onclick = e => {
     e.preventDefault();
     openWindow(url, name);
-    toggleMenu(); // opcional: fecha menu após abrir
+    toggleMenu();
   };
   startMenu.insertBefore(linkMenu, addShortcutForm);
 }
+
 
 // Salvar atalhos no localStorage
 function salvarAtalhos() {
