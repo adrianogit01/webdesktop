@@ -412,11 +412,11 @@
   
   <script>
   
+  /* Registro especificio pra pwa interno em pasta de outro */    
     if ('serviceWorker' in navigator) {
-      window.addEventListener('DOMContentLoaded', () => {
-        navigator.serviceWorker.register('service-worker.js');
-      });
+       navigator.serviceWorker.register('./service-worker.js', { scope: './' });
     }
+
   
   </script>
   
