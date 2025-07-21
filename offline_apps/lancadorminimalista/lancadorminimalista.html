@@ -335,13 +335,7 @@
       });
     }
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('DOMContentLoaded', () => {
-        navigator.serviceWorker.register('service-worker.js');
-      });
-    }
-
-      document.getElementById('exportar').addEventListener('click', () => {
+     document.getElementById('exportar').addEventListener('click', () => {
       const dados = {};
       for (let i = 0; i < localStorage.length; i++) {
         const chave = localStorage.key(i);
@@ -408,6 +402,17 @@
     
     
   </script>
+  
+  <script>
+  
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('DOMContentLoaded', () => {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+  
+  </script>
+  
 </body>
 </html>
 
