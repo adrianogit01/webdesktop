@@ -319,14 +319,21 @@
     });
 
     restoreBtn.addEventListener('click', () => {
-      document.querySelectorAll('a').forEach(link => {
-        const href = link.getAttribute('href');
-        localStorage.removeItem('oculto_' + href);
-      });
-      aplicarConfiguracoesLocais();
-      salvarNoGunDB();
-      mostrarToast('🔄 Atalhos restaurados');
-    });
+  // Limpa localStorage dos atalhos ocultos
+  const chavesParaRemover = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const chave = localStorage.key(i);
+    if (chave.startsWith('oculto_')) {
+      chavesParaRemover.push(chave);
+    }
+  }
+  chavesParaRemover.forEach(k => localStorage.removeItem(k));
+
+  aplicarConfiguracoesLocais();
+  salvarNoGunDB();
+  mostrarToast('🔄 Atalhos restaurados');
+});
+
 
     if (navigator.share) {
       shareBtn.classList.remove('hidden');
