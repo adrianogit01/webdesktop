@@ -1,11 +1,11 @@
 {
   "name": "Lançador Minimalista",
   "short_name": "Lanc. Minimal",
-  "start_url": ".",
+  "start_url": "lancadorminimalista.html",
   "display": "standalone",
   "background_color": "#1e1e1e",
   "theme_color": "#1e1e1e",
-  "description": "Um lançador minimalista",
+  "description": "Um lançador minimalista - Este manifest é especifico de pwas internos de outros",
   "icons": [
     {
       "src": "icon-192.png",
@@ -19,4 +19,5 @@
     }
   ]
 }
+
 
