@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-cache-lm';
+const CACHE_NAME = 'pwa-cache-wl';
 const PRECACHE_URLS = [
  "./",
   "./word.html"
