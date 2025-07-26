@@ -4,6 +4,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#e0dede">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Desktop Web"> 
     <title>Editor Word-Like</title>
     <script src="tinymce.min.js"></script>
     <script src="mammoth.browser.min.js"></script>
@@ -126,5 +133,14 @@
         content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }"
       });
     </script>
+    <script>
+  
+  /* Registro especificio pra pwa interno em pasta de outro */    
+    if ('serviceWorker' in navigator) {
+       navigator.serviceWorker.register('service-worker.js', { scope: './' });
+    }
+
+  
+  </script>
   </body>
 </html>
