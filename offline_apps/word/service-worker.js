@@ -1,7 +1,11 @@
 const CACHE_NAME = 'pwa-cache-wl';
 const PRECACHE_URLS = [
  "./",
-  "./word.html"
+  "./word.html",
+  "./jsbib/tinymce.min.js",
+  "./jsbib/mammoth.browser.min.js",
+  "./jsbib/webodf.js",
+  "./jsbib/FileSaver.min.js"
 ];
 
 // Instala e faz o precache
