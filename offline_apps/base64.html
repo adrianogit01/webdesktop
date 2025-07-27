@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encoder/Decoder</title>
+    <style type="text/css">
+         body {
+		height: 20px;
+
+		background-color: #dce2e4;
+		background-image: linear-gradient(#f0f5f9, #c0c7cb);
+		color: #000;
+
+		padding: 0 5px;
+		line-height: 20px;
+		font-size: 13px;
+		font-weight: bold;
+
+		box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5) inset;
+		text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+	}
+	
+	.title {
+  text-align: center;
+}
+
+.input{
+display: grid;
+justify-content: center;
+margin-bottom: 35px;
+text-align: justify;
+padding-left: 15px;
+padding-right: 15px;
+}
+	
+	.custom-btn {
+  width: 170px;
+  height: 40px;
+  color: #4c4c4c;
+  border-radius: 5px;
+  padding: 10px 25px;
+  font-family: 'Lato', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  font-style: normal;
+  text-shadow: 0px 1px 0px #fff;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  box-shadow: inset 0px 1px 0px rgba(255,255,255,1),0px 1px 3px rgba(0,0,0,0.3);
+  outline: none;
+  border: 1px solid #ba6;
+}
+.custom-btn:active{
+  -webkit-transform: translateY(2px);
+  transform: translateY(2px);
+}
+
+/* 5 */
+.button {
+  backface-visibility: hidden;
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  white-space: nowrap;
+  border-color: #7c7c7c;
+  background: linear-gradient(180deg,#e6e6e6 0%,rgba(0, 0, 0, 0.25) 49%, rgba(38, 38, 38, 0.6) 51%,rgba(0, 0, 0, 0.25) 100%);
+  border-radius: 5px;
+  margin-bottom: 25px;
+}
+	</style>
+</head>
+<body>
+    <h1>Base64 Encoder/Decoder</h1>
+
+    <input type="file" id="fileInput">
+    <button class="custom-btn button" id="encodeButton">Codificar em Base64</button>
+    <button class="custom-btn button" id="decodeButton">Decodificar de Base64</button>
+
+    <div id="resultContainer"></div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const encodeButton = document.getElementById('encodeButton');
+        const decodeButton = document.getElementById('decodeButton');
+        const resultContainer = document.getElementById('resultContainer');
+
+        fileInput.addEventListener('change', () => {
+            const selectedFile = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const encodedImage = event.target.result.split(',')[1];
+                resultContainer.innerHTML = `
+                    <p>Imagem Carregada:</p>
+                    <img src="${event.target.result}" style="max-width: 300px;">
+                    <p>Base64:</p>
+                    <textarea id="base64TextArea" style="width: 100%; height: 100px;">${encodedImage}</textarea>
+                `;
+            };
+
+            reader.readAsDataURL(selectedFile);
+        });
+
+        encodeButton.addEventListener('click', () => {
+            const base64TextArea = document.getElementById('base64TextArea');
+            const decodedImage = new Image();
+            decodedImage.src = 'data:image/png;base64,' + base64TextArea.value;
+            resultContainer.innerHTML = `
+                <p>Decodificado:</p>
+                <img src="${decodedImage.src}" style="max-width: 300px;">
+            `;
+        });
+
+        decodeButton.addEventListener('click', () => {
+            const base64TextArea = document.getElementById('base64TextArea');
+            const imageSource = 'data:image/png;base64,' + base64TextArea.value;
+            const decodedImage = new Image();
+            decodedImage.src = imageSource;
+            resultContainer.innerHTML = `
+                <p>Codificado:</p>
+                <img src="${imageSource}" style="max-width: 300px;">
+            `;
+        });
+    </script>
+</body>
+</html>
