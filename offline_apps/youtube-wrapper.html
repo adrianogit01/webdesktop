@@ -1,97 +1,50 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>YouTube Sem API</title>
+  <meta charset="UTF-8" />
+  <title>Assistir YouTube</title>
   <style>
     body {
-      margin: 0;
       font-family: sans-serif;
       background: #111;
-      color: #fff;
-    }
-    #search-bar {
-      display: flex;
-      padding: 10px;
-      background: #222;
-    }
-    #search-bar input {
-      flex: 1;
-      padding: 8px;
-      font-size: 16px;
-    }
-    #search-bar button {
-      padding: 8px 16px;
-      background: #cc0000;
       color: white;
-      border: none;
-      cursor: pointer;
+      padding: 2rem;
+      text-align: center;
     }
-    #results {
-      display: flex;
-      flex-wrap: wrap;
+    input, button {
       padding: 10px;
-      gap: 10px;
-      overflow-y: auto;
-      max-height: 200px;
+      font-size: 16px;
+      margin: 8px;
     }
-    .thumb {
-      cursor: pointer;
-      width: 180px;
-    }
-    .thumb img {
+    iframe {
+      margin-top: 20px;
       width: 100%;
-    }
-    .thumb-title {
-      font-size: 14px;
-      color: #ccc;
-      margin-top: 4px;
-    }
-    #player {
-      width: 100%;
-      height: calc(100vh - 270px);
+      max-width: 800px;
+      height: 450px;
       border: none;
     }
   </style>
 </head>
 <body>
-  <div id="search-bar">
-    <input type="text" id="search-input" placeholder="Buscar vídeos...">
-    <button onclick="searchVideos()">Buscar</button>
+  <h1>Assistir vídeo do YouTube</h1>
+
+  <input id="ytlink" type="text" placeholder="Cole o link do YouTube aqui" size="50"/>
+  <button onclick="embed()">Carregar vídeo</button>
+
+  <div id="player-area">
+    <iframe id="player" allowfullscreen></iframe>
   </div>
-  <div id="results"></div>
-  <iframe id="player" allowfullscreen></iframe>
 
   <script>
-    async function searchVideos() {
-      const query = document.getElementById("search-input").value;
-      if (!query) return;
-
-      const res = await fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, {
-        mode: "cors"
-      });
-
-      const text = await res.text();
-
-      // Regex para capturar IDs de vídeos
-      const matches = [...text.matchAll(/"videoId":"(.*?)"/g)];
-      const ids = [...new Set(matches.map(m => m[1]))].slice(0, 8); // Remove duplicatas, pega 8
-
-      const container = document.getElementById("results");
-      container.innerHTML = "";
-
-      ids.forEach(id => {
-        const div = document.createElement("div");
-        div.className = "thumb";
-        div.innerHTML = `
-          <img src="https://i.ytimg.com/vi/${id}/mqdefault.jpg" alt="thumb">
-          <div class="thumb-title">ID: ${id}</div>
-        `;
-        div.onclick = () => {
-          document.getElementById("player").src = `https://www.youtube.com/embed/${id}`;
-        };
-        container.appendChild(div);
-      });
+    function embed() {
+      const input = document.getElementById("ytlink").value.trim();
+      const match = input.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
+      if (!match) {
+        alert("Link inválido. Cole um link direto de vídeo do YouTube.");
+        return;
+      }
+      const videoId = match[1];
+      document.getElementById("player").src = `https://www.youtube.com/embed/${videoId}`;
     }
   </script>
 </body>
