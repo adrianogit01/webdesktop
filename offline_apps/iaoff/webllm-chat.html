@@ -59,7 +59,9 @@
     async function initWebLLM() {
       try {
         output.textContent = "🔄 Inicializando modelo local...";
-        chat = await webllm.ChatModule.create();
+        chat = await webllm.ChatModule.create({
+        runtime: "wasm"  // força a usar WebAssembly ao invés de WebGPU
+        });
         await chat.reload("TinyLlama-Chat");
         output.textContent = "✅ Pronto! Digite sua pergunta abaixo.";
       } catch (err) {
