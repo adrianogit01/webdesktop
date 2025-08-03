@@ -9,7 +9,7 @@ const PRECACHE_URLS = [
   "./offline_apps/word/jsbib/FileSaver.min.js",
   "./offline_apps/excel.html",
   "./offline_apps/browser.html",
-  "./offline_apps/webllm-chat.html",
+  "./offline_apps/iaoff/webllm-chat.html",
   "./offline_apps/notastudoemum.html",
   "./offline_apps/whiteboard/index.html",
   "./offline_apps/camera.html",
