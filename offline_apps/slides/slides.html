@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slide Editor (PowerPoint-Like)</title>
+  <script src="jsbib/tinymce.min.js"></script>
+  <script src="jsbib/FileSaver.min.js"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #111;
+      color: #fff;
+    }
+    #editor {
+      height: 85vh;
+    }
+    .controls {
+      text-align: center;
+      padding: 10px;
+      background: #222;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 9999;
+    }
+    button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #444;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #666;
+    }
+    .presentation {
+      font-size: 2em;
+      text-align: center;
+      padding: 50px;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="editor">
+    <section class="slide"><h1>Slide 1</h1><p>Conteúdo inicial...</p></section>
+    <section class="slide"><h1>Slide 2</h1><p>Outro conteúdo aqui...</p></section>
+    <section class="slide"><h1>Slide 3</h1><p>Mais conteúdo...</p></section>
+  </textarea>
+
+  <div class="controls">
+    <button onclick="prevSlide()">◀ Anterior</button>
+    <button onclick="nextSlide()">Próximo ▶</button>
+    <button onclick="addSlide()">➕ Novo Slide</button>
+    <button onclick="saveSlides()">💾 Exportar</button>
+    <button onclick="startPresentation()">🎥 Apresentar</button>
+  </div>
+
+  <div id="presentation" style="display:none;"></div>
+
+  <script>
+    let current = 0;
+    let presentationMode = false;
+
+    tinymce.init({
+      selector: "#editor",
+      height: "85vh",
+      menubar: false,
+      plugins: "fullscreen code",
+      toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | fullscreen code",
+      setup: function (editor) {
+        editor.on("init", () => showSlide(0));
+      }
+    });
+
+    function getSlides() {
+      return tinymce.get("editor").dom.select("section.slide");
+    }
+
+    function showSlide(index) {
+      const slides = getSlides();
+      if (!slides.length) return;
+      slides.forEach((s, i) => s.style.display = (i === index ? "block" : "none"));
+      current = (index + slides.length) % slides.length;
+
+      if (presentationMode) {
+        const pres = document.getElementById("presentation");
+        pres.innerHTML = slides[current].innerHTML;
+      }
+    }
+
+    function nextSlide() {
+      showSlide(current + 1);
+    }
+
+    function prevSlide() {
+      showSlide(current - 1);
+    }
+
+    function addSlide() {
+      const editor = tinymce.get("editor");
+      editor.insertContent('<section class="slide"><h1>Novo Slide</h1><p>Edite aqui...</p></section>');
+      const slides = getSlides();
+      showSlide(slides.length - 1);
+    }
+
+    function saveSlides() {
+      const content = tinymce.get("editor").getContent();
+      const blob = new Blob([content], { type: "text/html;charset=utf-8" });
+      saveAs(blob, "apresentacao.html");
+    }
+
+    function startPresentation() {
+      const pres = document.getElementById("presentation");
+      pres.style.display = "block";
+      pres.className = "presentation";
+      presentationMode = true;
+      showSlide(current);
+
+      // entra no fullscreen
+      if (pres.requestFullscreen) pres.requestFullscreen();
+      else if (pres.webkitRequestFullscreen) pres.webkitRequestFullscreen();
+      else if (pres.msRequestFullscreen) pres.msRequestFullscreen();
+    }
+
+    // sair do fullscreen → volta ao editor
+    document.addEventListener("fullscreenchange", () => {
+      if (!document.fullscreenElement) {
+        presentationMode = false;
+        document.getElementById("presentation").style.display = "none";
+        showSlide(current);
+      }
+    });
+
+    document.addEventListener("keydown", e => {
+      if (presentationMode) {
+        if (e.key === "ArrowRight") nextSlide();
+        if (e.key === "ArrowLeft") prevSlide();
+        if (e.key === "Escape") document.exitFullscreen();
+      } else {
+        if (e.key === "ArrowRight") nextSlide();
+        if (e.key === "ArrowLeft") prevSlide();
+      }
+    });
+  </script>
+</body>
+</html>
+
