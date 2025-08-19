@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leitor de PDF — Link & Arquivo Local</title>
+  <style>
+    :root{
+      --bg:#0b0f14; --fg:#e6edf3; --muted:#9fb0c3; --accent:#7cc4ff; --card:#0f141b; --border:#1e2937;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--fg);}
+    header{position:sticky;top:0;z-index:10;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .toolbar{display:flex;gap:.5rem;align-items:center;padding:.75rem;flex-wrap:wrap}
+    .toolbar input[type="text"]{flex:1;min-width:180px;background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:.75rem;padding:.6rem .8rem}
+    .btn{background:var(--card);color:var(--fg);border:1px solid var(--border);padding:.55rem .8rem;border-radius:.75rem;cursor:pointer}
+    .btn:hover{border-color:var(--accent)}
+    .btn[disabled]{opacity:.55;cursor:not-allowed}
+    .sep{width:1px;height:34px;background:var(--border);margin:0 .25rem}
+    #viewer{display:grid;grid-template-rows:auto 1fr;min-height:100dvh}
+    #canvasContainer{position:relative;overflow:auto;background:#0a0e13}
+    #pdfCanvas{display:block;margin:0 auto;background:#111;border-radius:.75rem}
+    .status{padding:.4rem .75rem;color:var(--muted);font-size:.9rem}
+    .dropzone{position:absolute;inset:0;display:none;align-items:center;justify-content:center;border:2px dashed var(--accent);border-radius:1rem;background:rgba(124,196,255,.08);color:var(--accent);font-weight:600}
+    .k{font-size:.8rem;color:var(--muted)}
+    .mr{margin-right:.35rem}
+    footer{padding:.75rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--card)}
+    .pages{display:flex;align-items:center;gap:.5rem}
+    input[type="number"]{width:5rem;background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:.5rem;padding:.4rem .5rem}
+    .hidden{display:none}
+    .notice{padding:.5rem .75rem;background:#132031;border:1px solid var(--border);border-radius:.75rem;color:#b7cee8}
+    a{color:var(--accent)}
+  </style>
+</head>
+<body>
+  <div id="viewer">
+    <header>
+      <div class="toolbar">
+        <input id="urlInput" type="text" placeholder="Cole um link de PDF (https://...) e pressione Abrir" />
+        <button id="openUrl" class="btn">Abrir</button>
+        <div class="sep"></div>
+        <label class="btn" for="fileInput">Abrir arquivo local</label>
+        <input id="fileInput" type="file" accept="application/pdf" class="hidden" />
+        <div class="sep"></div>
+        <button id="zoomOut" class="btn" title="Zoom out">−</button>
+        <button id="zoomIn" class="btn" title="Zoom in">＋</button>
+        <button id="fitWidth" class="btn" title="Ajustar à largura">↔</button>
+        <button id="rotate" class="btn" title="Girar 90°">⟳</button>
+        <div class="sep"></div>
+        <input id="searchInput" type="text" placeholder="Buscar texto (Enter)" />
+        <button id="findNext" class="btn">Buscar</button>
+        <span class="k">Dica: arraste e solte um PDF aqui</span>
+      </div>
+    </header>
+
+    <div id="canvasContainer">
+      <canvas id="pdfCanvas"></canvas>
+      <div id="dropzone" class="dropzone">Solte o PDF para abrir</div>
+    </div>
+
+    <footer>
+      <div class="pages">
+        <button id="prev" class="btn">◀</button>
+        <span>Página</span>
+        <input id="pageNumber" type="number" min="1" value="1" />
+        <span id="pageCount">/ 0</span>
+        <button id="next" class="btn">▶</button>
+      </div>
+      <div class="status" id="status">Pronto</div>
+    </footer>
+  </div>
+
+  <!-- PDF.js via CDN. Para uso offline, baixe pdf.min.js e pdf.worker.min.js e referencie localmente. -->
+  <script src="pdf.min.js"></script>
+  <script>
+    // ======= Configuração do PDF.js =======
+    // Para uso offline, substitua por caminho local: ./pdfjs/pdf.min.mjs e ./pdfjs/pdf.worker.min.mjs
+    if (window['pdfjsLib']) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+    }
+
+    // ======= Estado =======
+    const state = {
+      pdfDoc: null,
+      pageNum: 1,
+      pageCount: 0,
+      scale: 1.25,
+      rotation: 0,
+      textLayer: null,
+      cancelRender: null,
+      fitWidthMode: false,
+      currentUrl: null,
+    };
+
+    // ======= Elementos =======
+    const urlInput = document.getElementById('urlInput');
+    const openUrlBtn = document.getElementById('openUrl');
+    const fileInput = document.getElementById('fileInput');
+    const canvas = document.getElementById('pdfCanvas');
+    const ctx = canvas.getContext('2d');
+    const pageNumber = document.getElementById('pageNumber');
+    const pageCountEl = document.getElementById('pageCount');
+    const statusEl = document.getElementById('status');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const zoomInBtn = document.getElementById('zoomIn');
+    const zoomOutBtn = document.getElementById('zoomOut');
+    const rotateBtn = document.getElementById('rotate');
+    const fitWidthBtn = document.getElementById('fitWidth');
+    const searchInput = document.getElementById('searchInput');
+    const findNextBtn = document.getElementById('findNext');
+    const container = document.getElementById('canvasContainer');
+    const dropzone = document.getElementById('dropzone');
+
+    // Helpers UI
+    function setStatus(msg){ statusEl.textContent = msg; }
+    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+    // ======= Carregamento =======
+    async function loadPdfFromUrl(url){
+      try{
+        setStatus('Carregando: ' + url);
+        const loadingTask = pdfjsLib.getDocument({ url, withCredentials: false });
+        const pdf = await loadingTask.promise;
+        await onPdfLoaded(pdf, url);
+      }catch(err){
+        console.error(err); setStatus('Falha ao carregar: ' + (err?.message || err));
+      }
+    }
+
+    async function loadPdfFromFile(file){
+      const blobUrl = URL.createObjectURL(file);
+      await loadPdfFromUrl(blobUrl);
+    }
+
+    async function onPdfLoaded(pdfDoc, url){
+      state.pdfDoc = pdfDoc;
+      state.pageNum = 1;
+      state.pageCount = pdfDoc.numPages;
+      state.currentUrl = url;
+      pageNumber.max = state.pageCount;
+      pageNumber.value = 1;
+      pageCountEl.textContent = '/ ' + state.pageCount;
+      setStatus('PDF carregado (' + state.pageCount + ' páginas)');
+      await renderPage();
+      // Ajuste à largura se ativo
+      if(state.fitWidthMode){ fitToWidth(); }
+    }
+
+    // ======= Renderização =======
+    async function renderPage(){
+      if(!state.pdfDoc) return;
+      const pageNum = clamp(parseInt(state.pageNum), 1, state.pageCount);
+      state.pageNum = pageNum; pageNumber.value = pageNum;
+      setStatus(`Renderizando página ${pageNum}…`);
+
+      const page = await state.pdfDoc.getPage(pageNum);
+      const viewport0 = page.getViewport({ scale: state.scale, rotation: state.rotation });
+
+      // Ajuste à largura do container, se ativo
+      let viewport = viewport0;
+      if(state.fitWidthMode){
+        const available = container.clientWidth - 24; // padding virtual
+        const scale = available / viewport0.width;
+        viewport = page.getViewport({ scale, rotation: state.rotation });
+      }
+
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+
+      const renderTask = page.render({ canvasContext: ctx, viewport });
+      await renderTask.promise;
+      setStatus(`Página ${pageNum} de ${state.pageCount}`);
+
+      // Ativa/desativa navegação
+      prevBtn.disabled = pageNum <= 1; nextBtn.disabled = pageNum >= state.pageCount;
+    }
+
+    function fitToWidth(){
+      state.fitWidthMode = true;
+      renderPage();
+    }
+
+    // ======= Busca simples (texto) =======
+    async function findText(term){
+      if(!state.pdfDoc || !term) return;
+      const page = await state.pdfDoc.getPage(state.pageNum);
+      const textContent = await page.getTextContent();
+      const text = textContent.items.map(i=>i.str).join('\n');
+      const idx = text.toLowerCase().indexOf(term.toLowerCase());
+      if(idx === -1){ setStatus('Texto não encontrado nesta página'); return; }
+      setStatus('Ocorrência encontrada nesta página. Use Próx./Ant. para navegar páginas.');
+    }
+
+    // ======= Eventos =======
+    openUrlBtn.addEventListener('click', ()=>{
+      const url = urlInput.value.trim();
+      if(url) loadPdfFromUrl(url);
+    });
+    urlInput.addEventListener('keydown', e=>{ if(e.key==='Enter') openUrlBtn.click(); });
+
+    fileInput.addEventListener('change', (e)=>{
+      const f = e.target.files?.[0]; if(f) loadPdfFromFile(f);
+    });
+
+    // Drag & Drop
+    ['dragenter','dragover'].forEach(ev=>{
+      container.addEventListener(ev, (e)=>{ e.preventDefault(); e.dataTransfer.dropEffect='copy'; dropzone.style.display='flex'; });
+    });
+    ['dragleave','drop'].forEach(ev=>{
+      container.addEventListener(ev, (e)=>{ e.preventDefault(); if(ev==='drop'){
+        const f = e.dataTransfer.files?.[0]; if(f) loadPdfFromFile(f);
+      } dropzone.style.display='none'; });
+    });
+
+    prevBtn.addEventListener('click', ()=>{ if(state.pageNum>1){ state.pageNum--; renderPage(); }});
+    nextBtn.addEventListener('click', ()=>{ if(state.pageNum<state.pageCount){ state.pageNum++; renderPage(); }});
+    pageNumber.addEventListener('change', ()=>{ state.pageNum = parseInt(pageNumber.value||'1'); renderPage(); });
+
+    zoomInBtn.addEventListener('click', ()=>{ state.scale = clamp(state.scale*1.2, .2, 6); state.fitWidthMode=false; renderPage(); });
+    zoomOutBtn.addEventListener('click', ()=>{ state.scale = clamp(state.scale/1.2, .2, 6); state.fitWidthMode=false; renderPage(); });
+    fitWidthBtn.addEventListener('click', ()=>{ state.fitWidthMode = !state.fitWidthMode; renderPage(); });
+
+    let rot = 0; rotateBtn.addEventListener('click', ()=>{ state.rotation = (state.rotation+90)%360; renderPage(); });
+
+    findNextBtn.addEventListener('click', ()=>{ findText(searchInput.value.trim()); });
+    searchInput.addEventListener('keydown', e=>{ if(e.key==='Enter') findNextBtn.click(); });
+
+    // Teclas
+    window.addEventListener('keydown', (e)=>{
+      if(e.target.matches('input,textarea')) return;
+      if(e.key==='ArrowLeft'){ prevBtn.click(); }
+      if(e.key==='ArrowRight'){ nextBtn.click(); }
+      if(e.key==='+'){ zoomInBtn.click(); }
+      if(e.key==='-'){ zoomOutBtn.click(); }
+      if(e.key==='f'){ fitWidthBtn.click(); }
+      if(e.key==='r'){ rotateBtn.click(); }
+    });
+
+    // Abrir link ?src=...
+    const params = new URLSearchParams(location.search);
+    if(params.has('src')){
+      urlInput.value = params.get('src');
+      openUrlBtn.click();
+    }
+
+    // Fallback: se PDF.js não carregar, usa <iframe> nativo
+    window.addEventListener('error', (e)=>{
+      if(!window['pdfjsLib']){
+        setStatus('PDF.js indisponível — usando visualização nativa do navegador');
+        const iframe = document.createElement('iframe');
+        iframe.style.width='100%'; iframe.style.height='100%'; iframe.style.border='0';
+        container.innerHTML=''; container.appendChild(iframe);
+        function setSrc(u){ iframe.src = u; }
+        openUrlBtn.onclick = ()=>{ const u=urlInput.value.trim(); if(u) setSrc(u); };
+        fileInput.onchange = (ev)=>{ const f=ev.target.files?.[0]; if(f){ const u=URL.createObjectURL(f); setSrc(u);} };
+        // Desabilita controles que dependem do PDF.js
+        [prevBtn,nextBtn,zoomInBtn,zoomOutBtn,rotateBtn,fitWidthBtn,findNextBtn].forEach(b=>b.disabled=true);
+      }
+    }, { once:true });
+  </script>
+</body>
+</html>
+
