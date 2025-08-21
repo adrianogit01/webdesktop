@@ -87,6 +87,9 @@
       background: #263044; color: #e6f0ff; font-weight: 600;
     }
     .controls button:hover { background: #31405c; }
+    /* As regras abaixo afetam a visualização no editor TinyMCE (fora do fullscreen) */
+    /* OBS: o CSS do documento não entra no iframe do TinyMCE, então usamos content_style no init para isso. */
+    /* Para referência, mantemos as classes aqui também. */
     .tinymce-content .slide,
     .presentation .slide {
       width: 1280px; height: 720px;
@@ -138,6 +141,15 @@
       menubar: false,
       plugins: 'code fullscreen lists link image table',
       toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image table | code',
+      /* aplica estilos dentro do iframe do TinyMCE (centraliza slide e dá fundo neutro) */
+      content_style: `
+        html,body{height:100%}
+        body{margin:0;background:#0f1115;padding:24px;}
+        section.slide{margin:24px auto !important; width:1280px; height:720px; background:#fff; color:#111827; padding:64px; border-radius:24px; box-shadow:0 1px 0 rgba(0,0,0,.04), 0 12px 40px rgba(0,0,0,.22);}
+        section.slide h1{font-size:56px;margin:0 0 16px;}
+        section.slide h2{font-size:36px;margin:12px 0;}
+        section.slide p{font-size:20px;line-height:1.5;}
+      `,
       setup(editor){
         editor.on('init', () => { showSlide(0); rebuildThumbnails(); });
         editor.on('Change KeyUp SetContent', () => {
@@ -221,7 +233,6 @@
       e.preventDefault();
       const targetIndex = Number(this.dataset.index);
       if (dragSrcIndex === targetIndex) return;
-      const editor = tinymce.get('editor');
       const slides = getSlides();
       const srcNode = slides[dragSrcIndex];
       const destNode = slides[targetIndex];
@@ -289,10 +300,13 @@
       const stage = document.getElementById('stage');
       const W = window.innerWidth, H = window.innerHeight;
       const scale = Math.min(W/1280, H/720);
-      stage.style.transform = `scale(${scale})`;
-      stage.style.transformOrigin = 'top left';
       stage.style.width = '1280px';
       stage.style.height = '720px';
+      stage.style.position = 'absolute';
+      stage.style.top = '50%';
+      stage.style.left = '50%';
+      stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      stage.style.transformOrigin = 'center center';
     }
     function renderStageFrom(slideNode){
       const stage = document.getElementById('stage');
