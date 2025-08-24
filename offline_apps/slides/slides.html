@@ -4,10 +4,290 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Slides (PowerPoint-like) — TinyMCE + Miniaturas + PDF/PPTX + Fullscreen</title>
-  <script src="jsbib/tinymce.min.js"></script>
-  <script src="jsbib/FileSaver.min.js"></script>
-  <script src="jsbib/pptxgen.bundle.min.js"></script>
-  <script src="jsbib/html-to-image.min.js"></script>
+  <script src="jsbib/tinymce.min.js">
+    // Drag & Drop com Pointer Events (suporte celular e PC)
+    const dnd={};
+    function enablePointerDnD(){
+      document.querySelectorAll('.thumb').forEach(el=>{
+        el.onpointerdown=e=>{
+          if(e.pointerType==='mouse'&&e.button!==0)return;
+          dnd.srcEl=el;
+          dnd.startY=e.clientY;
+          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
+          el.setPointerCapture(e.pointerId);
+          window.onpointermove=pm;
+          window.onpointerup=pu;
+        };
+      });
+    }
+    function startDrag(e){
+      if(dnd.dragging)return;
+      dnd.dragging=true;
+      const el=dnd.srcEl;
+      const ph=document.createElement('div');
+      ph.className='thumb placeholder';
+      ph.style.height=el.offsetHeight+'px';
+      el.parentNode.insertBefore(ph,el.nextSibling);
+      dnd.ph=ph;
+      el.classList.add('dragging');
+    }
+    function pm(e){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
+      if(!dnd.dragging)return;
+      el.style.top=(e.clientY-dnd.offsetY)+'px';
+      el.style.left=el.getBoundingClientRect().left+'px';
+      const thumbs=document.getElementById('thumbs');
+      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
+      let before=null;
+      for(const n of sib){
+        const r=n.getBoundingClientRect();
+        if(e.clientY<r.top+r.height/2){before=n;break;}
+      }
+      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
+      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
+    }
+    function pu(){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      let newIndex=0;
+      if(dnd.dragging&&dnd.ph){
+        const thumbs=document.getElementById('thumbs');
+        const nodes=[...thumbs.children];
+        newIndex=nodes.indexOf(dnd.ph);
+        const oldIndex=parseInt(el.dataset.index);
+        const slides=getSlides();
+        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
+          const src=slides[oldIndex];
+          const dest=slides[newIndex];
+          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
+        }
+      }
+      el.classList.remove('dragging');
+      if(dnd.ph)dnd.ph.remove();
+      dnd.srcEl=null;
+      dnd.dragging=false;
+      window.onpointermove=null;
+      window.onpointerup=null;
+      rebuildThumbnails();
+      showSlide(newIndex||0);
+    }
+
+</script>
+  <script src="jsbib/FileSaver.min.js">
+    // Drag & Drop com Pointer Events (suporte celular e PC)
+    const dnd={};
+    function enablePointerDnD(){
+      document.querySelectorAll('.thumb').forEach(el=>{
+        el.onpointerdown=e=>{
+          if(e.pointerType==='mouse'&&e.button!==0)return;
+          dnd.srcEl=el;
+          dnd.startY=e.clientY;
+          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
+          el.setPointerCapture(e.pointerId);
+          window.onpointermove=pm;
+          window.onpointerup=pu;
+        };
+      });
+    }
+    function startDrag(e){
+      if(dnd.dragging)return;
+      dnd.dragging=true;
+      const el=dnd.srcEl;
+      const ph=document.createElement('div');
+      ph.className='thumb placeholder';
+      ph.style.height=el.offsetHeight+'px';
+      el.parentNode.insertBefore(ph,el.nextSibling);
+      dnd.ph=ph;
+      el.classList.add('dragging');
+    }
+    function pm(e){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
+      if(!dnd.dragging)return;
+      el.style.top=(e.clientY-dnd.offsetY)+'px';
+      el.style.left=el.getBoundingClientRect().left+'px';
+      const thumbs=document.getElementById('thumbs');
+      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
+      let before=null;
+      for(const n of sib){
+        const r=n.getBoundingClientRect();
+        if(e.clientY<r.top+r.height/2){before=n;break;}
+      }
+      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
+      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
+    }
+    function pu(){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      let newIndex=0;
+      if(dnd.dragging&&dnd.ph){
+        const thumbs=document.getElementById('thumbs');
+        const nodes=[...thumbs.children];
+        newIndex=nodes.indexOf(dnd.ph);
+        const oldIndex=parseInt(el.dataset.index);
+        const slides=getSlides();
+        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
+          const src=slides[oldIndex];
+          const dest=slides[newIndex];
+          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
+        }
+      }
+      el.classList.remove('dragging');
+      if(dnd.ph)dnd.ph.remove();
+      dnd.srcEl=null;
+      dnd.dragging=false;
+      window.onpointermove=null;
+      window.onpointerup=null;
+      rebuildThumbnails();
+      showSlide(newIndex||0);
+    }
+
+</script>
+  <script src="jsbib/pptxgen.bundle.min.js">
+    // Drag & Drop com Pointer Events (suporte celular e PC)
+    const dnd={};
+    function enablePointerDnD(){
+      document.querySelectorAll('.thumb').forEach(el=>{
+        el.onpointerdown=e=>{
+          if(e.pointerType==='mouse'&&e.button!==0)return;
+          dnd.srcEl=el;
+          dnd.startY=e.clientY;
+          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
+          el.setPointerCapture(e.pointerId);
+          window.onpointermove=pm;
+          window.onpointerup=pu;
+        };
+      });
+    }
+    function startDrag(e){
+      if(dnd.dragging)return;
+      dnd.dragging=true;
+      const el=dnd.srcEl;
+      const ph=document.createElement('div');
+      ph.className='thumb placeholder';
+      ph.style.height=el.offsetHeight+'px';
+      el.parentNode.insertBefore(ph,el.nextSibling);
+      dnd.ph=ph;
+      el.classList.add('dragging');
+    }
+    function pm(e){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
+      if(!dnd.dragging)return;
+      el.style.top=(e.clientY-dnd.offsetY)+'px';
+      el.style.left=el.getBoundingClientRect().left+'px';
+      const thumbs=document.getElementById('thumbs');
+      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
+      let before=null;
+      for(const n of sib){
+        const r=n.getBoundingClientRect();
+        if(e.clientY<r.top+r.height/2){before=n;break;}
+      }
+      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
+      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
+    }
+    function pu(){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      let newIndex=0;
+      if(dnd.dragging&&dnd.ph){
+        const thumbs=document.getElementById('thumbs');
+        const nodes=[...thumbs.children];
+        newIndex=nodes.indexOf(dnd.ph);
+        const oldIndex=parseInt(el.dataset.index);
+        const slides=getSlides();
+        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
+          const src=slides[oldIndex];
+          const dest=slides[newIndex];
+          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
+        }
+      }
+      el.classList.remove('dragging');
+      if(dnd.ph)dnd.ph.remove();
+      dnd.srcEl=null;
+      dnd.dragging=false;
+      window.onpointermove=null;
+      window.onpointerup=null;
+      rebuildThumbnails();
+      showSlide(newIndex||0);
+    }
+
+</script>
+  <script src="jsbib/html-to-image.min.js">
+    // Drag & Drop com Pointer Events (suporte celular e PC)
+    const dnd={};
+    function enablePointerDnD(){
+      document.querySelectorAll('.thumb').forEach(el=>{
+        el.onpointerdown=e=>{
+          if(e.pointerType==='mouse'&&e.button!==0)return;
+          dnd.srcEl=el;
+          dnd.startY=e.clientY;
+          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
+          el.setPointerCapture(e.pointerId);
+          window.onpointermove=pm;
+          window.onpointerup=pu;
+        };
+      });
+    }
+    function startDrag(e){
+      if(dnd.dragging)return;
+      dnd.dragging=true;
+      const el=dnd.srcEl;
+      const ph=document.createElement('div');
+      ph.className='thumb placeholder';
+      ph.style.height=el.offsetHeight+'px';
+      el.parentNode.insertBefore(ph,el.nextSibling);
+      dnd.ph=ph;
+      el.classList.add('dragging');
+    }
+    function pm(e){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
+      if(!dnd.dragging)return;
+      el.style.top=(e.clientY-dnd.offsetY)+'px';
+      el.style.left=el.getBoundingClientRect().left+'px';
+      const thumbs=document.getElementById('thumbs');
+      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
+      let before=null;
+      for(const n of sib){
+        const r=n.getBoundingClientRect();
+        if(e.clientY<r.top+r.height/2){before=n;break;}
+      }
+      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
+      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
+    }
+    function pu(){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      let newIndex=0;
+      if(dnd.dragging&&dnd.ph){
+        const thumbs=document.getElementById('thumbs');
+        const nodes=[...thumbs.children];
+        newIndex=nodes.indexOf(dnd.ph);
+        const oldIndex=parseInt(el.dataset.index);
+        const slides=getSlides();
+        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
+          const src=slides[oldIndex];
+          const dest=slides[newIndex];
+          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
+        }
+      }
+      el.classList.remove('dragging');
+      if(dnd.ph)dnd.ph.remove();
+      dnd.srcEl=null;
+      dnd.dragging=false;
+      window.onpointermove=null;
+      window.onpointerup=null;
+      rebuildThumbnails();
+      showSlide(newIndex||0);
+    }
+
+</script>
   <style>
     :root {
       --sidebar-w: 220px;
@@ -354,6 +634,76 @@
       }
     });
     window.addEventListener('resize', () => { if (presentationMode) fitStage(); });
-  </script>
+  
+    // Drag & Drop com Pointer Events (suporte celular e PC)
+    const dnd={};
+    function enablePointerDnD(){
+      document.querySelectorAll('.thumb').forEach(el=>{
+        el.onpointerdown=e=>{
+          if(e.pointerType==='mouse'&&e.button!==0)return;
+          dnd.srcEl=el;
+          dnd.startY=e.clientY;
+          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
+          el.setPointerCapture(e.pointerId);
+          window.onpointermove=pm;
+          window.onpointerup=pu;
+        };
+      });
+    }
+    function startDrag(e){
+      if(dnd.dragging)return;
+      dnd.dragging=true;
+      const el=dnd.srcEl;
+      const ph=document.createElement('div');
+      ph.className='thumb placeholder';
+      ph.style.height=el.offsetHeight+'px';
+      el.parentNode.insertBefore(ph,el.nextSibling);
+      dnd.ph=ph;
+      el.classList.add('dragging');
+    }
+    function pm(e){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
+      if(!dnd.dragging)return;
+      el.style.top=(e.clientY-dnd.offsetY)+'px';
+      el.style.left=el.getBoundingClientRect().left+'px';
+      const thumbs=document.getElementById('thumbs');
+      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
+      let before=null;
+      for(const n of sib){
+        const r=n.getBoundingClientRect();
+        if(e.clientY<r.top+r.height/2){before=n;break;}
+      }
+      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
+      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
+    }
+    function pu(){
+      if(!dnd.srcEl)return;
+      const el=dnd.srcEl;
+      let newIndex=0;
+      if(dnd.dragging&&dnd.ph){
+        const thumbs=document.getElementById('thumbs');
+        const nodes=[...thumbs.children];
+        newIndex=nodes.indexOf(dnd.ph);
+        const oldIndex=parseInt(el.dataset.index);
+        const slides=getSlides();
+        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
+          const src=slides[oldIndex];
+          const dest=slides[newIndex];
+          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
+        }
+      }
+      el.classList.remove('dragging');
+      if(dnd.ph)dnd.ph.remove();
+      dnd.srcEl=null;
+      dnd.dragging=false;
+      window.onpointermove=null;
+      window.onpointerup=null;
+      rebuildThumbnails();
+      showSlide(newIndex||0);
+    }
+
+</script>
 </body>
 </html>
