@@ -414,14 +414,30 @@ body.mobile-mode .shortcut{font-size:28px;width:64px}
   <a href="#" onclick="openApp({url:'offline_apps/terminal.html', title:'Terminal 👨🏽‍💻'})">👨🏽‍💻 Terminal</a>
   <a href="#" onclick="openApp({url:'offline_apps/base64.html', title:'Base64 🧑🏽‍💻'})">🧑🏽‍💻 Base64</a>
   <a href="#" onclick="openApp({url:'offline_apps/gravador.html', title:'Gravador 🎤'})">🎤 Gravador</a>
-
   <hr>
+    <strong>➕ Adicionar novo atalho:</strong>
+<form id="addShortcutForm" style="margin-top:8px;">
+  <input type="text" id="shortcutName" placeholder="Nome do atalho" required style="width:60%; padding:4px;"/>
+  <input type="url" id="shortcutURL" placeholder="URL do atalho" required style="width:35%; padding:4px;"/>
+  <button type="submit" class="button" style="padding:5px 10px;">Adicionar</button>
+</form>
+
+<hr>
+<strong>💾 Exportar / Importar atalhos</strong><br>
+<button id="exportBtn" class="button" style="margin-top:5px;">Exportar atalhos (JSON)</button><br><br>
+<label for="importInput" style="cursor:pointer; text-decoration: underline; color: #ccc; padding:4px;">
+  📂 Importar atalhos (JSON)
+</label>
+<input type="file" id="importInput" accept=".json" style="display:none; padding:4px;">
+<button id="mostrarTodosBtn" class="button">👁️ Mostrar todos os atalhos ocultos</button>
+<hr>
   <strong>📱 Apps Nativos:</strong>
 
   <a href="#" onclick="openApp({url:'brave://', title:'🦁 Brave'})">🦁 Brave</a>
   <a href="#" onclick="openApp({url:'spotify://', title:'🎵 Spotify'})">🎵 Spotify</a>
   <a href="#" onclick="openApp({url:'youtube://', title:'📺 YouTube'})">📺 YouTube</a>
   <a href="#" onclick="openApp({url:'whatsapp://send?text=Olá', title:'📲 WhatsApp'})">📲 WhatsApp</a>
+  <a href="#" onclick="openApp({url:'sms://', title:'💬 Mensagens'})">💬 Mensagens</a>
 
   <hr>
   
