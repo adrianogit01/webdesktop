@@ -478,11 +478,11 @@ function shouldUseActivity(url){
 }
 
 function openApp({url,title,mode}){
-  if(mode==='activity' || shouldUseActivity(url)){
+  /*if(mode==='activity' || shouldUseActivity(url)){
     ActivityManager.open({url,title});
-  }else{
+  }else{*/
     WindowKernel.create({url,title});
-  }
+  //}
 }
 </script>
 
