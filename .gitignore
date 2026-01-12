@@ -1,0 +1,15 @@
+# Arquivo específico
+index.old.html
+Refatoração Index.mhtml
+
+# Arquivos comuns que você pode querer ignorar também
+node_modules/
+dist/
+build/
+.env
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
