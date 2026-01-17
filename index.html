@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -24,19 +24,27 @@
       });
     }
   </script>
-<title>Web Desktop</title>
-
-<meta name="theme-color" content="#1e1e1e">
-<meta name="apple-mobile-web-app-capable" content="yes">
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  background:#1e1e1e;
-  color:white;
-  font-family:Arial,sans-serif;
-  overflow:hidden;
-}
+  <title>Desktop Web</title>
+  <style>
+      * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+ 
+    
+    body {
+    min-height: 200vh;
+      /* força o dobro da altura da tela */
+      ;
+    background: #1e1e1e;
+    font-family: Arial, sans-serif;
+    color: white;
+    transition: background 0.5s ease;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+   }
 
 body.fundo-imagem {
   background: url("images/trigo.jpg") no-repeat center center;
@@ -44,113 +52,28 @@ body.fundo-imagem {
   background-attachment: fixed;
 }
 
-/* ===== DESKTOP ===== */
-.desktop{
-  position:absolute;
-  inset:0;
-  bottom:50px;
-  padding:12px;
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-}
 
-.shortcut{
-  width:80px;
-  text-align:center;
-  cursor:pointer;
-  font-size:14px;
-}
-
-  .shortcut img {
-      width: 48px;
-      height: 48px;
-    }
-
-.shortcut span{display:block}
-
- .shortcut-taskbar {
-      width: 60px;
-      text-align: center;
-      cursor: pointer;
-      color: white;
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-/* ===== WINDOWS ===== */
-.window{
-  position:absolute;
-  width:420px;
-  height:560px;
-  background:rgba(255,255,255,.08);
-  backdrop-filter:blur(16px) saturate(180%);
-  border:1px solid rgba(255,255,255,.2);
-  border-radius:8px;
-  display:none;
-}
-
-.titlebar{
-  height:36px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 10px;
-  background:rgba(255,255,255,.1);
-  cursor:move;
-}
-
-.window-buttons button{
-  background:none;
-  border:none;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-}
-
-iframe{
-  width:100%;
-  height:calc(100% - 36px);
-  border:none;
-}
-
-.resizer{
-  position:absolute;
-  width:24px;
-  height:24px;
-  right:0;
-  bottom:0;
-  cursor:nwse-resize;
-}
-
-/* ===== TASKBAR ===== */
-.taskbar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  height:50px;
-  backdrop-filter: blur(20px);
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 50px;
+      backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       background: rgba(120, 120, 120, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.2);
-  display:flex;
-  align-items:center;
-  padding:0 12px;
-  z-index:100;
-}
-
-.taskbar button{
-  background:none;
-  border:none;
-  color:white;
-  font-size:20px;
-  cursor:pointer;
-}
-
- #searchInput {
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      z-index: 100;
+      
+    }
+    
+         
+      
+   #searchInput {
      width: 100%;
      padding: 6px 8px;
      margin-bottom: 8px;
@@ -158,10 +81,117 @@ iframe{
      border: 1px solid #ccc;
      border-radius: 4px;
    }
+   
+     .menu.show {
+      display: block;
+    }
 
-/* ===== MENU ===== */
+    .menu a {
+      display: block;
+      padding: 10px;
+      color: white;
+      text-decoration: none;
+    }
 
-  .start-button {
+    .menu a:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .window {
+      position: absolute;
+      width: 400px;
+      height: 550px;
+      /*background: rgba(0, 0, 0, 0.8);
+      border: 1px solid white;*/
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(15px) saturate(180%);
+      -webkit-backdrop-filter: blur(15px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: none;
+      resize: both;
+      overflow: hidden;
+      z-index: 10;
+       box-shadow:
+        inset 0 0 0.5px rgba(255, 255, 255, 0.4),
+        0 0 30px rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      /*transition: all 0.3s ease;*/
+    }
+    
+   
+     .window::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(
+          circle at top left,
+          rgba(255, 255, 255, 0.35) 0%,
+          transparent 60%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(255, 255, 255, 0.15) 0%,
+          transparent 80%
+        );
+      mask-image: linear-gradient(to bottom right, rgba(255,255,255,0.7), transparent);
+    }
+    
+    
+   .titlebar {
+      height: 35px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      /*background: rgba(0, 0, 0, 0.6);*/
+      background: rgba(120, 120, 120, 0.2);
+      padding: 0 1rem;
+      cursor: move;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      touch-action: none;
+      font-weight: bold;
+    }
+    
+    
+   .titlebar .window-buttons button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      padding: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .titlebar .window-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100% - 30px);
+      border: none;
+    }
+
+    .window .resizer {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      bottom: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.1);
+      cursor: nwse-resize;
+      z-index: 5;
+      touch-action: none;
+      border-top-left-radius: 5px;
+    }
+    
+    
+    .start-button {
   height: 35px;
   background-color: #706f6f;
   border: none;
@@ -191,26 +221,82 @@ iframe{
   background: rgba(255, 255, 255, 0.3);
 }
 
-.menu{
-  position:fixed;
-  bottom:56px;
-  left:12px;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(14px);
-  max-height: 50%;
-  padding:12px;
-  border-radius:10px;
-  display:none;
-  overflow-y: auto;
-}
-.menu.show{display:block}
-.menu a{color:white;text-decoration:none;display:block;margin-bottom:8px}
 
-.menu a:hover {
+    .menu {
+      position: fixed;
+      background: rgba(12, 12, 12, 0.6);
+      backdrop-filter: blur(15px) saturate(160%);
+      -webkit-backdrop-filter: blur(15px) saturate(160%);
+      bottom: 55px;
+      left: 10px;
+      width: 350px;
+      /*max-height: 75vh;*/
+      max-height: 50%;
+      padding: 10px;
+      display: none;
+      border-radius: 8px;
+      z-index: 100;
+      overflow-y: auto;
+      box-shadow:
+        inset 0 0 0.5px rgba(255, 255, 255, 0.4),
+        0 0 30px rgba(255, 255, 255, 0.05);
+      /* Adiciona a barra de rolagem quando necessário */
+    }
+
+    .taskbar-window-btn {
+      margin-left: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .taskbar-window-btn:hover {
       background: rgba(255, 255, 255, 0.2);
     }
+
+    .desktop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 50px;
+      /* Altura da taskbar */
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+
     
-  #ad-google {
+   .shortcut {
+      width: 80px;
+      text-align: center;
+      cursor: pointer;
+      color: white;
+    }
+
+    .shortcut img {
+      width: 48px;
+      height: 48px;
+    }
+    
+    .shortcut-taskbar {
+      width: 60px;
+      text-align: center;
+      cursor: pointer;
+      color: white;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #ad-google {
       position: fixed;
       top: 10px;
       right: 10px;
@@ -221,18 +307,17 @@ iframe{
       border-radius: 6px;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
       overflow: hidden;
-    }   
-    
-    
-.zoom-control {
+    }
+
+    .zoom-control {
       margin-left: auto;
       color: white;
       display: flex;
       align-items: center;
       gap: 10px;
-    }    
+    }
 
- .zoom-control input[type="range"] {
+    .zoom-control input[type="range"] {
       width: 120px;
     }
     
@@ -243,7 +328,6 @@ iframe{
     .grey-filter {
     filter: grayscale(1) invert(1);
    }
-   
    
 #iframe-relogio {
   position: absolute;
@@ -264,7 +348,7 @@ iframe{
   background: #222; 
   color: #fff; 
   border-radius: 8px;
-}   
+}
 
 /* ===== MOBILE MODE ===== */
 body.mobile-mode .shortcut span{display:none}
@@ -313,7 +397,9 @@ body.mobile-mode .shortcut{font-size:28px;width:64px}
 .dock.collapsed .dock-items{display:none}
 .dock.radial .dock-items{bottom:70px;right:0;flex-direction:column}
 .dock.linear .dock-items{right:70px;bottom:6px;flex-direction:row}
-</style>
+
+ 
+  </style>
    <!-- Script do Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4818539305804157"
     crossorigin="anonymous"></script>
@@ -327,94 +413,117 @@ body.mobile-mode .shortcut{font-size:28px;width:64px}
     <p>Este é um ambiente simulado de desktop no navegador, feito em HTML, CSS e JS. Explore aplicativos como
       calculadora, player de mídia e navegador web!</p>
   </div>-->
-<div id="desktop" class="desktop">
+   <div id="desktop" class="desktop">
   <!-- <iframe src="offline_apps/relogio.html" id="iframe-relogio" pointer-events: none; z-index: 0;"></iframe>-->
+    <!--<div class="shortcut" onclick="openWindow('https://google.com/?igu=1', 'Google 🇬')">
+      <img src="images/google.png" alt="Google">
+      <span>🇬 Google</span>
+    </div>-->
+    <div class="shortcut" onclick="openWindow('offline_apps/word/word.html', 'Word-Like 📄')">
+     <!--<img src="images/word.png" alt="Word">-->
+      <span>📄 Word-Like</span>
+    </div>
+    <div class="shortcut" data-id="player" onclick="openWindow('offline_apps/player.html', 'Player 🎞️')">
+      <span>🎞️ Player</span>
+    </div>
+    <div class="shortcut" data-id="rss" onclick="openWindow('offline_apps/rss.html', 'RSS 📡')">
+      <span>📡 RSS</span>
+    </div>
+    <div class="shortcut" data-id="matinal" onclick="openWindow('offline_apps/rotina.html', 'Matinal 🌄')">
+      <span>🌄 Rotina Matinal</span>
+    </div>
+    <div class="shortcut" data-id="tarefas" onclick="openWindow('offline_apps/tarefas.html', 'Tarefas ✔️')">
+      <span>✔️ Tarefas</span>
+    </div><br>
+    <div class="shortcut" data-id="calcdata" onclick="openWindow('offline_apps/calcdata.html', 'Calc. de Datas 🗓️')">
+      <span>🗓️ Cal. de Datas</span>
+    </div>
+    <div class="shortcut" data-id="porcentagem" onclick="openWindow('offline_apps/porcentagem.html', 'Calc. de Porcentagem 🔣')">
+      <span>🔣 Cal. de Porcentagem</span>
+    </div>
+    <!-- Anúncio -->
+    <!--<div id="ad-google">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1234567890123456" data-ad-slot="9876543210"
+        data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>-->
+  </div>
+
+  <!-- Barra de tarefas -->
+  <div class="taskbar">
+    <!--<button onclick="toggleMenu()">🪟 Iniciar</button>-->
+        <button class="start-button" onclick="toggleMenu()">☰ Iniciar</button>
+    <div class="shortcut-taskbar" onclick="openWindow('offline_apps/filemanager.html', 'Files 🗂️')">
+      <span>🗂️ Files</span>
+    </div>
+    <div class="zoom-control">
+      <label for="zoomSlider">Zoom:</label>
+      <input id="zoomSlider" type="range" min="50" max="150" value="100">
+    </div>
+   <!-- <div class="calendario">
+  <h3 id="data-atual"></h3>
+  <label>📅 Calendário</label><br>
+  <input id="calendario" class="form-control" type="date" />
+</div>-->
+
+  </div>
   
-  <div class="shortcut" onclick="openApp({url:'offline_apps/word/word.html', title:'Word-Like 📄'})">
-    <span>📄 Word-Like</span>
-  </div>
-
-  <div class="shortcut" data-id="player" onclick="openApp({url:'offline_apps/player.html', title:'Player 🎞️'})">
-    <span>🎞️ Player</span>
-  </div>
-
-  <div class="shortcut" data-id="rss" onclick="openApp({url:'offline_apps/rss.html', title:'RSS 📡'})">
-    <span>📡 RSS</span>
-  </div>
-
-  <div class="shortcut" data-id="matinal" onclick="openApp({url:'offline_apps/rotina.html', title:'Matinal 🌄'})">
-    <span>🌄 Rotina Matinal</span>
-  </div>
-
-  <div class="shortcut" data-id="tarefas" onclick="openApp({url:'offline_apps/tarefas.html', title:'Tarefas ✔️'})">
-    <span>✔️ Tarefas</span>
-  </div><br>
-
-  <div class="shortcut" data-id="calcdata" onclick="openApp({url:'offline_apps/calcdata.html', title:'Calc. de Datas 🗓️'})">
-    <span>🗓️ Cal. de Datas</span>
-  </div>
-
-  <div class="shortcut" data-id="porcentagem" onclick="openApp({url:'offline_apps/porcentagem.html', title:'Calc. de Porcentagem 🔣'})">
-    <span>🔣 Cal. de Porcentagem</span>
-  </div>
-</div>
-
-<!-- Barra de tarefas -->
-<div class="taskbar">
-   <button onclick="toggleMenu()">   ☰   </button>
-
-  <div class="shortcut-taskbar" onclick="openApp({url:'offline_apps/filemanager.html', title:'Files 🗂️'})">
-    <span>🗂️ Files</span>
-  </div>
-
-  <div class="zoom-control">
-    <label for="zoomSlider">Zoom:</label>
-    <input id="zoomSlider" type="range" min="50" max="150" value="100">
-  </div>
-</div>
-
-
-<div id="startMenu" class="menu">
+   <div class="menu" id="startMenu">
   <input type="text" id="searchInput" placeholder="Pesquisar apps...">
+  
 
-  <strong>🌐 Web Apps (PWAs and Others):</strong>
 
-  <a href="#" data-id="stedit" onclick="openApp({url:'https://stedit.app', title:'Smart Text Editor 🗒️'})">🗒️ Smart Text Editor</a>
-  <a href="#" data-id="ether" onclick="openApp({url:'https://ethercalc.net/jpr8lzsc7boj', title:'EtherCalc 📊'})">📊 EtherCalc</a>
-  <a href="#" data-id="crop" onclick="openApp({url:'https://imageresizer.com/crop-image', title:'Recortar Imagem 🖼️'})">🖼️ Recortar Imagem</a>
-  <a href="#" data-id="paintjs" onclick="openApp({url:'https://paint.js.org', title:'Paint js 🎨'})">🎨 Paint js</a>
-  <a href="#" data-id="photopea" onclick="openApp({url:'https://www.photopea.com/', title:'Photopea 🎨'})">🎨 Photopea</a>
-  <a href="#" data-id="svgedit" onclick="openApp({url:'https://editor.method.ac/', title:'SVG Editor 📐'})">📐 SVG Editor</a>
-  <a href="#" data-id="codedit" onclick="openApp({url:'https://onecompiler.com/html', title:'Code Editor 💻'})">💻 Code Editor</a>
-  <a href="#" onclick="openApp({url:'https://www.onlineocr.net/pt/', title:'Online OCR 🖼️➡️📃'})">🖼️➡️📃 Online OCR</a>
-  <a href="#" onclick="openApp({url:'https://screenmirroring.app/sender', title:'Enviar Tela 🖵'})">🖵 Enviar Tela</a>
-  <a href="#" onclick="openApp({url:'https://screenmirroring.app/receiver', title:'Receber Tela 🖵'})">🖵 Receber Tela</a>
-  <a href="#" onclick="openApp({url:'https://pluto.tv/br/live-tv', title:'Pluto TV 📺'})">📺 Pluto TV</a>
 
-  <strong>💽 Local File System HTML with JS Apps:</strong>
+    <strong>🌐 Web Apps (PWAs and Others):</strong>
+    <!--<a href="#" data-id="google" onclick="openWindow('https://google.com/?igu=1', 'Google 🔍')">🔍 Google</a>-->
+    <!--<a href="#" data-id="duck" onclick="openWindow('https://lite.duckduckgo.com/lite/', 'Duck Duck Go 🦆🔍')">🦆🔍 Duck Duck Go</a>-->
 
-  <a href="#" onclick="openApp({url:'offline_apps/browser.html', title:'Browser 🌎'})">🌎 Browser</a>
-  <a href="#" onclick="openApp({url:'offline_apps/openmaps.html', title:'Open Maps 🗺️'})">🗺️ Open Maps</a>
-  <a href="#" onclick="openApp({url:'offline_apps/googlemaps.html', title:'Google Maps 🧭'})">🧭 Google Maps</a>
-  <a href="#" onclick="openApp({url:'offline_apps/iaoff/webllm-chat.html', title:'IA 🤖'})">🤖 IA</a>
-  <a href="#" onclick="openApp({url:'offline_apps/clima.html', title:'Clima 🌦️'})">🌦️ Clima</a>
-  <a href="#" onclick="openApp({url:'offline_apps/motof3.html', title:'MotoFone F3 📱'})">📱 MotoFone F3</a>
-  <a href="#" onclick="openApp({url:'offline_apps/camera.html', title:'Camera 📸'})">📸 Camera</a>
-  <a href="#" onclick="openApp({url:'offline_apps/excel.html', title:'Excel-Like 📊'})">📊 Excel-Like</a>
-  <a href="#" onclick="openApp({url:'offline_apps/slides/slides.html', title:'Slides 📽️'})">📽️ Slides</a>
-  <a href="#" onclick="openApp({url:'offline_apps/leitorpdf/leitorpdf.html', title:'Leitor de PDF 📄'})">📄 Leitor de PDF</a>
-  <a href="#" onclick="openApp({url:'offline_apps/bloco-notas-offline-editor.html', title:'Bloco de Notas 📄'})">📄 Bloco de Notas</a>
-  <a href="#" onclick="openApp({url:'offline_apps/editorsemantico.html', title:'Editor Semântico 📄'})">📄 Editor Semântico</a>
-  <a href="#" onclick="openApp({url:'offline_apps/recortaimagem.html', title:'Recortador Offline de Imagem 🖼️'})">🖼️ Recortador Offline</a>
-  <a href="#" onclick="openApp({url:'offline_apps/whiteboard/index.html', title:'Paint 🖌️'})">🖌️ Paint Offline</a>
-  <a href="#" onclick="openApp({url:'offline_apps/diario/diario.html', title:'Diário 📓'})">📓 Diário</a>
-  <a href="#" onclick="openApp({url:'offline_apps/calculadora.html', title:'Calculadora 🖩'})">🖩 Calculadora</a>
-  <a href="#" onclick="openApp({url:'offline_apps/youtube-wrapper.html', title:'Youtube 📺'})">📺 Youtube</a>
-  <a href="#" onclick="openApp({url:'offline_apps/iptv.html', title:'IPTV 📺'})">📺 IPTV</a>
-  <a href="#" onclick="openApp({url:'offline_apps/terminal.html', title:'Terminal 👨🏽‍💻'})">👨🏽‍💻 Terminal</a>
-  <a href="#" onclick="openApp({url:'offline_apps/base64.html', title:'Base64 🧑🏽‍💻'})">🧑🏽‍💻 Base64</a>
-  <a href="#" onclick="openApp({url:'offline_apps/gravador.html', title:'Gravador 🎤'})">🎤 Gravador</a>
-  <hr>
+    <a href="#" data-id="stedit" onclick="openWindow('https://stedit.app', 'Smart Text Editor 🗒️')">🗒️ Smart Text Editor</a>
+    <a href="#" data-id="ether" onclick="openWindow('https://ethercalc.net/jpr8lzsc7boj', 'EtherCalc 📊')">📊 EtherCalc</a>
+   <!-- <a href="#" data-id="ng" onclick="openWindow('https://ngexcel-demo.netlify.app', 'NG Excel Demo 📊')">📊 NG Excel Demo</a>-->
+   <!-- <a href="#" data-id="space" onclick="openWindow('http://viewer.spacedesk.net/', 'SpaceDesk 🖥️')">🖥️ SpaceDesk</a>-->
+   <!-- <a href="#" data-id="snapdrop" onclick="openWindow('https://onedoes.github.io/snapdrop/', 'Snapdrop 📡')">📡 Snapdrop</a>-->
+    <a href="#" data-id="crop" onclick="openWindow('https://imageresizer.com/crop-image', 'Recortar Imagem 🖼️')">🖼️ Recortar Imagem</a>
+    <a href="#" data-id="paintjs" onclick="openWindow('https://paint.js.org', 'Paint js 🎨')">🎨 Paint js</a>
+    <a href="#" data-id="photopea" onclick="openWindow('https://www.photopea.com/', 'Photopea 🎨')">🎨 Photopea</a>
+    <a href="#" data-id="svgedit" onclick="openWindow('https://editor.method.ac/', 'SVG Editor 📐')">📐 SVG Editor</a>
+    <a href="#" data-id="codedit" onclick="openWindow('https://onecompiler.com/html', 'Code Editor 💻')">💻 Code Editor</a>
+    <a href="#" data-id="photopea" onclick="openWindow('https://www.onlineocr.net/pt/', 'Online OCR 🖼️➡️📃')">🖼️➡️📃 Online OCR</a>
+    <a href="#" data-id="screensender" onclick="openWindow('https://screenmirroring.app/sender', 'Enviar Tela 🖵')">🖵 Enviar Tela</a>
+    <a href="#" data-id="screenreceiver" onclick="openWindow('https://screenmirroring.app/receiver', 'Receber Tela 🖵')">🖵 Receber Tela</a>
+    <a href="#" data-id="plutotv" onclick="openWindow('https://pluto.tv/br/live-tv', 'Pluto TV 📺')">📺 Pluto TV</a>
+    <a href="#" data-id="jsr5" onclick="openWindow('https://lrq3000.github.io/javascript-racer/v5.game.html', 'JS R 5 🚗')">🚗 JS R 5</a>
+    <a href="#" data-id="vaporboy" onclick="openWindow('https://vaporboy.net/', 'VaporBoy 🎮')">🎮 VaporBoy</a>
+    <a href="#" data-id="pwanes" onclick="openWindow('https://pwa-nes.vercel.app/', 'PwaNes 🎮')">🎮 PwaNes</a>
+    <a href="#" data-id="bird" onclick="openWindow('https://nebezb.com/floppybird/', 'FloppyBird 🐦')">🐦 FloppyBird</a>
+    <a href="#" data-id="tower" onclick="openWindow('https://www.towergame.app/', 'TowerGame 🌇')">🌇 TowerGame</a>
+    <strong>💽 Local File System HTML with JS Apps:</strong>
+    <a href="#" onclick="openWindow('offline_apps/browser.html', 'Browser 🌎')">🌎 Browser</a>
+    <a href="#" onclick="openWindow('offline_apps/openmaps.html', 'Open Maps 🗺️')">🗺️ Open Maps</a>
+    <a href="#" onclick="openWindow('offline_apps/googlemaps.html', 'Google Maps 🧭')">🧭 Google Maps</a>
+    <a href="#" onclick="openWindow('offline_apps/iaoff/webllm-chat.html', 'IA 🤖')">🤖 IA</a>
+    <a href="#" data-id="clima" onclick="openWindow('offline_apps/clima.html', 'Clima 🌦️')">🌦️ Clima</a>
+    <a href="#" data-id="motof3" onclick="openWindow('offline_apps/motof3.html', 'MotoFone F3 📱')">📱 MotoFone F3</a>
+    <a href="#" onclick="openWindow('offline_apps/camera.html', 'Camera 📸')">📸 Camera</a>
+    <a href="#" onclick="openWindow('offline_apps/word/word.html', 'Word-Like 📄')">📄 Word-Like</a>
+    <a href="#" onclick="openWindow('offline_apps/excel.html', 'Excel-Like 📊')">📊 Excel-Like</a>
+    <a href="#" onclick="openWindow('offline_apps/slides/slides.html', 'Slides 📽️')">📽️ Slides</a>
+    <a href="#" onclick="openWindow('offline_apps/leitorpdf/leitorpdf.html', 'Leitor de PDF 📄')">📄 Leitor de PDF</a>
+    <a href="#" onclick="openWindow('offline_apps/bloco-notas-offline-editor.html', 'Bloco de Notas 📄')">📄 Bloco de Notas</a>
+    <a href="#" onclick="openWindow('offline_apps/editorsemantico.html', 'Editor Semântico 📄')">📄 Editor Semântico</a>
+    <a href="#" onclick="openWindow('offline_apps/recortaimagem.html', 'Recortador Offline de Imagem 🖼️')">🖼️ Recortador Offline de Imagem </a>
+    <a href="#" data-id="paintoff" onclick="openWindow('offline_apps/whiteboard/index.html', 'Paint 🖌️')">🖌️ Paint Offline</a>
+    <a href="#" data-id="diario" onclick="openWindow('offline_apps/diario/diario.html', 'Diario 📓')">📓 Diário</a>
+    <a href="#" onclick="openWindow('offline_apps/calculadora.html', 'Calculadora 🖩')">🖩 Calculadora</a>
+    <a href="#" data-id="youtube" onclick="openWindow('offline_apps/youtube-wrapper.html', 'Youtube 📺')">📺 Youtube</a>
+    <a href="#" data-id="iptv" onclick="openWindow('offline_apps/iptv.html', 'IPTV 📺')">📺 IPTV</a>
+    <a href="#" data-id="terminal" onclick="openWindow('offline_apps/terminal.html', 'Terminal 👨🏽‍💻')">👨🏽‍💻 Terminal</a>
+    <a href="#" onclick="openWindow('offline_apps/base64.html', 'Base64 🧑🏽‍💻')">🧑🏽‍💻 Base64</a>
+    <a href="#" onclick="openWindow('offline_apps/gravador.html', 'Gravador 🎤')">🎤 Gravador</a>
+    <!--<a href="#" onclick="openWindow('offline_apps/spacedesk/spacedesk.html', 'SpaceDesk Local 🖥️')">🖥️ Space_Desk Local</a>-->
+<hr>
     <strong>➕ Adicionar novo atalho:</strong>
 <form id="addShortcutForm" style="margin-top:8px;">
   <input type="text" id="shortcutName" placeholder="Nome do atalho" required style="width:60%; padding:4px;"/>
@@ -431,266 +540,53 @@ body.mobile-mode .shortcut{font-size:28px;width:64px}
 <input type="file" id="importInput" accept=".json" style="display:none; padding:4px;">
 <button id="mostrarTodosBtn" class="button">👁️ Mostrar todos os atalhos ocultos</button>
 <hr>
-  <strong>📱 Apps Nativos:</strong>
-
-  <a href="#" onclick="openApp({url:'brave://', title:'🦁 Brave'})">🦁 Brave</a>
-  <a href="#" onclick="openApp({url:'spotify://', title:'🎵 Spotify'})">🎵 Spotify</a>
-  <a href="#" onclick="openApp({url:'youtube://', title:'📺 YouTube'})">📺 YouTube</a>
-  <a href="#" onclick="openApp({url:'whatsapp://send?text=Olá', title:'📲 WhatsApp'})">📲 WhatsApp</a>
-  <a href="#" onclick="openApp({url:'sms://', title:'💬 Mensagens'})">💬 Mensagens</a>
-
-  <hr>
-  
- <button class="button" onclick="toggleTouchpad()">🖱️ Ativar/Desativar Touchpad</button>
+    <strong>📱 Apps Nativos:</strong>
+    <a href="App-Prefs:">⚙️ Ajustes (iOS)</a>
+    <a href="calshow://">🗓️ Calendário</a>
+    <a href="mobilenotes://">📝 Notas</a>
+    <a href="clock-alarm://">⏰ Relógio</a>
+    <a href="camera://">📷 Câmera</a>
+    <a href="calculator://">🧮 Calculadora</a>
+    <a href="http://">🌐 Safari</a>
+    <a href="googlechrome://example.com">🌍 Chrome</a>
+    <a href="brave://">🦁 Brave</a>
+    <a href="google://">🔎 Google</a>
+    <a href="whatsapp://send?text=Olá" target="_blank">📲 WhatsApp</a>
+    <a href="facetime://">📞 FaceTime</a>
+    <a href="mailto:">✉️ Mail</a>
+    <a href="maps://">🗺️ Apple Maps</a>
+    <a href="comgooglemaps://">🗺️ Google Maps</a>
+    <a href="waze://">🧭 Waze</a>
+    <a href="music://">🎵 Apple Music</a>
+    <a href="spotify://">🎵 Spotify</a>
+    <a href="youtube://">📺 YouTube</a>
+    <a href="podcast://">🎙️ Podcasts</a>
+    <a href="photos-redirect://">🖼️ Galeria</a>
+    <a href="sms://">💬 Mensagens</a>
+    <a href="tg://resolve?domain=SeuUsuario">💬 Telegram</a>
+    <a href="sgnl://signal.me/#p/+55119999">🔒 Signal</a>
+     <button class="button" onclick="toggleTouchpad()">🖱️ Ativar/Desativar Touchpad</button>
+    <!-- <button class="button" onclick="iniciarTouchpad()">🖱️ Touchpad</button>-->
     <script src="offline_apps/touchpad.js"></script><br>
-   <button class="button" onclick="alternarFundo()">🌄 Alternar Fundo</button>
+    <button class="button" onclick="alternarFundo()">🌄 Alternar Fundo</button>
     <button class="button" onclick="toggleSepia()">🟤 Modo Sépia</button>
     <script src="offline_apps/sepia-toggle.js"></script>
     <button class="button" onclick="toggleGrey()">⚫ Modo P&B Negativo</button>
     <script src="offline_apps/grey-toggle.js"></script>
-     <div>
+    <div>
     <button class="button" onclick="toggleHUD()">🕶️ Alternar Modo HUD/Holográfico</button>
     <script src="offline_apps/hud-toggle.js"></script>
     </div>
     <button onclick="alternarMenuCentro()" class="button">Alternar Menu: Centro/Esquerda</button>
-  
-  <strong>📢 Público:</strong>
-  <a href="#" onclick="openApp({url:'public/privacidade.html', title:'Privacidade'})">🔏 Privacidade</a>
-  <a href="#" onclick="openApp({url:'public/sobre.html', title:'Sobre'})">📖 Sobre</a>
-</div>
+    <strong>📢 Público:</strong>
+    <a href="#" onclick="openWindow('public/privacidade.html', 'Privacidade')">🔏 Privacidade</a>
+    <a href="#" onclick="openWindow('public/sobre.html', 'Sobre')">📖 Sobre</a>
+  </div>
 
 <div id="mobileDock" class="dock collapsed">
   <div class="dock-core">◉</div>
   <div class="dock-items"></div>
 </div>
-
-<script>
-/* ===== ACTIVITY ===== */
-const ActivityManager={
-  open({url,title}){
-    const win=window.open(url,'_blank','noopener,noreferrer');
-    if(!win) alert('Pop-up bloqueado pelo navegador');
-  }
-};
-
-function shouldUseActivity(url){
-  return /^https?:\/\//.test(url) && !url.startsWith(location.origin);
-}
-
-function openApp({url,title,mode}){
-  /*if(mode==='activity' || shouldUseActivity(url)){
-    ActivityManager.open({url,title});
-  }else{*/
-    WindowKernel.create({url,title});
-  //}
-}
-</script>
-
-<script>
-/* ===== WINDOW KERNEL ===== */
-const WindowKernel=(()=>{
-  let z=10,id=0;
-  const windows=new Map();
-  const gid=()=>`win_${++id}`;
-
-  function focus(w){w.el.style.zIndex=++z}
-
-  function create({url,title}){
-    const el=document.createElement('div');
-    const wid=gid();
-    el.className='window';
-    el.dataset.id=wid;
-    el.style.top='10%';
-    el.style.left='10%';
-    el.style.zIndex=++z;
-    el.innerHTML=`
-      <div class="titlebar">
-        <span class="window-title">${title}</span>
-        <div class="window-buttons">
-          <button onclick="minimizeWindow(this)">➖</button>
-          <button onclick="maximizeWindow(this)">🔳</button>
-          <button onclick="closeWindow(this)">✖️</button>
-        </div>
-      </div>
-      <iframe src="${url}"></iframe>
-      <div class="resizer"></div>`;
-    document.body.appendChild(el);
-
-    const w={id:wid,el,state:'normal'};
-    windows.set(wid,w);
-    attachWindowBehavior(w);
-
-    el.style.display='block';
-    MobileMode.onOpen(w);
-    Dock.render();
-    return w;
-  }
-
-  function close(id){
-    const w=windows.get(id);
-    if(!w)return;
-    w.el.remove();
-    windows.delete(id);
-    Dock.render();
-  }
-
-  function minimize(id){
-    const w=windows.get(id);
-    if(w) w.el.style.display='none';
-  }
-
-  function maximize(id){
-    const w=windows.get(id);
-    if(!w)return;
-    if(w.state!=='max'){
-      w.prev=w.el.getBoundingClientRect();
-      Object.assign(w.el.style,{top:0,left:0,width:'100vw',height:'100vh'});
-      w.state='max';
-    }else{
-      Object.assign(w.el.style,{
-        top:w.prev.top+'px',
-        left:w.prev.left+'px',
-        width:w.prev.width+'px',
-        height:w.prev.height+'px'
-      });
-      w.state='normal';
-    }
-  }
-
-  return{create,close,minimize,maximize,focus,list:()=>[...windows.values()]};
-})();
-</script>
-
-<script>
-/* ===== SNAP ===== */
-const SnapManager={
-  t:40,
-  detect(x,y){
-    if(y<this.t)return'top';
-    if(x<this.t)return'left';
-    if(x>innerWidth-this.t)return'right';
-    return null;
-  },
-  apply(w,z){
-    if(z==='left')Object.assign(w.el.style,{top:0,left:0,width:'50vw',height:'100vh'});
-    if(z==='right')Object.assign(w.el.style,{top:0,left:'50vw',width:'50vw',height:'100vh'});
-    if(z==='top')Object.assign(w.el.style,{top:0,left:0,width:'100vw',height:'100vh'});
-  }
-};
-</script>
-
-<script>
-/* ===== MOBILE MODE ===== */
-const MobileMode={
-  enabled:false,
-  check(){
-    this.enabled=innerWidth<768;
-    document.body.classList.toggle('mobile-mode',this.enabled);
-  },
-  onOpen(w){
-    if(!this.enabled)return;
-    WindowKernel.list().forEach(o=>o!==w&&(o.el.style.display='none'));
-    Object.assign(w.el.style,{display:'block',top:0,left:0,width:'100vw',height:'100vh'});
-  }
-};
-addEventListener('resize',()=>MobileMode.check());
-document.addEventListener('DOMContentLoaded',()=>MobileMode.check());
-</script>
-
-<script>
-/* ===== DOCK ===== */
-const Dock={
-  el:document.getElementById('mobileDock'),
-  items:document.querySelector('.dock-items'),
-
-  init(){
-    this.el.querySelector('.dock-core').onclick=()=>{
-      this.el.classList.toggle('collapsed');
-      this.render();
-    };
-    this.updateMode();
-    window.addEventListener('resize',()=>this.updateMode());
-  },
-
-  updateMode(){
-    if(!MobileMode.enabled){this.el.style.display='none';return;}
-    this.el.style.display='block';
-    this.el.classList.toggle('radial',innerWidth<480);
-    this.el.classList.toggle('linear',innerWidth>=480);
-  },
-
-  render(){
-    this.items.innerHTML='';
-    WindowKernel.list().forEach(w=>{
-      const b=document.createElement('div');
-      b.className='dock-item';
-      b.textContent=w.el.querySelector('.window-title').textContent[0];
-      b.onclick=()=>{
-        w.el.style.display='block';
-        WindowKernel.focus(w);
-        MobileMode.onOpen(w);
-        this.el.classList.add('collapsed');
-      };
-      this.items.appendChild(b);
-    });
-    this.addAction('🏠',()=>location.reload());
-    this.addAction('✖️',()=>{
-      const w=WindowKernel.list().at(-1);
-      if(w) WindowKernel.close(w.id);
-    });
-  },
-
-  addAction(icon,fn){
-    const b=document.createElement('div');
-    b.className='dock-item';
-    b.textContent=icon;
-    b.onclick=fn;
-    this.items.appendChild(b);
-  }
-};
-document.addEventListener('DOMContentLoaded',()=>Dock.init());
-</script>
-
-<script>
-/* ===== WINDOW BEHAVIOR ===== */
-function attachWindowBehavior(w){
-  w.el.onmousedown=()=>WindowKernel.focus(w);
-
-  const bar=w.el.querySelector('.titlebar');
-  bar.onmousedown=e=>{
-    let sx=e.clientX,sy=e.clientY;
-    let ot=w.el.offsetTop,ol=w.el.offsetLeft;
-    document.onmousemove=ev=>{
-      w.el.style.top=ot+(ev.clientY-sy)+'px';
-      w.el.style.left=ol+(ev.clientX-sx)+'px';
-    };
-    document.onmouseup=()=>{
-      const r=w.el.getBoundingClientRect();
-      const z=SnapManager.detect(r.left+10,r.top+10);
-      if(z)SnapManager.apply(w,z);
-      document.onmousemove=null;
-    };
-  };
-
-  const rz=w.el.querySelector('.resizer');
-  rz.onmousedown=e=>{
-    e.stopPropagation();
-    let sx=e.clientX,sy=e.clientY;
-    let ow=w.el.offsetWidth,oh=w.el.offsetHeight;
-    document.onmousemove=ev=>{
-      w.el.style.width=ow+(ev.clientX-sx)+'px';
-      w.el.style.height=oh+(ev.clientY-sy)+'px';
-    };
-    document.onmouseup=()=>document.onmousemove=null;
-  };
-}
-
-/* ===== GLOBAL ===== */
-function closeWindow(b){WindowKernel.close(b.closest('.window').dataset.id)}
-function minimizeWindow(b){WindowKernel.minimize(b.closest('.window').dataset.id)}
-function maximizeWindow(b){WindowKernel.maximize(b.closest('.window').dataset.id)}
-function toggleMenu(){startMenu.classList.toggle('show')}
-</script>
 
   <script>
   
@@ -703,7 +599,210 @@ function toggleMenu(){startMenu.classList.toggle('show')}
       menu.classList.toggle('show');
     }
 
+    function openWindow(url, title) {
+      let win = document.createElement('div');
+      win.classList.add('window');
+      win.style.top = Math.random() * 50 + '%';
+      win.style.left = Math.random() * 50 + '%';
+      win.style.zIndex = ++zIndexAtual;
 
+      win.addEventListener("mousedown", () => trazerParaFrente(win));
+      win.addEventListener("touchstart", () => trazerParaFrente(win));
+
+
+      let titlebar = document.createElement('div');
+      titlebar.classList.add('titlebar');
+      titlebar.innerHTML = `
+                <span class="window-title">${title}</span>
+                <div class="window-buttons">
+                    <button onclick="minimizeWindow(this)">➖</button>
+                    <button onclick="maximizeWindow(this)">🔳</button>
+                    <button onclick="closeWindow(this)">✖️</button>
+                </div>`;
+      titlebar.addEventListener('mousedown', dragMouseDown);
+      titlebar.addEventListener('touchstart', dragMouseDown, { passive: false });
+
+      titlebar.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mousedown', e => e.stopPropagation());
+        btn.addEventListener('touchstart', e => e.stopPropagation());
+      });
+      
+      applySepiaToElement(win);
+      applyGreyToElement(win);
+
+      let iframe = document.createElement('iframe');
+      iframe.src = url;
+
+      win.appendChild(titlebar);
+      win.appendChild(iframe);
+      document.body.appendChild(win);
+      let resizer = document.createElement('div');
+      resizer.classList.add('resizer');
+      win.appendChild(resizer);
+      initResizer(win);
+      win.style.display = 'block';
+      
+      // ... dentro da função openWindow, logo após win.style.display = 'block';
+if (MobileMode.enabled) {
+    MobileMode.formatMobileWindow(win);
+    // Esconde janelas anteriores para não pesar no mobile
+    document.querySelectorAll('.window').forEach(w => {
+        if(w !== win) w.style.display = 'none';
+    });
+}
+      
+    }
+
+
+    let zIndexAtual = 10;
+
+    function trazerParaFrente(window) {
+      zIndexAtual++;
+      window.style.zIndex = zIndexAtual;
+
+      document.querySelectorAll('.window').forEach(j => j.classList.remove('ativa'));
+      window.classList.add('ativa');
+
+    }
+
+
+    function closeWindow(btn) {
+      btn.closest('.window').remove();
+    }
+
+    let minimizedWindows = [];
+
+    function minimizeWindow(btn) {
+      const win = btn.closest('.window');
+      win.style.display = 'none';
+
+      const title = win.querySelector('.window-title').innerText;
+      const taskButton = document.createElement('button');
+      taskButton.innerText = title;
+      taskButton.classList.add('taskbar-window-btn');
+      taskButton.onclick = () => {
+        win.style.display = 'block';
+        taskButton.remove();
+        minimizedWindows = minimizedWindows.filter(w => w.win !== win);
+      };
+
+      document.querySelector('.taskbar').appendChild(taskButton);
+      minimizedWindows.push({ win, button: taskButton });
+    }
+
+
+    function maximizeWindow(btn) {
+      let win = btn.closest('.window');
+      if (win.style.width !== '100vw') {
+        win.style.width = '100vw';
+        win.style.height = '100vh';
+        win.style.top = '0';
+        win.style.left = '0';
+      } else {
+        win.style.width = '400px';
+        win.style.height = '300px';
+        win.style.top = '20%';
+        win.style.left = '30%';
+      }
+    }
+
+    function dragMouseDown(e) {
+      e.preventDefault();
+      let win = e.currentTarget.parentElement;
+      let pos3 = e.clientX || e.touches?.[0].clientX;
+      let pos4 = e.clientY || e.touches?.[0].clientY;
+
+      document.onmouseup = document.ontouchend = closeDragElement;
+      document.onmousemove = document.ontouchmove = elementDrag;
+
+      function elementDrag(e) {
+        e.preventDefault();
+        let clientX = e.clientX || e.touches?.[0].clientX;
+        let clientY = e.clientY || e.touches?.[0].clientY;
+        win.style.top = (win.offsetTop - (pos4 - clientY)) + "px";
+        win.style.left = (win.offsetLeft - (pos3 - clientX)) + "px";
+        pos3 = clientX;
+        pos4 = clientY;
+      }
+
+      function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+        document.ontouchend = null;
+        document.ontouchmove = null;
+      }
+    }
+
+    function initResizer(win) {
+      const resizer = win.querySelector('.resizer');
+      let startX, startY, startWidth, startHeight;
+
+      function dragStart(e) {
+        e.preventDefault();
+        startX = e.clientX || e.touches?.[0].clientX;
+        startY = e.clientY || e.touches?.[0].clientY;
+        startWidth = parseInt(document.defaultView.getComputedStyle(win).width, 10);
+        startHeight = parseInt(document.defaultView.getComputedStyle(win).height, 10);
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('touchend', stopDrag);
+      }
+
+      function drag(e) {
+        e.preventDefault();
+        const clientX = e.clientX || e.touches?.[0].clientX;
+        const clientY = e.clientY || e.touches?.[0].clientY;
+        win.style.width = startWidth + (clientX - startX) + 'px';
+        win.style.height = startHeight + (clientY - startY) + 'px';
+      }
+
+      function stopDrag() {
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('mouseup', stopDrag);
+        document.removeEventListener('touchmove', drag);
+        document.removeEventListener('touchend', stopDrag);
+      }
+
+      resizer.addEventListener('mousedown', dragStart);
+      resizer.addEventListener('touchstart', dragStart, { passive: false });
+    }
+
+
+    // Ctrl+W fecha a última janela aberta
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'w') {
+        const windows = document.querySelectorAll('.window');
+        if (windows.length > 0) {
+          e.preventDefault();
+          windows[windows.length - 1].remove();
+        }
+      }
+    });
+    
+    // Aguarda carregar o DOM antes de aplicar o filtro
+document.addEventListener('DOMContentLoaded', function() {
+  
+  var searchInput = document.getElementById('searchInput');
+  // Evento 'input' dispara sempre que o usuário digita no campo
+  searchInput.addEventListener('input', function() {
+    var filter = searchInput.value.toLowerCase();             // Texto do filtro em caixa baixa
+    var apps = document.querySelectorAll('#startMenu a');     // Seleciona todos os links dentro do menu
+
+    apps.forEach(function(appLink) {
+      var text = appLink.textContent.toLowerCase();          // Texto interno do link
+      // Verifica se o nome do app contém o filtro
+      if (text.includes(filter)) {
+        appLink.style.display = '';  // Exibe o link se corresponder
+      } else {
+        appLink.style.display = 'none'; // Oculta se não corresponder
+      }
+    });
+  });
+  aplicarOcultos();
+  adicionarBotaoOcultar();
+});
 
 function adicionarBotaoOcultar() {
   document.querySelectorAll('[data-id]').forEach(el => {
@@ -967,7 +1066,117 @@ document.getElementById('mostrarTodosBtn').addEventListener('click', () => {
   }
 </script>
 
+<script>
+/* ===== MODO MOBILE E GERENCIAMENTO DE JANELAS ===== */
 
+const MobileMode = {
+  enabled: false,
+  check() {
+    this.enabled = window.innerWidth < 768;
+    document.body.classList.toggle('mobile-mode', this.enabled);
+    
+    // Se entrar no modo mobile, maximiza a janela ativa e esconde as outras
+    if (this.enabled) {
+      const windows = document.querySelectorAll('.window');
+      windows.forEach((win, index) => {
+        if (index === windows.length - 1) {
+          this.formatMobileWindow(win);
+        } else {
+          win.style.display = 'none';
+        }
+      });
+    }
+  },
+  formatMobileWindow(win) {
+    if (!this.enabled) return;
+    win.style.display = 'block';
+    win.style.top = '0';
+    win.style.left = '0';
+    win.style.width = '100vw';
+    win.style.height = 'calc(100vh - 50px)'; // Desconta a taskbar
+  }
+};
+
+const Dock = {
+  el: document.getElementById('mobileDock'),
+  
+  init() {
+    if(!this.el) return;
+    const core = this.el.querySelector('.dock-core');
+    core.onclick = () => {
+      this.el.classList.toggle('collapsed');
+      this.render();
+    };
+    window.addEventListener('resize', () => {
+      this.updateMode();
+      MobileMode.check();
+    });
+    this.updateMode();
+  },
+
+  updateMode() {
+    if (!MobileMode.enabled) {
+      this.el.style.display = 'none';
+    } else {
+      this.el.style.display = 'block';
+      const isPortrait = window.innerHeight > window.innerWidth;
+      this.el.className = isPortrait ? 'dock collapsed radial' : 'dock collapsed linear';
+    }
+  },
+
+  render() {
+    const container = this.el.querySelector('.dock-items');
+    container.innerHTML = '';
+    const windows = document.querySelectorAll('.window');
+
+    windows.forEach(win => {
+      const title = win.querySelector('.window-title').textContent;
+      const item = document.createElement('div');
+      item.className = 'dock-item';
+      // Pega o primeiro emoji ou letra do título
+      item.textContent = title.substring(0, 2).trim(); 
+      
+      item.onclick = () => {
+        // Esconde todas as janelas e mostra a selecionada (comportamento mobile)
+        document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
+        win.style.display = 'block';
+        trazerParaFrente(win);
+        MobileMode.formatMobileWindow(win);
+        this.el.classList.add('collapsed');
+      };
+      container.appendChild(item);
+    });
+
+    // Botão Fechar Atual
+    this.addAction('✖️', () => {
+      const windows = document.querySelectorAll('.window');
+      if (windows.length > 0) {
+        windows[windows.length - 1].remove();
+        this.render();
+      }
+    });
+  },
+
+  addAction(icon, fn) {
+    const b = document.createElement('div');
+    b.className = 'dock-item';
+    b.textContent = icon;
+    b.onclick = (e) => {
+      e.stopPropagation();
+      fn();
+    };
+    this.el.querySelector('.dock-items').appendChild(b);
+  }
+};
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+  MobileMode.check();
+  Dock.init();
+});
+</script>
+
+  
 </body>
 </html>
 
