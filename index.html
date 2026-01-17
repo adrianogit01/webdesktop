@@ -612,6 +612,7 @@ body.fundo-imagem {
     <script src="offline_apps/hud-toggle.js"></script>
     </div>
     <button onclick="alternarMenuCentro()" class="button">Alternar Menu: Centro/Esquerda</button>
+    <button class="button" onclick="MobileMode.toggleManual()">📱 Alternar Modo Mobile/Desktop</button>
     <strong>📢 Público:</strong>
     <a href="#" onclick="openWindow('public/privacidade.html', 'Privacidade')">🔏 Privacidade</a>
     <a href="#" onclick="openWindow('public/sobre.html', 'Sobre')">📖 Sobre</a>
@@ -677,13 +678,70 @@ body.fundo-imagem {
       win.style.display = 'block';
       
       // ... dentro da função openWindow, logo após win.style.display = 'block';
-if (MobileMode.enabled) {
-    MobileMode.formatMobileWindow(win);
-    // Esconde janelas anteriores para não pesar no mobile
-    document.querySelectorAll('.window').forEach(w => {
-        if(w !== win) w.style.display = 'none';
-    });
-}
+/* ===== MODO MOBILE COM ALTERNÂNCIA MANUAL ===== */
+const MobileMode = {
+  enabled: false,
+  isManual: false, // Flag para saber se o usuário forçou o modo
+
+  check() {
+    // Se não for manual, decide pela largura da tela
+    if (!this.isManual) {
+      this.enabled = window.innerWidth < 768;
+    }
+    this.applyMode();
+  },
+
+  toggleManual() {
+    this.isManual = true;
+    this.enabled = !this.enabled;
+    this.applyMode();
+    toggleMenu(); // Fecha o menu iniciar ao alternar
+  },
+
+  applyMode() {
+    document.body.classList.toggle('mobile-mode', this.enabled);
+    
+    // Atualiza o Dock
+    if (typeof Dock !== 'undefined') Dock.updateMode();
+
+    if (this.enabled) {
+      const windows = document.querySelectorAll('.window');
+      windows.forEach((win, index) => {
+        // No modo mobile, mantemos apenas a janela ativa visível e em tela cheia
+        if (index === windows.length - 1) {
+          this.formatMobileWindow(win);
+        } else {
+          win.style.display = 'none';
+        }
+      });
+    } else {
+      // Ao voltar para o Desktop, restaura o tamanho padrão se necessário
+      document.querySelectorAll('.window').forEach(win => {
+        if (win.style.width === '100vw') {
+          win.style.width = '400px';
+          win.style.height = '550px';
+          win.style.top = '10%';
+          win.style.left = '10%';
+        }
+      });
+    }
+  },
+
+  formatMobileWindow(win) {
+    if (!this.enabled) return;
+    win.style.display = 'block';
+    win.style.top = '0';
+    win.style.left = '0';
+    win.style.width = '100vw';
+    win.style.height = 'calc(100vh - 50px)'; 
+    win.style.zIndex = zIndexAtual + 1;
+  }
+};
+
+// Listener para redimensionamento automático (respeita se o usuário não escolheu manual)
+window.addEventListener('resize', () => {
+  if (!MobileMode.isManual) MobileMode.check();
+});
       
     }
 
