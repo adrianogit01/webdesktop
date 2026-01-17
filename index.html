@@ -350,53 +350,87 @@ body.fundo-imagem {
   border-radius: 8px;
 }
 
-/* ===== MOBILE MODE ===== */
-body.mobile-mode .shortcut span{display:none}
-body.mobile-mode .shortcut{font-size:28px;width:64px}
-
-/* ===== DOCK ===== */
-.dock{
-  position:fixed;
-  bottom:90px;
-  right:16px;
-  z-index:9999;
-  touch-action:none;
+/* ===== DOCK GLASSMORPHISM REFINADO ===== */
+.dock {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 9999;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.dock-core{
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:rgba(255,255,255,.25);
-  backdrop-filter:blur(12px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  cursor:pointer;
+.dock-core {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px; /* Estilo iOS squircle */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
-.dock-items{
-  position:absolute;
-  display:flex;
-  gap:10px;
+.dock-core:active { transform: scale(0.9); }
+
+.dock-items {
+  position: absolute;
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 24px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.dock-item{
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background:rgba(255,255,255,.3);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-  cursor:pointer;
+.dock-item {
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-.dock.collapsed .dock-items{display:none}
-.dock.radial .dock-items{bottom:70px;right:0;flex-direction:column}
-.dock.linear .dock-items{right:70px;bottom:6px;flex-direction:row}
+.dock-item:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* Modos de exibição */
+.dock.collapsed .dock-items { 
+  opacity: 0; 
+  pointer-events: none; 
+  transform: scale(0.8);
+}
+
+.dock.radial .dock-items { 
+  bottom: 75px; 
+  right: 0; 
+  flex-direction: column; 
+  transition: all 0.3s ease;
+}
+
+.dock.linear .dock-items { 
+  right: 75px; 
+  bottom: 0; 
+  flex-direction: row;
+  transition: all 0.3s ease;
+}
 
  
   </style>
@@ -1067,60 +1101,28 @@ document.getElementById('mostrarTodosBtn').addEventListener('click', () => {
 </script>
 
 <script>
-/* ===== MODO MOBILE E GERENCIAMENTO DE JANELAS ===== */
-
-const MobileMode = {
-  enabled: false,
-  check() {
-    this.enabled = window.innerWidth < 768;
-    document.body.classList.toggle('mobile-mode', this.enabled);
-    
-    // Se entrar no modo mobile, maximiza a janela ativa e esconde as outras
-    if (this.enabled) {
-      const windows = document.querySelectorAll('.window');
-      windows.forEach((win, index) => {
-        if (index === windows.length - 1) {
-          this.formatMobileWindow(win);
-        } else {
-          win.style.display = 'none';
-        }
-      });
-    }
-  },
-  formatMobileWindow(win) {
-    if (!this.enabled) return;
-    win.style.display = 'block';
-    win.style.top = '0';
-    win.style.left = '0';
-    win.style.width = '100vw';
-    win.style.height = 'calc(100vh - 50px)'; // Desconta a taskbar
-  }
-};
-
 const Dock = {
   el: document.getElementById('mobileDock'),
   
   init() {
     if(!this.el) return;
-    const core = this.el.querySelector('.dock-core');
-    core.onclick = () => {
+    this.el.querySelector('.dock-core').onclick = () => {
       this.el.classList.toggle('collapsed');
-      this.render();
+      if(!this.el.classList.contains('collapsed')) this.render();
     };
-    window.addEventListener('resize', () => {
-      this.updateMode();
-      MobileMode.check();
-    });
+    window.addEventListener('resize', () => this.updateMode());
     this.updateMode();
   },
 
   updateMode() {
-    if (!MobileMode.enabled) {
-      this.el.style.display = 'none';
-    } else {
-      this.el.style.display = 'block';
+    const isMobile = window.innerWidth < 768;
+    this.el.style.display = isMobile ? 'block' : 'none';
+    
+    if (isMobile) {
+      // Se a tela for alta (portrait), usa modo radial. Se for larga (landscape), linear.
       const isPortrait = window.innerHeight > window.innerWidth;
-      this.el.className = isPortrait ? 'dock collapsed radial' : 'dock collapsed linear';
+      this.el.classList.toggle('radial', isPortrait);
+      this.el.classList.toggle('linear', !isPortrait);
     }
   },
 
@@ -1130,50 +1132,42 @@ const Dock = {
     const windows = document.querySelectorAll('.window');
 
     windows.forEach(win => {
-      const title = win.querySelector('.window-title').textContent;
+      const titleText = win.querySelector('.window-title').textContent;
+      // Extrai o emoji (geralmente os 2 primeiros caracteres se houver emoji)
+      const icon = titleText.match(/\p{Emoji}/u) ? titleText.match(/\p{Emoji}/u)[0] : titleText[0];
+      
       const item = document.createElement('div');
       item.className = 'dock-item';
-      // Pega o primeiro emoji ou letra do título
-      item.textContent = title.substring(0, 2).trim(); 
+      item.innerHTML = icon;
+      item.title = titleText;
       
       item.onclick = () => {
-        // Esconde todas as janelas e mostra a selecionada (comportamento mobile)
         document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
         win.style.display = 'block';
         trazerParaFrente(win);
-        MobileMode.formatMobileWindow(win);
         this.el.classList.add('collapsed');
       };
       container.appendChild(item);
     });
 
-    // Botão Fechar Atual
-    this.addAction('✖️', () => {
-      const windows = document.querySelectorAll('.window');
-      if (windows.length > 0) {
-        windows[windows.length - 1].remove();
-        this.render();
-      }
+    // Botão Home (Fecha tudo e volta ao desktop)
+    this.addAction('🏠', () => {
+      document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
+      this.el.classList.add('collapsed');
     });
   },
 
   addAction(icon, fn) {
     const b = document.createElement('div');
     b.className = 'dock-item';
-    b.textContent = icon;
-    b.onclick = (e) => {
-      e.stopPropagation();
-      fn();
-    };
+    b.style.background = 'rgba(255, 80, 80, 0.2)'; // Cor levemente diferente para ações
+    b.innerHTML = icon;
+    b.onclick = (e) => { e.stopPropagation(); fn(); };
     this.el.querySelector('.dock-items').appendChild(b);
   }
 };
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-  MobileMode.check();
-  Dock.init();
-});
+document.addEventListener('DOMContentLoaded', () => Dock.init());
 </script>
 
   
