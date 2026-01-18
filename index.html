@@ -667,6 +667,12 @@ body.fundo-imagem {
 
       let iframe = document.createElement('iframe');
       iframe.src = url;
+      
+      // Detectar erro de carregamento (limitado por segurança, mas ajuda)
+  iframe.onerror = function() {
+    alert("Este site pode ter restrições de segurança para abrir em janelas. Tentando abrir em nova aba...");
+    window.open(url, '_blank');
+  };
 
       win.appendChild(titlebar);
       win.appendChild(iframe);

@@ -92,6 +92,13 @@
     <input type="text" id="url-bar" placeholder="Digite a URL...">
     <button onclick="go()">Ir</button>
     <button onclick="novaAba()">+ Aba</button>
+    <button onclick="abrirExterno()" title="Abrir em nova aba real">🔗</button>
+<script>
+function abrirExterno() {
+  const url = document.getElementById("url-bar").value;
+  window.open(url, '_blank');
+}
+</script>
   </div>
 
   <iframe id="browser-frame"></iframe>
@@ -185,39 +192,46 @@
       }
     }
 
-    function carregarPagina(url, registrar = true, viaProxy = false) {
-      const iframe = document.getElementById("browser-frame");
+ function carregarPagina(url, registrar = true) {
+  const iframe = document.getElementById("browser-frame");
+  const urlBar = document.getElementById("url-bar");
 
-      const finalUrl = viaProxy
-        ? "https://proxy-server-0muc.onrender.com/proxy?url=" + encodeURIComponent(url)
-        : url;
+  // 1. Tenta o carregamento direto primeiro
+  iframe.src = url;
+  urlBar.value = url;
+  console.log("Tentando conexão direta: " + url);
 
-      iframe.src = finalUrl;
-      document.getElementById("url-bar").value = url;
+  // 2. Registra no histórico se necessário
+  if (registrar && abaAtiva >= 0) {
+    const aba = abas[abaAtiva];
+    aba.historico = aba.historico.slice(0, aba.indice + 1);
+    aba.historico.push(url);
+    aba.indice++;
+    aba.url = url;
+  }
 
-      if (registrar && abaAtiva >= 0) {
-        const aba = abas[abaAtiva];
-        aba.historico = aba.historico.slice(0, aba.indice + 1);
-        aba.historico.push(url);
-        aba.indice++;
-        aba.url = url;
+  // 3. Verificação de Bloqueio (Lógica Client-side)
+  // Aguardamos 1.5s para ver se o site bloqueou o iframe
+  setTimeout(() => {
+    try {
+      // Se conseguirmos acessar o conteúdo, o site permitiu (mesma origem ou sem bloqueio)
+      if (iframe.contentWindow.location.href === "about:blank") {
+        throw new Error("Página em branco");
       }
-
-      iframe.onerror = () => {
-        if (!viaProxy) {
-          console.warn("Falha direta. Tentando via proxy...");
-          carregarPagina(url, false, true);
-        }
-      };
-
-      setTimeout(() => {
-        const blank = iframe.contentDocument?.body?.childNodes.length === 0;
-        if (!viaProxy && blank) {
-          console.warn("Conteúdo em branco. Tentando via proxy...");
-          carregarPagina(url, false, true);
-        }
-      }, 1000);
+    } catch (e) {
+      /* Se cair aqui (Erro de Cross-Origin), significa que o site carregou 
+         OU que ele bloqueou via cabeçalho (X-Frame-Options).
+         Como não podemos ler o erro real, verificamos se o iframe parece "vazio"
+      */
+      console.warn("Possível bloqueio detectado ou restrição de segurança. Tentando Proxy...");
+      
+      // 4. Fallback para o Servidor Proxy (apenas se o direto falhar ou parecer vazio)
+      // Você pode comentar a linha abaixo até que seu servidor esteja pronto
+      // const proxyUrl = "https://proxy-server-0muc.onrender.com/proxy?url=" + encodeURIComponent(url);
+      // iframe.src = proxyUrl;
     }
+  }, 1500);
+}
 
     novaAba("https://google.com/?igu=1");
   </script>

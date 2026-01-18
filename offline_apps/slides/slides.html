@@ -3,707 +3,286 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Slides (PowerPoint-like) — TinyMCE + Miniaturas + PDF/PPTX + Fullscreen</title>
-  <script src="jsbib/tinymce.min.js">
-    // Drag & Drop com Pointer Events (suporte celular e PC)
-    const dnd={};
-    function enablePointerDnD(){
-      document.querySelectorAll('.thumb').forEach(el=>{
-        el.onpointerdown=e=>{
-          if(e.pointerType==='mouse'&&e.button!==0)return;
-          dnd.srcEl=el;
-          dnd.startY=e.clientY;
-          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
-          el.setPointerCapture(e.pointerId);
-          window.onpointermove=pm;
-          window.onpointerup=pu;
-        };
-      });
-    }
-    function startDrag(e){
-      if(dnd.dragging)return;
-      dnd.dragging=true;
-      const el=dnd.srcEl;
-      const ph=document.createElement('div');
-      ph.className='thumb placeholder';
-      ph.style.height=el.offsetHeight+'px';
-      el.parentNode.insertBefore(ph,el.nextSibling);
-      dnd.ph=ph;
-      el.classList.add('dragging');
-    }
-    function pm(e){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
-      if(!dnd.dragging)return;
-      el.style.top=(e.clientY-dnd.offsetY)+'px';
-      el.style.left=el.getBoundingClientRect().left+'px';
-      const thumbs=document.getElementById('thumbs');
-      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
-      let before=null;
-      for(const n of sib){
-        const r=n.getBoundingClientRect();
-        if(e.clientY<r.top+r.height/2){before=n;break;}
-      }
-      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
-      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
-    }
-    function pu(){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      let newIndex=0;
-      if(dnd.dragging&&dnd.ph){
-        const thumbs=document.getElementById('thumbs');
-        const nodes=[...thumbs.children];
-        newIndex=nodes.indexOf(dnd.ph);
-        const oldIndex=parseInt(el.dataset.index);
-        const slides=getSlides();
-        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
-          const src=slides[oldIndex];
-          const dest=slides[newIndex];
-          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
-        }
-      }
-      el.classList.remove('dragging');
-      if(dnd.ph)dnd.ph.remove();
-      dnd.srcEl=null;
-      dnd.dragging=false;
-      window.onpointermove=null;
-      window.onpointerup=null;
-      rebuildThumbnails();
-      showSlide(newIndex||0);
-    }
-
-</script>
-  <script src="jsbib/FileSaver.min.js">
-    // Drag & Drop com Pointer Events (suporte celular e PC)
-    const dnd={};
-    function enablePointerDnD(){
-      document.querySelectorAll('.thumb').forEach(el=>{
-        el.onpointerdown=e=>{
-          if(e.pointerType==='mouse'&&e.button!==0)return;
-          dnd.srcEl=el;
-          dnd.startY=e.clientY;
-          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
-          el.setPointerCapture(e.pointerId);
-          window.onpointermove=pm;
-          window.onpointerup=pu;
-        };
-      });
-    }
-    function startDrag(e){
-      if(dnd.dragging)return;
-      dnd.dragging=true;
-      const el=dnd.srcEl;
-      const ph=document.createElement('div');
-      ph.className='thumb placeholder';
-      ph.style.height=el.offsetHeight+'px';
-      el.parentNode.insertBefore(ph,el.nextSibling);
-      dnd.ph=ph;
-      el.classList.add('dragging');
-    }
-    function pm(e){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
-      if(!dnd.dragging)return;
-      el.style.top=(e.clientY-dnd.offsetY)+'px';
-      el.style.left=el.getBoundingClientRect().left+'px';
-      const thumbs=document.getElementById('thumbs');
-      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
-      let before=null;
-      for(const n of sib){
-        const r=n.getBoundingClientRect();
-        if(e.clientY<r.top+r.height/2){before=n;break;}
-      }
-      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
-      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
-    }
-    function pu(){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      let newIndex=0;
-      if(dnd.dragging&&dnd.ph){
-        const thumbs=document.getElementById('thumbs');
-        const nodes=[...thumbs.children];
-        newIndex=nodes.indexOf(dnd.ph);
-        const oldIndex=parseInt(el.dataset.index);
-        const slides=getSlides();
-        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
-          const src=slides[oldIndex];
-          const dest=slides[newIndex];
-          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
-        }
-      }
-      el.classList.remove('dragging');
-      if(dnd.ph)dnd.ph.remove();
-      dnd.srcEl=null;
-      dnd.dragging=false;
-      window.onpointermove=null;
-      window.onpointerup=null;
-      rebuildThumbnails();
-      showSlide(newIndex||0);
-    }
-
-</script>
-  <script src="jsbib/pptxgen.bundle.min.js">
-    // Drag & Drop com Pointer Events (suporte celular e PC)
-    const dnd={};
-    function enablePointerDnD(){
-      document.querySelectorAll('.thumb').forEach(el=>{
-        el.onpointerdown=e=>{
-          if(e.pointerType==='mouse'&&e.button!==0)return;
-          dnd.srcEl=el;
-          dnd.startY=e.clientY;
-          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
-          el.setPointerCapture(e.pointerId);
-          window.onpointermove=pm;
-          window.onpointerup=pu;
-        };
-      });
-    }
-    function startDrag(e){
-      if(dnd.dragging)return;
-      dnd.dragging=true;
-      const el=dnd.srcEl;
-      const ph=document.createElement('div');
-      ph.className='thumb placeholder';
-      ph.style.height=el.offsetHeight+'px';
-      el.parentNode.insertBefore(ph,el.nextSibling);
-      dnd.ph=ph;
-      el.classList.add('dragging');
-    }
-    function pm(e){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
-      if(!dnd.dragging)return;
-      el.style.top=(e.clientY-dnd.offsetY)+'px';
-      el.style.left=el.getBoundingClientRect().left+'px';
-      const thumbs=document.getElementById('thumbs');
-      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
-      let before=null;
-      for(const n of sib){
-        const r=n.getBoundingClientRect();
-        if(e.clientY<r.top+r.height/2){before=n;break;}
-      }
-      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
-      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
-    }
-    function pu(){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      let newIndex=0;
-      if(dnd.dragging&&dnd.ph){
-        const thumbs=document.getElementById('thumbs');
-        const nodes=[...thumbs.children];
-        newIndex=nodes.indexOf(dnd.ph);
-        const oldIndex=parseInt(el.dataset.index);
-        const slides=getSlides();
-        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
-          const src=slides[oldIndex];
-          const dest=slides[newIndex];
-          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
-        }
-      }
-      el.classList.remove('dragging');
-      if(dnd.ph)dnd.ph.remove();
-      dnd.srcEl=null;
-      dnd.dragging=false;
-      window.onpointermove=null;
-      window.onpointerup=null;
-      rebuildThumbnails();
-      showSlide(newIndex||0);
-    }
-
-</script>
-  <script src="jsbib/html-to-image.min.js">
-    // Drag & Drop com Pointer Events (suporte celular e PC)
-    const dnd={};
-    function enablePointerDnD(){
-      document.querySelectorAll('.thumb').forEach(el=>{
-        el.onpointerdown=e=>{
-          if(e.pointerType==='mouse'&&e.button!==0)return;
-          dnd.srcEl=el;
-          dnd.startY=e.clientY;
-          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
-          el.setPointerCapture(e.pointerId);
-          window.onpointermove=pm;
-          window.onpointerup=pu;
-        };
-      });
-    }
-    function startDrag(e){
-      if(dnd.dragging)return;
-      dnd.dragging=true;
-      const el=dnd.srcEl;
-      const ph=document.createElement('div');
-      ph.className='thumb placeholder';
-      ph.style.height=el.offsetHeight+'px';
-      el.parentNode.insertBefore(ph,el.nextSibling);
-      dnd.ph=ph;
-      el.classList.add('dragging');
-    }
-    function pm(e){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
-      if(!dnd.dragging)return;
-      el.style.top=(e.clientY-dnd.offsetY)+'px';
-      el.style.left=el.getBoundingClientRect().left+'px';
-      const thumbs=document.getElementById('thumbs');
-      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
-      let before=null;
-      for(const n of sib){
-        const r=n.getBoundingClientRect();
-        if(e.clientY<r.top+r.height/2){before=n;break;}
-      }
-      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
-      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
-    }
-    function pu(){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      let newIndex=0;
-      if(dnd.dragging&&dnd.ph){
-        const thumbs=document.getElementById('thumbs');
-        const nodes=[...thumbs.children];
-        newIndex=nodes.indexOf(dnd.ph);
-        const oldIndex=parseInt(el.dataset.index);
-        const slides=getSlides();
-        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
-          const src=slides[oldIndex];
-          const dest=slides[newIndex];
-          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
-        }
-      }
-      el.classList.remove('dragging');
-      if(dnd.ph)dnd.ph.remove();
-      dnd.srcEl=null;
-      dnd.dragging=false;
-      window.onpointermove=null;
-      window.onpointerup=null;
-      rebuildThumbnails();
-      showSlide(newIndex||0);
-    }
-
-</script>
+  <title>Slides - Editor Profissional</title>
+  
+  <script src="jsbib/tinymce.min.js"></script>
+  <script src="jsbib/FileSaver.min.js"></script>
+  
   <style>
     :root {
-      --sidebar-w: 220px;
-      --controls-h: 54px;
-      --bg: #0f1115;
-      --panel: #181b22;
-      --panel-2: #1f2430;
-      --text: #e8eaf2;
-      --muted: #9aa3b2;
-      --brand: #4ea1ff;
+      --bg-color: #1e1e1e;
+      --sidebar-bg: #252525;
+      --accent-color: #4285f4;
+      --border-color: #444;
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
+
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      display: grid;
-      grid-template-columns: var(--sidebar-w) 1fr;
-      grid-template-rows: 1fr var(--controls-h);
-      grid-template-areas:
-        "thumbs editor"
-        "controls controls";
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
       height: 100vh;
       overflow: hidden;
     }
-    aside.thumbs {
-      grid-area: thumbs;
-      background: var(--panel);
-      border-right: 1px solid #222a36;
-      padding: 8px;
-      overflow: auto;
+
+    #toolbar-top {
+      background: #2a2a2a;
+      padding: 10px 15px;
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+      align-items: center;
     }
-    .thumb {
-      background: var(--panel-2);
-      border: 1px solid #2a3140;
-      border-radius: 12px;
-      margin: 8px 4px;
-      padding: 8px;
-      cursor: grab;
-      transition: transform .12s ease, border-color .12s ease;
+
+    #toolbar-top button {
+      background: #3a3a3a;
+      border: 1px solid #555;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
     }
-    .thumb:active { cursor: grabbing; }
-    .thumb:hover { transform: translateY(-2px); border-color: var(--brand); }
-    .thumb.active { outline: 2px solid var(--brand); }
-    .thumb .thumb-viewport {
-      width: 200px;
-      height: 112.5px;
+
+    #toolbar-top button:hover { background: #4a4a4a; }
+
+    #main-container {
+      display: flex;
+      flex: 1;
       overflow: hidden;
       position: relative;
-      background: #fff;
+    }
+
+    /* Sidebar de Miniaturas */
+    #sidebar {
+      width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      padding: 15px;
+      position: relative;
+    }
+
+    .thumb {
+      width: 100%;
+      height: 110px;
+      background: white;
+      border: 3px solid transparent;
+      margin-bottom: 15px;
+      cursor: grab;
       color: #000;
-      border-radius: 8px;
+      font-size: 8px;
+      overflow: hidden;
+      position: relative;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      user-select: none;
+      touch-action: none; /* Crucial para o Drag no Mobile */
     }
-    .thumb .thumb-inner {
-      width: 1280px; height: 720px;
-      transform: scale(0.15625);
-      transform-origin: top left;
+
+    .thumb.active { border-color: var(--accent-color); }
+
+    /* Estilos de Arraste */
+    .thumb.dragging {
+      opacity: 0.6;
+      cursor: grabbing;
+      position: fixed;
+      z-index: 9999;
       pointer-events: none;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.5);
+      transform: scale(1.05);
     }
-    .thumb .meta { margin-top: 6px; font-size: 12px; color: var(--muted); text-align: center; }
-    main.editor-wrap { grid-area: editor; position: relative; }
-    #editor { height: calc(100vh - var(--controls-h)); }
-    .controls {
-      grid-area: controls;
-      background: var(--panel);
-      border-top: 1px solid #222a36;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      justify-content: center;
-      padding: 8px;
+
+    .placeholder {
+      width: 100%;
+      height: 110px;
+      background: rgba(66, 133, 244, 0.1);
+      border: 2px dashed var(--accent-color);
+      margin-bottom: 15px;
+      border-radius: 6px;
     }
-    .controls button {
-      border: 0; border-radius: 999px; padding: 10px 14px; cursor: pointer;
-      background: #263044; color: #e6f0ff; font-weight: 600;
+
+    #editor-container {
+      flex: 1;
+      background: var(--bg-color);
     }
-    .controls button:hover { background: #31405c; }
-    /* As regras abaixo afetam a visualização no editor TinyMCE (fora do fullscreen) */
-    /* OBS: o CSS do documento não entra no iframe do TinyMCE, então usamos content_style no init para isso. */
-    /* Para referência, mantemos as classes aqui também. */
-    .tinymce-content .slide,
-    .presentation .slide {
-      width: 1280px; height: 720px;
-      background: #ffffff; color: #111827;
-      padding: 64px; border-radius: 24px;
-      box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 12px 40px rgba(0,0,0,.22);
-      margin: 24px auto;
-    }
-    .tinymce-content .slide h1, .presentation .slide h1 { font-size: 56px; margin: 0 0 16px; }
-    .tinymce-content .slide h2, .presentation .slide h2 { font-size: 36px; margin: 12px 0; }
-    .tinymce-content .slide p, .presentation .slide p { font-size: 20px; line-height: 1.5; }
-    #presentation {
-      display: none; position: fixed; inset: 0; background: #000; color: #fff;
-      align-items: center; justify-content: center; overflow: hidden;
-    }
-    #presentation .stage { position: relative; }
+
+    .tox-tinymce { border: none !important; height: 100% !important; }
   </style>
 </head>
 <body>
-  <aside class="thumbs" id="thumbs"></aside>
-  <main class="editor-wrap">
-    <textarea id="editor">
-      <section class="slide"><h1>Bem-vindo</h1><p>Este é seu editor de slides.</p></section>
-      <section class="slide"><h2>Miniaturas</h2><p>A barra lateral mostra preview clicável e reordenável.</p></section>
-      <section class="slide"><h2>Exportação</h2><p>PDF via impressão. PPTX via snapshots.</p></section>
-    </textarea>
-  </main>
-  <div class="controls">
-    <button id="btnPrev">◀ Anterior</button>
-    <button id="btnNext">Próximo ▶</button>
-    <button id="btnAdd">➕ Novo Slide</button>
-    <button id="btnDelete">🗑️ Excluir Slide</button>
-    <button id="btnExportHtml">💾 Exportar HTML</button>
-    <button id="btnExportPdf">🖨️ Exportar PDF</button>
-    <button id="btnExportPptx">📑 Exportar PPTX</button>
-    <button id="btnPresent">🎥 Apresentar</button>
+
+  <input type="file" id="fileInput" accept=".html,.txt" style="display:none" onchange="loadFile(event)">
+
+  <div id="toolbar-top">
+    <button onclick="addSlide()">➕ Novo Slide</button>
+    <button onclick="deleteSlide()" style="border-color: #852222;">🗑️ Excluir</button>
+    <button onclick="toggleFullscreen()">📺 Apresentar</button>
   </div>
-  <div id="presentation" class="presentation">
-    <div class="stage" id="stage"></div>
+
+  <div id="main-container">
+    <div id="sidebar">
+      </div>
+    <div id="editor-container">
+      <textarea id="editor"></textarea>
+    </div>
   </div>
+
   <script>
-    let current = 0;
-    let presentationMode = false;
-    let rebuildThumbsScheduled = false;
+    let slides = [{ content: "<h1 style='text-align: center;'>Bem-vindo aos Slides</h1><p style='text-align: center;'>Edite este conteúdo...</p>" }];
+    let currentSlideIndex = 0;
+    
+    // Objeto para controle de Drag & Drop
+    const dnd = { srcIndex: null, el: null, placeholder: null, offsetY: 0 };
 
     tinymce.init({
       selector: '#editor',
-      height: 'calc(100vh - var(--controls-h))',
-      menubar: false,
-      plugins: 'code fullscreen lists link image table',
-      toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image table | code',
-      /* aplica estilos dentro do iframe do TinyMCE (centraliza slide e dá fundo neutro) */
-      content_style: `
-        html,body{height:100%}
-        body{margin:0;background:#0f1115;padding:24px;}
-        section.slide{margin:24px auto !important; width:1280px; height:720px; background:#fff; color:#111827; padding:64px; border-radius:24px; box-shadow:0 1px 0 rgba(0,0,0,.04), 0 12px 40px rgba(0,0,0,.22);}
-        section.slide h1{font-size:56px;margin:0 0 16px;}
-        section.slide h2{font-size:36px;margin:12px 0;}
-        section.slide p{font-size:20px;line-height:1.5;}
-      `,
-      setup(editor){
-        editor.on('init', () => { showSlide(0); rebuildThumbnails(); });
-        editor.on('Change KeyUp SetContent', () => {
-          if (!rebuildThumbsScheduled) {
-            rebuildThumbsScheduled = true;
-            setTimeout(()=>{ rebuildThumbsScheduled=false; rebuildThumbnails(); }, 250);
-          }
+      height: "100%",
+      menubar: 'file edit view insert format tools table help',
+      menu: {
+        file: { title: 'Arquivo', items: 'newslide openfile savehtml savetxt | print' }
+      },
+      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount',
+      toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+      skin: "oxide-dark",
+      content_css: "dark",
+      setup: (editor) => {
+        editor.ui.registry.addMenuItem("newslide", { text: "➕ Novo Slide", onAction: () => addSlide() });
+        editor.ui.registry.addMenuItem("openfile", { text: "📂 Abrir...", onAction: () => document.getElementById("fileInput").click() });
+        editor.ui.registry.addMenuItem("savehtml", { text: "🌐 Salvar HTML", onAction: () => saveContent("html") });
+        
+        editor.on("input change Undo Redo", () => {
+          slides[currentSlideIndex].content = editor.getContent();
+          updateThumbsVisual();
         });
       }
     });
 
-    function getSlides(){ return tinymce.get('editor').dom.select('section.slide'); }
-    function showSlide(index){
-      const slides = getSlides();
-      if (!slides.length) return;
-      const len = slides.length;
-      current = ((index % len) + len) % len;
-      slides.forEach((s, i) => { s.style.display = (i === current ? 'block' : 'none'); });
-      highlightActiveThumb();
-      if (presentationMode) renderStageFrom(slides[current]);
-    }
-    function nextSlide(){ showSlide(current + 1); }
-    function prevSlide(){ showSlide(current - 1); }
-    function addSlide(){
-      const editor = tinymce.get('editor');
-      editor.insertContent('<section class="slide"><h2>Novo Slide</h2><p>Edite aqui...</p></section>');
-      const slides = getSlides();
-      showSlide(slides.length - 1);
-      rebuildThumbnails();
-    }
-    function deleteSlide(){
-      const slides = getSlides();
-      if (!slides.length) return;
-      if (confirm("Deseja realmente excluir este slide?")) {
-        slides[current].remove();
-        const newIndex = Math.max(0, current-1);
-        showSlide(newIndex);
-        rebuildThumbnails();
-      }
+    function addSlide() {
+      slides.push({ content: "<h1>Novo Slide</h1>" });
+      currentSlideIndex = slides.length - 1;
+      renderUI();
     }
 
-    function rebuildThumbnails(){
-      const thumbs = document.getElementById('thumbs');
-      thumbs.innerHTML = '';
-      const slides = getSlides();
-      slides.forEach((slide, idx) => {
-        const wrap = document.createElement('div');
-        wrap.className = 'thumb';
-        wrap.dataset.index = idx;
-        wrap.draggable = true;
-        wrap.addEventListener('click', ()=> showSlide(idx));
-        wrap.addEventListener('dragstart', dragStart);
-        wrap.addEventListener('dragover', dragOver);
-        wrap.addEventListener('drop', drop);
+    function deleteSlide() {
+      if (slides.length <= 1) return;
+      slides.splice(currentSlideIndex, 1);
+      currentSlideIndex = Math.max(0, currentSlideIndex - 1);
+      renderUI();
+    }
 
-        const viewport = document.createElement('div');
-        viewport.className = 'thumb-viewport';
-        const inner = document.createElement('div');
-        inner.className = 'thumb-inner slide';
-        inner.innerHTML = slide.innerHTML;
-        viewport.appendChild(inner);
-        wrap.appendChild(viewport);
+    function renderUI() {
+      updateThumbsList();
+      tinymce.get("editor").setContent(slides[currentSlideIndex].content);
+    }
 
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        meta.textContent = `Slide ${idx+1}`;
-        wrap.appendChild(meta);
-        thumbs.appendChild(wrap);
+    function updateThumbsList() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.innerHTML = "";
+      slides.forEach((s, i) => {
+        const div = document.createElement("div");
+        div.className = `thumb ${i === currentSlideIndex ? 'active' : ''}`;
+        div.innerHTML = s.content;
+        div.onpointerdown = (e) => initDrag(e, div, i);
+        sidebar.appendChild(div);
       });
-      highlightActiveThumb();
-    }
-    function highlightActiveThumb(){
-      const nodes = document.querySelectorAll('.thumb');
-      nodes.forEach((n, i)=> n.classList.toggle('active', i===current));
     }
 
-    let dragSrcIndex = null;
-    function dragStart(e){ dragSrcIndex = Number(this.dataset.index); }
-    function dragOver(e){ e.preventDefault(); }
-    function drop(e){
-      e.preventDefault();
-      const targetIndex = Number(this.dataset.index);
-      if (dragSrcIndex === targetIndex) return;
-      const slides = getSlides();
-      const srcNode = slides[dragSrcIndex];
-      const destNode = slides[targetIndex];
-      if (srcNode && destNode) {
-        if (dragSrcIndex < targetIndex) destNode.after(srcNode);
-        else destNode.before(srcNode);
-        rebuildThumbnails();
-        showSlide(targetIndex);
+    function updateThumbsVisual() {
+      const activeThumb = document.querySelector('.thumb.active');
+      if(activeThumb) activeThumb.innerHTML = slides[currentSlideIndex].content;
+    }
+
+    // --- Lógica de Drag & Drop Unificada ---
+    function initDrag(e, el, index) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+      dnd.srcIndex = index;
+      dnd.el = el;
+      dnd.offsetY = e.clientY - el.getBoundingClientRect().top;
+
+      dnd.placeholder = document.createElement("div");
+      dnd.placeholder.className = "placeholder";
+
+      window.onpointermove = doDrag;
+      window.onpointerup = stopDrag;
+      el.setPointerCapture(e.pointerId);
+    }
+
+    function doDrag(e) {
+      if (dnd.srcIndex === null) return;
+      const sidebar = document.getElementById("sidebar");
+
+      if (!dnd.el.classList.contains('dragging')) {
+        dnd.el.classList.add('dragging');
+        dnd.el.style.width = (sidebar.clientWidth - 30) + "px";
+        sidebar.insertBefore(dnd.placeholder, dnd.el);
       }
+
+      dnd.el.style.top = (e.clientY - dnd.offsetY) + "px";
+      dnd.el.style.left = sidebar.getBoundingClientRect().left + 15 + "px";
+
+      const siblings = [...sidebar.querySelectorAll('.thumb:not(.dragging)')];
+      let nextEl = siblings.find(sib => {
+        return e.clientY <= sib.getBoundingClientRect().top + sib.offsetHeight / 2;
+      });
+      sidebar.insertBefore(dnd.placeholder, nextEl);
     }
 
-    function exportHtml(){
-      const html = tinymce.get('editor').getContent();
-      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-      saveAs(blob, 'apresentacao.html');
-    }
+    function stopDrag(e) {
+      if (dnd.srcIndex === null) return;
+      const sidebar = document.getElementById("sidebar");
 
-    function exportPdf(){
-      const slides = Array.from(getSlides());
-      const printWin = window.open('', '_blank');
-      const styles = `
-        <style>
-          @page { size: 1280px 720px; margin: 0; }
-          body { margin: 0; background: #000; }
-          .page { display: flex; align-items: center; justify-content: center; page-break-after: always; width: 100vw; height: 100vh; }
-          .slide { width: 1280px; height: 720px; background: #fff; color:#111827; padding:64px; margin: 0; }
-        </style>`;
-      const body = slides.map(s => `<div class="page"><section class="slide">${s.innerHTML}</section></div>`).join('');
-      printWin.document.write(`<html><head><meta charset="utf-8">${styles}</head><body>${body}</body></html>`);
-      printWin.document.close();
-      printWin.onload = () => printWin.print();
-    }
+      if (dnd.el.classList.contains('dragging')) {
+        const nodes = [...sidebar.querySelectorAll('.thumb, .placeholder')];
+        let newIndex = nodes.indexOf(dnd.placeholder);
+        if (newIndex > dnd.srcIndex) newIndex--;
 
-    async function exportPptx(){
-      if (typeof PptxGenJS === 'undefined' || !window.htmlToImage) {
-        alert('Exportação PPTX requer jsbib/pptxgen.bundle.min.js e jsbib/html-to-image.min.js');
-        return;
-      }
-      const pptx = new PptxGenJS();
-      pptx.layout = 'LAYOUT_16x9';
-      const slides = Array.from(getSlides());
-      for (let i = 0; i < slides.length; i++) {
-        const s = slides[i];
-        const tmp = document.createElement('div');
-        tmp.style.position = 'fixed'; tmp.style.left = '-20000px'; tmp.style.top = '0';
-        tmp.style.width = '1280px'; tmp.style.height = '720px'; tmp.style.background = '#ffffff';
-        tmp.className = 'presentation';
-        const clone = document.createElement('section');
-        clone.className = 'slide';
-        clone.style.margin = '0';
-        clone.innerHTML = s.innerHTML;
-        tmp.appendChild(clone);
-        document.body.appendChild(tmp);
-        try {
-          const dataUrl = await htmlToImage.toPng(tmp, { width: 1280, height: 720, pixelRatio: 2, backgroundColor: '#ffffff' });
-          const slide = pptx.addSlide();
-          slide.addImage({ data: dataUrl, x: 0, y: 0, w: 10, h: 5.625 });
-        } catch (e) { console.error('Erro ao capturar slide:', e); }
-        finally { document.body.removeChild(tmp); }
-      }
-      await pptx.writeFile({ fileName: 'apresentacao.pptx' });
-    }
-
-    function fitStage(){
-      const stage = document.getElementById('stage');
-      const W = window.innerWidth, H = window.innerHeight;
-      const scale = Math.min(W/1280, H/720);
-      stage.style.width = '1280px';
-      stage.style.height = '720px';
-      stage.style.position = 'absolute';
-      stage.style.top = '50%';
-      stage.style.left = '50%';
-      stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
-      stage.style.transformOrigin = 'center center';
-    }
-    function renderStageFrom(slideNode){
-      const stage = document.getElementById('stage');
-      stage.innerHTML = '';
-      const clone = document.createElement('section');
-      clone.className = 'slide'; clone.style.margin = '0'; clone.innerHTML = slideNode.innerHTML;
-      stage.appendChild(clone);
-      fitStage();
-    }
-    function startPresentation(){
-      const pres = document.getElementById('presentation');
-      pres.style.display = 'flex';
-      presentationMode = true;
-      const slides = getSlides();
-      renderStageFrom(slides[current]);
-      if (pres.requestFullscreen) pres.requestFullscreen();
-      else if (pres.webkitRequestFullscreen) pres.webkitRequestFullscreen();
-      else if (pres.msRequestFullscreen) pres.msRequestFullscreen();
-    }
-    function exitPresentation(){
-      presentationMode = false;
-      document.getElementById('presentation').style.display = 'none';
-    }
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement && presentationMode) exitPresentation();
-    });
-
-    document.getElementById('btnPrev').addEventListener('click', prevSlide);
-    document.getElementById('btnNext').addEventListener('click', nextSlide);
-    document.getElementById('btnAdd').addEventListener('click', addSlide);
-    document.getElementById('btnDelete').addEventListener('click', deleteSlide);
-    document.getElementById('btnExportHtml').addEventListener('click', exportHtml);
-    document.getElementById('btnExportPdf').addEventListener('click', exportPdf);
-    document.getElementById('btnExportPptx').addEventListener('click', exportPptx);
-    document.getElementById('btnPresent').addEventListener('click', startPresentation);
-
-    document.addEventListener('keydown', (e)=>{
-      if (presentationMode){
-        if (e.key === 'ArrowRight') nextSlide();
-        if (e.key === 'ArrowLeft') prevSlide();
-        if (e.key === 'Escape') document.exitFullscreen();
+        const [movedItem] = slides.splice(dnd.srcIndex, 1);
+        slides.splice(newIndex, 0, movedItem);
+        currentSlideIndex = newIndex;
       } else {
-        if (e.key === 'ArrowRight') nextSlide();
-        if (e.key === 'ArrowLeft') prevSlide();
+        // Foi apenas um clique
+        currentSlideIndex = dnd.srcIndex;
       }
-    });
-    window.addEventListener('resize', () => { if (presentationMode) fitStage(); });
-  
-    // Drag & Drop com Pointer Events (suporte celular e PC)
-    const dnd={};
-    function enablePointerDnD(){
-      document.querySelectorAll('.thumb').forEach(el=>{
-        el.onpointerdown=e=>{
-          if(e.pointerType==='mouse'&&e.button!==0)return;
-          dnd.srcEl=el;
-          dnd.startY=e.clientY;
-          dnd.offsetY=e.clientY-el.getBoundingClientRect().top;
-          el.setPointerCapture(e.pointerId);
-          window.onpointermove=pm;
-          window.onpointerup=pu;
-        };
-      });
-    }
-    function startDrag(e){
-      if(dnd.dragging)return;
-      dnd.dragging=true;
-      const el=dnd.srcEl;
-      const ph=document.createElement('div');
-      ph.className='thumb placeholder';
-      ph.style.height=el.offsetHeight+'px';
-      el.parentNode.insertBefore(ph,el.nextSibling);
-      dnd.ph=ph;
-      el.classList.add('dragging');
-    }
-    function pm(e){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      if(!dnd.dragging&&Math.abs(e.clientY-dnd.startY)>5)startDrag(e);
-      if(!dnd.dragging)return;
-      el.style.top=(e.clientY-dnd.offsetY)+'px';
-      el.style.left=el.getBoundingClientRect().left+'px';
-      const thumbs=document.getElementById('thumbs');
-      const sib=[...thumbs.children].filter(x=>x!==el&&x!==dnd.ph);
-      let before=null;
-      for(const n of sib){
-        const r=n.getBoundingClientRect();
-        if(e.clientY<r.top+r.height/2){before=n;break;}
-      }
-      if(before)thumbs.insertBefore(dnd.ph,before);else thumbs.appendChild(dnd.ph);
-      thumbs.scrollTop+=((e.clientY-window.innerHeight*0.9)>0?10:((e.clientY<window.innerHeight*0.1)?-10:0));
-    }
-    function pu(){
-      if(!dnd.srcEl)return;
-      const el=dnd.srcEl;
-      let newIndex=0;
-      if(dnd.dragging&&dnd.ph){
-        const thumbs=document.getElementById('thumbs');
-        const nodes=[...thumbs.children];
-        newIndex=nodes.indexOf(dnd.ph);
-        const oldIndex=parseInt(el.dataset.index);
-        const slides=getSlides();
-        if(newIndex>=0&&newIndex<slides.length&&newIndex!==oldIndex){
-          const src=slides[oldIndex];
-          const dest=slides[newIndex];
-          if(oldIndex<newIndex)dest.after(src);else dest.before(src);
-        }
-      }
-      el.classList.remove('dragging');
-      if(dnd.ph)dnd.ph.remove();
-      dnd.srcEl=null;
-      dnd.dragging=false;
-      window.onpointermove=null;
-      window.onpointerup=null;
-      rebuildThumbnails();
-      showSlide(newIndex||0);
+
+      dnd.el.classList.remove('dragging');
+      dnd.el.style = "";
+      if(dnd.placeholder.parentNode) dnd.placeholder.parentNode.removeChild(dnd.placeholder);
+      
+      window.onpointermove = null;
+      window.onpointerup = null;
+      dnd.srcIndex = null;
+      renderUI();
     }
 
-</script>
+    // --- Arquivos e Utilitários ---
+    function saveContent(type) {
+      const fullHtml = slides.map(s => `<section>${s.content}</section>`).join("");
+      const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
+      saveAs(blob, `apresentacao.${type}`);
+    }
+
+    function loadFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        tinymce.get("editor").setContent(e.target.result);
+        slides[currentSlideIndex].content = e.target.result;
+        updateThumbsVisual();
+      };
+      reader.readAsText(file);
+    }
+
+    function toggleFullscreen() {
+      const container = document.getElementById("editor-container");
+      if (container.requestFullscreen) container.requestFullscreen();
+    }
+
+    window.onload = () => setTimeout(renderUI, 500);
+  </script>
 </body>
 </html>
