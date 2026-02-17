@@ -1,7 +1,7 @@
 const CACHE_NAME = 'pwa-cache-wl';
 const PRECACHE_URLS = [
  "./",
-  "./word.html",
+  "./documentos.html",
   "./jsbib/tinymce.min.js",
   "./jsbib/mammoth.browser.min.js",
   "./jsbib/webodf.js",

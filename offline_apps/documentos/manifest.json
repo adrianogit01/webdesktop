@@ -1,7 +1,7 @@
 {
   "name": "Editor de Texto Avançado",
-  "short_name": "Word Like",
-  "start_url": "word.html",
+  "short_name": "Documentos",
+  "start_url": "documentos.html",
   "display": "standalone",
   "background_color": "#e0dede",
   "theme_color": "#e0dede",
