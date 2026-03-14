@@ -370,6 +370,18 @@ body.fundo-imagem {
   border-radius: 8px;
 }
 
+.snap-preview {
+  position: fixed;
+  background: rgba(0, 120, 215, 0.2);
+  border: 2px solid rgba(0, 120, 215, 0.4);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: none;
+  transition: all 0.2s ease-in-out;
+  pointer-events: none; /* Não atrapalha cliques */
+  border-radius: 8px;
+}
+
  
   </style>
    <!-- Script do Google AdSense -->
@@ -379,6 +391,7 @@ body.fundo-imagem {
   <meta name="google-site-verification" content="abc123XYZ">
 </head>
 <body class="fullscreen" onload="onLoad()">
+<div id="snapPreview" class="snap-preview"></div>
  <!--<div id="welcome"
     style="position:absolute;bottom:50px;left:10px;background: #f5f5f5;color: #333;padding:10px;border-radius:8px;z-index:-110">
     <h3>Bem-vindo ao Web Desktop</h3>
@@ -735,16 +748,55 @@ body.fundo-imagem {
     }
 
 
-    // Ctrl+W fecha a última janela aberta
-    document.addEventListener('keydown', e => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'w') {
-        const windows = document.querySelectorAll('.window');
-        if (windows.length > 0) {
-          e.preventDefault();
-          windows[windows.length - 1].remove();
-        }
-      }
-    });
+  document.addEventListener('keydown', e => {
+  const windows = document.querySelectorAll('.window');
+  if (windows.length === 0) return;
+
+  // Pegamos a janela que está com o maior z-index (ativa)
+  const todasWin = Array.from(windows);
+  const ultimaWin = todasWin.reduce((prev, curr) => 
+    (parseInt(prev.style.zIndex) > parseInt(curr.style.zIndex)) ? prev : curr
+  );
+
+  const taskbarHeight = 60;
+  const preview = document.getElementById('snapPreview');
+
+  if (e.metaKey || e.ctrlKey) {
+    let targetCoords = null;
+
+    if (e.key === 'ArrowLeft') {
+      targetCoords = { width: '50vw', height: `calc(100vh - ${taskbarHeight}px)`, top: '0', left: '0' };
+    } 
+    else if (e.key === 'ArrowRight') {
+      targetCoords = { width: '50vw', height: `calc(100vh - ${taskbarHeight}px)`, top: '0', left: '50vw' };
+    } 
+    else if (e.key === 'ArrowUp') {
+      targetCoords = { width: '100vw', height: `calc(100vh - ${taskbarHeight}px)`, top: '0', left: '0' };
+    } 
+    else if (e.key === 'ArrowDown') {
+      targetCoords = { width: '400px', height: '550px', top: '20%', left: '30%' };
+    }
+
+    if (targetCoords) {
+      e.preventDefault();
+      
+      // Mostrar o "Ghost"
+      preview.style.display = 'block';
+      preview.style.width = targetCoords.width;
+      preview.style.height = targetCoords.height;
+      preview.style.top = targetCoords.top;
+      preview.style.left = targetCoords.left;
+      preview.style.opacity = '1';
+
+      // Mover a janela real após um pequeno delay e esconder o ghost
+      setTimeout(() => {
+        Object.assign(ultimaWin.style, targetCoords);
+        preview.style.opacity = '0';
+        setTimeout(() => { preview.style.display = 'none'; }, 200);
+      }, 150);
+    }
+  }
+});
     
     // Aguarda carregar o DOM antes de aplicar o filtro
 document.addEventListener('DOMContentLoaded', function() {
