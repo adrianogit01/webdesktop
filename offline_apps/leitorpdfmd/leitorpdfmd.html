@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leitor — PDF & Markdown</title>
+  <script src="marked.min.js"></script>
+  <style>
+    :root{
+      --bg:#0b0f14; --fg:#e6edf3; --muted:#9fb0c3; --accent:#7cc4ff; --card:#0f141b; --border:#1e2937;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--fg);}
+    header{position:sticky;top:0;z-index:10;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .toolbar{display:flex;gap:.5rem;align-items:center;padding:.75rem;flex-wrap:wrap}
+    .toolbar input[type="text"]{flex:1;min-width:180px;background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:.75rem;padding:.6rem .8rem}
+    .btn{background:var(--card);color:var(--fg);border:1px solid var(--border);padding:.55rem .8rem;border-radius:.75rem;cursor:pointer}
+    .btn:hover{border-color:var(--accent)}
+    .btn[disabled]{opacity:.55;cursor:not-allowed}
+    .sep{width:1px;height:34px;background:var(--border);margin:0 .25rem}
+    #viewer{display:grid;grid-template-rows:auto 1fr;min-height:100dvh}
+    #canvasContainer{position:relative;overflow:auto;background:#0a0e13;padding: 20px;}
+    
+    /* Estilos para o PDF */
+    #pdfCanvas{display:block;margin:0 auto;background:#111;border-radius:.75rem}
+    
+    /* Estilos para o Markdown */
+    #mdViewer{
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+      color: var(--fg);
+      display: none; /* Escondido por padrão */
+    }
+    #mdViewer h1, #mdViewer h2 { border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--accent); }
+    #mdViewer code { background: var(--card); padding: 2px 5px; border-radius: 4px; font-family: monospace; }
+    #mdViewer pre { background: var(--card); padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid var(--border); }
+    #mdViewer blockquote { border-left: 4px solid var(--accent); margin: 0; padding-left: 20px; color: var(--muted); }
+
+    .status{padding:.4rem .75rem;color:var(--muted);font-size:.9rem}
+    .dropzone{position:absolute;inset:0;display:none;align-items:center;justify-content:center;border:2px dashed var(--accent);border-radius:1rem;background:rgba(124,196,255,.08);color:var(--accent);font-weight:600}
+    .k{font-size:.8rem;color:var(--muted)}
+    footer{padding:.75rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--card)}
+    .pages{display:flex;align-items:center;gap:.5rem}
+    input[type="number"]{width:5rem;background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:.5rem;padding:.4rem .5rem}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div id="viewer">
+    <header>
+      <div class="toolbar">
+        <input id="urlInput" type="text" placeholder="Cole link de PDF ou MD e pressione Abrir" />
+        <button id="openUrl" class="btn">Abrir</button>
+        <div class="sep"></div>
+        <label class="btn" for="fileInput">Abrir arquivo local</label>
+        <input id="fileInput" type="file" accept=".pdf,.md" class="hidden" />
+        <div class="sep"></div>
+        <div id="pdfControls" style="display:flex; gap:0.5rem">
+            <button id="zoomOut" class="btn">−</button>
+            <button id="zoomIn" class="btn">＋</button>
+            <button id="fitWidth" class="btn">↔</button>
+            <button id="rotate" class="btn">⟳</button>
+        </div>
+        <div class="sep"></div>
+        <input id="searchInput" type="text" placeholder="Buscar texto..." />
+        <button id="findNext" class="btn">Buscar</button>
+      </div>
+    </header>
+
+    <div id="canvasContainer">
+      <canvas id="pdfCanvas"></canvas>
+      <div id="mdViewer"></div> <div id="dropzone" class="dropzone">Solte o arquivo para abrir</div>
+    </div>
+
+    <footer id="mainFooter">
+      <div class="pages">
+        <button id="prev" class="btn">◀</button>
+        <span>Página</span>
+        <input id="pageNumber" type="number" min="1" value="1" />
+        <span id="pageCount">/ 0</span>
+        <button id="next" class="btn">▶</button>
+      </div>
+      <div class="status" id="status">Pronto</div>
+    </footer>
+  </div>
+
+  <script src="pdf.min.js"></script>
+  <script>
+    if (window['pdfjsLib']) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+    }
+
+    const state = {
+      pdfDoc: null,
+      pageNum: 1,
+      pageCount: 0,
+      scale: 1.25,
+      rotation: 0,
+      fitWidthMode: false,
+      currentUrl: null,
+      isMarkdown: false
+    };
+
+    const urlInput = document.getElementById('urlInput');
+    const canvas = document.getElementById('pdfCanvas');
+    const mdViewer = document.getElementById('mdViewer');
+    const pdfControls = document.getElementById('pdfControls');
+    const mainFooter = document.getElementById('mainFooter');
+    const statusEl = document.getElementById('status');
+    const container = document.getElementById('canvasContainer');
+
+    function setStatus(msg){ statusEl.textContent = msg; }
+
+    // ======= LÓGICA DE CARREGAMENTO HÍBRIDO =======
+    async function openFile(url, fileName = "") {
+        const ext = (fileName || url).split('.').pop().toLowerCase();
+        
+        if (ext === 'md') {
+            state.isMarkdown = true;
+            toggleViewMode(true);
+            loadMarkdown(url);
+        } else {
+            state.isMarkdown = false;
+            toggleViewMode(false);
+            loadPdfFromUrl(url);
+        }
+    }
+
+    function toggleViewMode(isMd) {
+        canvas.style.display = isMd ? 'none' : 'block';
+        mdViewer.style.display = isMd ? 'block' : 'none';
+        pdfControls.style.opacity = isMd ? '0.3' : '1'; // Visual "desabilitado" para botões de PDF
+        mainFooter.style.visibility = isMd ? 'hidden' : 'visible';
+    }
+
+    async function loadMarkdown(url) {
+        try {
+            setStatus('Carregando Markdown...');
+            const response = await fetch(url);
+            const text = await response.text();
+            mdViewer.innerHTML = marked.parse(text);
+            setStatus('Markdown renderizado');
+        } catch (err) {
+            setStatus('Erro ao carregar MD: ' + err.message);
+        }
+    }
+
+    // ======= PDF.js Original Logic (Adaptada) =======
+    async function loadPdfFromUrl(url){
+      try{
+        setStatus('Carregando PDF...');
+        const loadingTask = pdfjsLib.getDocument({ url, withCredentials: false });
+        const pdf = await loadingTask.promise;
+        onPdfLoaded(pdf, url);
+      }catch(err){
+        setStatus('Falha no PDF: ' + err.message);
+      }
+    }
+
+    function onPdfLoaded(pdfDoc, url){
+      state.pdfDoc = pdfDoc;
+      state.pageNum = 1;
+      state.pageCount = pdfDoc.numPages;
+      document.getElementById('pageNumber').max = state.pageCount;
+      document.getElementById('pageCount').textContent = '/ ' + state.pageCount;
+      renderPage();
+    }
+
+    async function renderPage(){
+      if(!state.pdfDoc || state.isMarkdown) return;
+      const page = await state.pdfDoc.getPage(state.pageNum);
+      const viewport = page.getViewport({ scale: state.scale, rotation: state.rotation });
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    }
+
+    // ======= EVENTOS =======
+    document.getElementById('openUrl').onclick = () => openFile(urlInput.value.trim());
+    
+    document.getElementById('fileInput').onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const blobUrl = URL.createObjectURL(file);
+            openFile(blobUrl, file.name);
+        }
+    };
+
+    // Navegação simples para PDF
+    document.getElementById('prev').onclick = () => { if(state.pageNum > 1) { state.pageNum--; renderPage(); } };
+    document.getElementById('next').onclick = () => { if(state.pageNum < state.pageCount) { state.pageNum++; renderPage(); } };
+
+    // Suporte para Drag & Drop (PDF e MD)
+    container.ondrop = (e) => {
+        e.preventDefault();
+        const f = e.dataTransfer.files[0];
+        if(f) openFile(URL.createObjectURL(f), f.name);
+    };
+    container.ondragover = e => e.preventDefault();
+  </script>
+</body>
+</html>
