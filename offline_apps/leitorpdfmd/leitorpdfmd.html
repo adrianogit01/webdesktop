@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#e0dede">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="apple-mobile-web-app-title" content="Word Like"> 
   <title>Leitor — PDF & Markdown</title>
   <script src="marked.min.js"></script>
   <style>
@@ -198,6 +205,15 @@
         if(f) openFile(URL.createObjectURL(f), f.name);
     };
     container.ondragover = e => e.preventDefault();
+  </script>
+  <script>
+  
+  /* Registro especificio pra pwa interno em pasta de outro */    
+    if ('serviceWorker' in navigator) {
+       navigator.serviceWorker.register('service-worker.js', { scope: './' });
+    }
+
+  
   </script>
 </body>
 </html>
