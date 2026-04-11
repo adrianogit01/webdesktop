@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="white">
   <meta name="apple-mobile-web-app-title" content="Word Like"> 
   <title>Leitor — PDF & Markdown</title>
-  <script src="marked.min.js"></script>
+  <script src="jslib/marked.min.js"></script>
   <style>
     :root{
       --bg:#0b0f14; --fg:#e6edf3; --muted:#9fb0c3; --accent:#7cc4ff; --card:#0f141b; --border:#1e2937;
@@ -92,10 +92,10 @@
     </footer>
   </div>
 
-  <script src="pdf.min.js"></script>
+  <script src="jslib/pdf.min.js"></script>
   <script>
     if (window['pdfjsLib']) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'jslib/pdf.worker.min.js';
     }
 
     const state = {
