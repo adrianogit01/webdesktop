@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#e0dede">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="apple-mobile-web-app-title" content="Multi Leitor"> 
   <title>Leitor — PDF, ePub & Markdown</title>
   <script src="jslib/marked.min.js"></script>
   <script src="jslib/jszip.min.js"></script>
@@ -175,6 +182,15 @@
         const file = e.target.files[0];
         if (file) openFile(URL.createObjectURL(file), file.name);
     };
+  </script>
+  <script>
+  
+  /* Registro especificio pra pwa interno em pasta de outro */    
+    if ('serviceWorker' in navigator) {
+       navigator.serviceWorker.register('service-worker.js', { scope: './' });
+    }
+
+  
   </script>
 </body>
 </html>

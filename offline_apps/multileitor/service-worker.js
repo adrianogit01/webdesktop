@@ -1,7 +1,7 @@
 const CACHE_NAME = 'pwa-cache-ml';
 const PRECACHE_URLS = [
  "./",
-  "./leitorpdfmd.html",
+  "./multileitor.html",
   "./jslib/pdf.min.js",
   "./jslib/pdf.worker.min.js",
   "./jslib/marked.min.js"

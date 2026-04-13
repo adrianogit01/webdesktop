@@ -1,7 +1,7 @@
 {
   "name": "Multi Leitor",
   "short_name": "Leitor",
-  "start_url": "leitorpdfmd.html",
+  "start_url": "multileitor.html",
   "display": "standalone",
   "background_color": "#e0dede",
   "theme_color": "#e0dede",
