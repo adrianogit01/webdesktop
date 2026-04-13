@@ -156,7 +156,48 @@
       await page.render({ canvasContext: elements.canvas.getContext('2d'), viewport }).promise;
     }
 
-    async function loadEpub(url) {
+async function loadEpub(url) {
+    try {
+        setStatus('Carregando EPUB...');
+        
+        // Limpeza absoluta antes de carregar
+        if (state.book) {
+            state.book.destroy();
+        }
+        elements.epubViewer.innerHTML = ''; // Limpa o container
+
+        state.book = ePub(url);
+        
+        // Aguarda o livro estar pronto antes de renderizar
+        await state.book.ready;
+
+        state.rendition = state.book.renderTo("epubViewer", {
+            width: "100%",
+            height: "100%",
+            flow: "paginated",
+            manager: "default"
+        });
+
+        // Tenta exibir o livro
+        await state.rendition.display();
+        
+        setStatus('EPUB renderizado');
+        
+        // Ajuste para o tema dark: injeta CSS dentro do iframe do livro
+        state.rendition.themes.default({
+            body: {
+                background: "#0b0f14 !important",
+                color: "#e6edf3 !important"
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+        setStatus('Erro EPUB: ' + err.message);
+    }
+}
+
+    /*async function loadEpub(url) {
         try {
             setStatus('Carregando EPUB...');
             state.book = ePub(url);
@@ -164,7 +205,9 @@
             state.rendition.display();
             setStatus('EPUB carregado');
         } catch (err) { setStatus('Erro EPUB: ' + err.message); }
-    }
+    }*/
+    
+    
 
     // Navegação unificada
     document.getElementById('next').onclick = () => {
