@@ -2,35 +2,41 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Sobre</title>
+  <title>Sobre o Web Desktop - Tecnologia e Produtividade</title>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 20px;
-      background: #f5f5f5;
-      color: #333;
-      max-width: 800px;
-    }
+    body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; margin: 40px auto; background: #fff; color: #333; max-width: 850px; padding: 0 20px; }
+    h1 { color: #1e1e1e; font-size: 2.2em; }
+    .tech-box { background: #f9f9f9; border-left: 5px solid #1e1e1e; padding: 20px; margin: 20px 0; border-radius: 4px; }
+    .app-list { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+    .app-item { background: #eee; padding: 10px; border-radius: 8px; font-size: 0.9em; }
   </style>
 </head>
 <body>
   <h1>Sobre o Web Desktop</h1>
-  <p>
-    O <strong>Web Desktop</strong> é um projeto experimental desenvolvido com HTML, CSS e JavaScript que simula um ambiente de desktop diretamente no navegador.
-  </p>
-  <p>
-    O objetivo é fornecer uma interface familiar e produtiva, integrando aplicativos como calculadora, player de mídia, navegador, gerenciador de arquivos e mais — tudo rodando sem a necessidade de instalações.
-  </p>
-  <p>
-    Este sistema é responsivo, compatível com dispositivos móveis e pode ser usado como base para PWAs, sistemas educacionais ou demonstrações de UI/UX.
-  </p>
-  <p>
-    <strong>Se vc está usando no celular e de alguma forma espelhando em uma tela maior, coloque o navegador do celular em modo desktop e use o slider de zoom abaixo e/ou arraste uma das janelas para a direita (pode ser essa mesmo) o que faz um zoom out, assim o aproveitamento do
-    desktop é melhor. E se estiver usando um teclado físico e o zoom automático nos campos de texto estiver atrapalhando, use Ctrl + 0 ou Ctrl + - para afastar.</strong>
-  </p>
-  <p>
-    Projeto hospedado em: <a href="https://webdesktop-b5wu.onrender.com" target="_blank">webdesktop-yh8j.onrender.com</a>
-  </p>
+  <p>O <strong>Web Desktop</strong> é uma plataforma experimental de computação baseada em nuvem que emula a interface de um sistema operacional moderno diretamente no navegador. Desenvolvido com HTML5 puro, CSS3 (focado em Glassmorphism) e JavaScript assíncrono, o projeto redefine a produtividade web.</p>
+
+  <div class="tech-box">
+    <strong>Destaques Técnicos:</strong>
+    <ul>
+      <li><strong>Arquitetura PWA:</strong> Funciona offline e pode ser instalado em dispositivos móveis e desktops.</li>
+      <li><strong>Privacidade Local:</strong> Os documentos e configurações são salvos via LocalStorage, sem tráfego de dados sensíveis para servidores.</li>
+      <li><strong>Interface Fluida:</strong> Renderização de janelas com desfoque de fundo (backdrop-filter) para alto desempenho visual.</li>
+    </ul>
+  </div>
+
+  <h2>Ecossistema de Aplicativos</h2>
+  <p>Integramos ferramentas essenciais para fluxos de trabalho acadêmicos e profissionais sem necessidade de instalação:</p>
+  <div class="app-list">
+    <div class="app-item"><strong>📄 Word-Like & Editor:</strong> Edição de textos e documentos com formatação dinâmica.</div>
+    <div class="app-item"><strong>📊 Planilhas & Dados:</strong> Gestão de dados e cálculos complexos via EtherCalc e planilhas locais.</div>
+    <div class="app-item"><strong>🎞️ Media Player:</strong> Reprodutor multimídia integrado para áudio e vídeo.</div>
+    <div class="app-item"><strong>🤖 IA Integrada:</strong> Suporte a interfaces de chat e automação.</div>
+  </div>
+
+  <h2>Dicas de Otimização</h2>
+  <p>Para uma experiência imersiva em dispositivos móveis espelhados em telas maiores, recomendamos o "Modo Desktop" no navegador. Utilize o slider de zoom da barra de tarefas para ajustar a escala da interface conforme a resolução do seu monitor.</p>
+
+  <p><em>Hospedagem oficial: <a href="https://webdesktop-b5wu.onrender.com" target="_blank">webdesktop-b5wu.onrender.com</a></em></p>
 </body>
 </html>
 
