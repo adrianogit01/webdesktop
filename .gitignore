@@ -5,7 +5,7 @@ windowkernel2.html
 ./public/sobre.old.html
 offline_apps/touchpad.old.js
 
-# Arquivos comuns que você pode querer ignorar também
+# Arquivos tipicamente ignorados
 node_modules/
 dist/
 build/
