@@ -64,40 +64,67 @@ function iniciarTouchpad() {
     startY = touch.clientY;
   });
 
-  pad.addEventListener("touchmove", e => {
+// Dentro da função iniciarTouchpad, no listener de touchmove:
+
+pad.addEventListener("touchmove", e => {
     e.preventDefault();
     const touch = e.touches[0];
-    const dx = touch.clientX - startX;
-    const dy = touch.clientY - startY;
+    
+    // 1. Captura o fator de zoom (ex: 1.5 para 150%)
+    // Lemos do body conforme definido no seu index.html
+    const fatorZoom = (parseFloat(document.body.style.zoom) || 100) / 100;
 
-    x = Math.max(0, Math.min(window.innerWidth, x + dx));
-    y = Math.max(0, Math.min(document.body.scrollHeight, y + dy));
+    // 2. Ajusta o deslocamento dividindo pelo zoom
+    const dx = (touch.clientX - startX) / fatorZoom;
+    const dy = (touch.clientY - startY) / fatorZoom;
 
+    // 3. Atualiza as coordenadas x e y
+    x = Math.max(0, Math.min(window.innerWidth / fatorZoom, x + dx));
+    y = Math.max(0, Math.min(document.body.scrollHeight / fatorZoom, y + dy));
+
+    // 4. Aplica ao estilo (o navegador já interpreta esses valores 
+    // de acordo com o zoom do elemento pai)
     cursor.style.left = `${x}px`;
     cursor.style.top = `${y}px`;
 
     startX = touch.clientX;
     startY = touch.clientY;
-  });
+});
 
   pad.addEventListener("touchend", e => {
     e.preventDefault();
     const now = Date.now();
     if (now - lastTap < 300) {
-      const el = document.elementFromPoint(x, y - window.scrollY);
-      if (el) {
-        const click = new MouseEvent("click", {
-          view: window,
-          bubbles: true,
-          cancelable: true,
-          clientX: x,
-          clientY: y - window.scrollY
-        });
-        el.dispatchEvent(click);
-      }
+        // 1. Pegar o zoom atual exatamente no momento do clique
+        const fatorZoom = (parseFloat(document.body.style.zoom) || 100) / 100;
+
+        // 2. O elementFromPoint precisa da coordenada VISUAL no viewport.
+        // Se o x/y do cursor já estão normalizados, multiplicamos de volta 
+        // ou usamos a posição relativa ao scroll corretamente.
+        const clickX = x * fatorZoom;
+        const clickY = (y - window.scrollY) * fatorZoom;
+
+        const el = document.elementFromPoint(x, y - window.scrollY); 
+        
+        if (el) {
+            // Simula o clique com coordenadas ajustadas
+            const click = new MouseEvent("click", {
+                view: window,
+                bubbles: true,
+                cancelable: true,
+                clientX: x, 
+                clientY: y - window.scrollY
+            });
+            el.dispatchEvent(click);
+            
+            // Foco especial para inputs e botões de titlebar
+            if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+                el.focus();
+            }
+        }
     }
     lastTap = now;
-  });
+});
 
   atualizarCursorPos = () => {
     x = window.innerWidth / 2;

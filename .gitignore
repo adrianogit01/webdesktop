@@ -1,8 +1,9 @@
 # Arquivo específico
 index.old.html
-Refatoração Index.mhtml
 windowkernel.html
+windowkernel2.html
 ./public/sobre.old.html
+offline_apps/touchpad.old.js
 
 # Arquivos comuns que você pode querer ignorar também
 node_modules/
@@ -12,6 +13,7 @@ build/
 .DS_Store
 Thumbs.db
 *.log
+*.mhtml
 .vscode/
 .idea/
 
